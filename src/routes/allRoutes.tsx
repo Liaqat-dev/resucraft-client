@@ -99,12 +99,10 @@ import AccountSecurity from "@pages/account/security";
 // import AccountBillingPlan from "@pages/accountBillingPlan";
 import AccountNotification from "@pages/account/notification";
 import AccountStatements from "@pages/account/statements";
-import AccountLogs from "@pages/account/logs";
-import UserPage from "@pages/page/user";
-import UserActivity from "@pages/page/userActivity";
-import UserFollowers from "@pages/page/userFollowers";
-import UserDocuments from "@pages/page/userDocuments";
-import UserProjects from "@pages/page/userProjects";
+import AccountLogs from "@pages/account/sessions";
+import UserPage from "@pages/profile";
+import UserActivity from "@pages/profile/userActivity";
+import UserDocuments from "@pages/profile/userDocuments";
 import PricingPage from "@pages/page/pricing";
 import PricingAdmin from "@pages/page/pricingAdmin";
 import ContactUs from "@pages/page/contactUs";
@@ -234,282 +232,293 @@ import VerifyEmail from "@pages/auth/verifyEmail.tsx";
 import ForgotPassword from "@pages/auth/forgotPassword.tsx";
 import Account from "@pages/account";
 import {Navigate} from "react-router";
+import UserProfileOverView from "@pages/profile/overview";
+import SpinLoader from '@src/components/custom/Loader.tsx'
+import AccountSessions from "@pages/account/sessions";
 
 interface IRoute {
     path: string;
     component: ReactNode;
     children?: IRoute[];
 }
+
+
 const routes: IRoute[] = [
 
-    //dashboards
-    {path: "/", component: <DashboardsPage/>},
-    {path: "/dashboards/ecommerce", component: <DashboardsPage/>},
-    {path: "/dashboards/analytics", component: <Analytics/>},
-    {path: "/dashboards/email", component: <Email/>},
-    {path: "/dashboards/crm", component: <CRM/>},
-    {path: "/dashboards/hospital", component: <Hospital/>},
-    {path: "/dashboards/file-manager", component: <FileManager/>},
-    {path: "/dashboards/projects", component: <Projects/>},
-    {path: "/dashboards/school", component: <School/>},
-    {path: "/dashboards/music", component: <Music/>},
+        //dashboards
+        {path: "/loading", component: <SpinLoader/>},
+        {path: "/", component: <DashboardsPage/>},
+        {path: "/dashboards/ecommerce", component: <DashboardsPage/>},
+        {path: "/dashboards/analytics", component: <Analytics/>},
+        {path: "/dashboards/email", component: <Email/>},
+        {path: "/dashboards/crm", component: <CRM/>},
+        {path: "/dashboards/hospital", component: <Hospital/>},
+        {path: "/dashboards/file-manager", component: <FileManager/>},
+        {path: "/dashboards/projects", component: <Projects/>},
+        {path: "/dashboards/school", component: <School/>},
+        {path: "/dashboards/music", component: <Music/>},
 
-    // apps
-    {path: "/apps/chat/default", component: <DefaultChat/>},
-    {path: "/apps/chat/group", component: <Group/>},
-    {path: "/apps/chat/video", component: <Video/>},
-    {path: "/apps/mailbox", component: <MailBox/>},
-    {path: "/apps/email/templates/welcome", component: <EmailWelcome/>},
-    {path: "/apps/email/templates/newsletter", component: <EmailNewsletter/>},
-    {path: "/apps/ecommerce/products/list", component: <List/>},
-    {path: "/apps/ecommerce/products/grid", component: <ProductGrid/>},
-    {
-        path: "/apps/ecommerce/products/create-products",
-        component: <CreateProduct/>,
-    },
-    {path: "/apps/ecommerce/products/overview", component: <ProductOverview/>},
-    {path: "/apps/ecommerce/category", component: <CategoryList/>},
-    {path: "/apps/ecommerce/orders/list", component: <OrderList/>},
-    {path: "/apps/ecommerce/orders/overview", component: <OrderOverview/>},
-    {path: "/apps/ecommerce/orders/track", component: <OrderTrack/>},
-    {path: "/apps/ecommerce/customer/list", component: <CustomerList/>},
-    {path: "/apps/ecommerce/customer/user", component: <User/>},
-    {path: "/apps/ecommerce/shop-cart", component: <ShopCart/>},
-    {path: "/apps/ecommerce/checkout", component: <Checkout/>},
-    {path: "/apps/ecommerce/wishlist", component: <WishList/>},
-    {path: "/apps/ecommerce/payment", component: <Payment/>},
-    {path: "/apps/ecommerce/manage-reviews", component: <ManageReviews/>},
+        // apps
+        {path: "/apps/chat/default", component: <DefaultChat/>},
+        {path: "/apps/chat/group", component: <Group/>},
+        {path: "/apps/chat/video", component: <Video/>},
+        {path: "/apps/mailbox", component: <MailBox/>},
+        {path: "/apps/email/templates/welcome", component: <EmailWelcome/>},
+        {path: "/apps/email/templates/newsletter", component: <EmailNewsletter/>},
+        {path: "/apps/ecommerce/products/list", component: <List/>},
+        {path: "/apps/ecommerce/products/grid", component: <ProductGrid/>},
+        {
+            path: "/apps/ecommerce/products/create-products",
+            component: <CreateProduct/>,
+        },
+        {path: "/apps/ecommerce/products/overview", component: <ProductOverview/>},
+        {path: "/apps/ecommerce/category", component: <CategoryList/>},
+        {path: "/apps/ecommerce/orders/list", component: <OrderList/>},
+        {path: "/apps/ecommerce/orders/overview", component: <OrderOverview/>},
+        {path: "/apps/ecommerce/orders/track", component: <OrderTrack/>},
+        {path: "/apps/ecommerce/customer/list", component: <CustomerList/>},
+        {path: "/apps/ecommerce/customer/user", component: <User/>},
+        {path: "/apps/ecommerce/shop-cart", component: <ShopCart/>},
+        {path: "/apps/ecommerce/checkout", component: <Checkout/>},
+        {path: "/apps/ecommerce/wishlist", component: <WishList/>},
+        {path: "/apps/ecommerce/payment", component: <Payment/>},
+        {path: "/apps/ecommerce/manage-reviews", component: <ManageReviews/>},
 
-    {path: "/apps/invoice/list", component: <ListInvoice/>},
-    {path: "/apps/invoice/grid", component: <GridInvoice/>},
-    {path: "/apps/invoice/create", component: <InvoiceCreate/>},
-    {path: "/apps/invoice/overview-1", component: <Overview1/>},
-    {path: "/apps/invoice/overview-2", component: <Overview2/>},
+        {path: "/apps/invoice/list", component: <ListInvoice/>},
+        {path: "/apps/invoice/grid", component: <GridInvoice/>},
+        {path: "/apps/invoice/create", component: <InvoiceCreate/>},
+        {path: "/apps/invoice/overview-1", component: <Overview1/>},
+        {path: "/apps/invoice/overview-2", component: <Overview2/>},
 
-    {path: "/apps/file-manager", component: <FileManagerApp/>},
-    {path: "/apps/projects/list", component: <ProjectsLists/>},
-    {path: "/apps/projects/grid", component: <ProjectsGrid/>},
-    {path: "/apps/projects/overview", component: <ProjectsOverview/>},
-    {path: "/apps/projects/roadmap", component: <ProjectsRoadMap/>},
-    {path: "/apps/projects/task", component: <ProjectsTask/>},
-    {path: "/apps/projects/files", component: <ProjectsFiles/>},
-    {path: "/apps/projects/users", component: <ProjectsUsers/>},
+        {path: "/apps/file-manager", component: <FileManagerApp/>},
+        {path: "/apps/projects/list", component: <ProjectsLists/>},
+        {path: "/apps/projects/grid", component: <ProjectsGrid/>},
+        {path: "/apps/projects/overview", component: <ProjectsOverview/>},
+        {path: "/apps/projects/roadmap", component: <ProjectsRoadMap/>},
+        {path: "/apps/projects/task", component: <ProjectsTask/>},
+        {path: "/apps/projects/files", component: <ProjectsFiles/>},
+        {path: "/apps/projects/users", component: <ProjectsUsers/>},
 
-    {path: "/apps/crm/lead", component: <CrmLead/>},
-    {path: "/apps/crm/contact", component: <CrmContact/>},
-    {path: "/apps/crm/deal", component: <CrmDeal/>},
-    {path: "/apps/events/list", component: <EventList/>},
-    {path: "/apps/events/grid", component: <GridList/>},
-    {path: "/apps/events/overview", component: <EventOverview/>},
-    {path: "/apps/hospital/patients-lists", component: <PatientsLists/>},
-    {path: "/apps/hospital/patients-create", component: <PatientsCreate/>},
-    {path: "/apps/hospital/patients-overview", component: <PatientsOverview/>},
-    {path: "/apps/hospital/staff-lists", component: <StaffLists/>},
-    {path: "/apps/hospital/staff-leaves", component: <StaffLeave/>},
-    {path: "/apps/hospital/staff-leave-add", component: <StaffLeaveAdd/>},
-    {path: "/apps/hospital/staff-holidays", component: <StaffHolidays/>},
-    {path: "/apps/hospital/staff-attendance", component: <StaffAttendance/>},
-    {
-        path: "/apps/hospital/appointments-lists",
-        component: <AppointmentsLists/>,
-    },
-    {path: "/apps/hospital/appointments-book", component: <AppointmentsBook/>},
-    {path: "/apps/hospital/doctor-schedule", component: <DoctorSchedule/>},
-    {path: "/apps/hospital/departments", component: <Departments/>},
-    {
-        path: "/apps/hospital/payroll-employee-salary",
-        component: <PayrollEmployeeSalary/>,
-    },
-    {path: "/apps/hospital/payroll-payslip", component: <PayrollPayslip/>},
-    {path: "/apps/calendar/date-clicking", component: <CalendarDateClicking/>},
-    {path: "/apps/calendar/date-nav-link", component: <CalendarDateNavLink/>},
-    {path: "/apps/calendar/dayview", component: <CalendarDayView/>},
-    {path: "/apps/calendar/listview", component: <CalendarListView/>},
-    {path: "/apps/calendar/timegrid", component: <CalendarTimeGrid/>},
-    {
-        path: "/apps/calendar/multi-month-stack",
-        component: <CalendarMultiMonthStack/>,
-    },
-    {
-        path: "/apps/calendar/multi-month-grid",
-        component: <CalendarMultiMonthGrid/>,
-    },
-    {path: "/apps/calendar/timeline", component: <CalendarTimeline/>},
-    {path: "/apps/calendar/default", component: <DefaultCalendar/>},
-    {path: "/apps/calendar/weeknumber", component: <CalendarWeekNumber/>},
-    {path: "/apps/calendar/localize", component: <CalendarLocalize/>},
+        {path: "/apps/crm/lead", component: <CrmLead/>},
+        {path: "/apps/crm/contact", component: <CrmContact/>},
+        {path: "/apps/crm/deal", component: <CrmDeal/>},
+        {path: "/apps/events/list", component: <EventList/>},
+        {path: "/apps/events/grid", component: <GridList/>},
+        {path: "/apps/events/overview", component: <EventOverview/>},
+        {path: "/apps/hospital/patients-lists", component: <PatientsLists/>},
+        {path: "/apps/hospital/patients-create", component: <PatientsCreate/>},
+        {path: "/apps/hospital/patients-overview", component: <PatientsOverview/>},
+        {path: "/apps/hospital/staff-lists", component: <StaffLists/>},
+        {path: "/apps/hospital/staff-leaves", component: <StaffLeave/>},
+        {path: "/apps/hospital/staff-leave-add", component: <StaffLeaveAdd/>},
+        {path: "/apps/hospital/staff-holidays", component: <StaffHolidays/>},
+        {path: "/apps/hospital/staff-attendance", component: <StaffAttendance/>},
+        {
+            path: "/apps/hospital/appointments-lists",
+            component: <AppointmentsLists/>,
+        },
+        {path: "/apps/hospital/appointments-book", component: <AppointmentsBook/>},
+        {path: "/apps/hospital/doctor-schedule", component: <DoctorSchedule/>},
+        {path: "/apps/hospital/departments", component: <Departments/>},
+        {
+            path: "/apps/hospital/payroll-employee-salary",
+            component: <PayrollEmployeeSalary/>,
+        },
+        {path: "/apps/hospital/payroll-payslip", component: <PayrollPayslip/>},
+        {path: "/apps/calendar/date-clicking", component: <CalendarDateClicking/>},
+        {path: "/apps/calendar/date-nav-link", component: <CalendarDateNavLink/>},
+        {path: "/apps/calendar/dayview", component: <CalendarDayView/>},
+        {path: "/apps/calendar/listview", component: <CalendarListView/>},
+        {path: "/apps/calendar/timegrid", component: <CalendarTimeGrid/>},
+        {
+            path: "/apps/calendar/multi-month-stack",
+            component: <CalendarMultiMonthStack/>,
+        },
+        {
+            path: "/apps/calendar/multi-month-grid",
+            component: <CalendarMultiMonthGrid/>,
+        },
+        {path: "/apps/calendar/timeline", component: <CalendarTimeline/>},
+        {path: "/apps/calendar/default", component: <DefaultCalendar/>},
+        {path: "/apps/calendar/weeknumber", component: <CalendarWeekNumber/>},
+        {path: "/apps/calendar/localize", component: <CalendarLocalize/>},
 
-    //icons
-    {path: "/icons/lucide", component: <Lucide/>},
-    {path: "/icons/remix", component: <Remix/>},
-    {path: "/icons/heroicons", component: <Heroiocns/>},
-    {path: "/icons/boxicon", component: <Boxicon/>},
-    {path: "/icons/line-awesome", component: <LineAwesome/>},
+        //icons
+        {path: "/icons/lucide", component: <Lucide/>},
+        {path: "/icons/remix", component: <Remix/>},
+        {path: "/icons/heroicons", component: <Heroiocns/>},
+        {path: "/icons/boxicon", component: <Boxicon/>},
+        {path: "/icons/line-awesome", component: <LineAwesome/>},
 
-    // forms
-    {path: "/form/basic-input", component: <BasicInput/>},
-    {path: "/form/input-group", component: <InputGroup/>},
-    {path: "/form/file-input", component: <FileInput/>},
-    {path: "/form/select", component: <SelectPage/>},
-    {path: "/form/pickers", component: <Pickers/>},
-    {path: "/form/range", component: <Range/>},
-    {path: "/form/switches", component: <Switches/>},
-    {path: "/form/checkbox-radio", component: <CheckboxRadio/>},
-    {path: "/form/input-spin", component: <InputSpin/>},
-    {path: "/form/recaptcha", component: <Recaptcha/>},
-    {path: "/form/autosize", component: <Autosize/>},
-    {path: "/form/clipboard", component: <Clipboards/>},
-    {path: "form/wizard-basic", component: <WizardBasic/>},
+        // forms
+        {path: "/form/basic-input", component: <BasicInput/>},
+        {path: "/form/input-group", component: <InputGroup/>},
+        {path: "/form/file-input", component: <FileInput/>},
+        {path: "/form/select", component: <SelectPage/>},
+        {path: "/form/pickers", component: <Pickers/>},
+        {path: "/form/range", component: <Range/>},
+        {path: "/form/switches", component: <Switches/>},
+        {path: "/form/checkbox-radio", component: <CheckboxRadio/>},
+        {path: "/form/input-spin", component: <InputSpin/>},
+        {path: "/form/recaptcha", component: <Recaptcha/>},
+        {path: "/form/autosize", component: <Autosize/>},
+        {path: "/form/clipboard", component: <Clipboards/>},
+        {path: "form/wizard-basic", component: <WizardBasic/>},
 
-    //tables
-    {path: "/table/base", component: <BaseTables/>},
-    {path: "/table/datatables/basic", component: <BasicTables/>},
-    {path: "/table/datatables/bordered", component: <Bordered/>},
-    {path: "/table/datatables/stripe", component: <Stripe/>},
-    {path: "/table/datatables/hover", component: <Hover/>},
-    {path: "/table/datatables/row-grouping", component: <RowGrouPing/>},
-    {path: "/table/datatables/enable-disable", component: <EnableDisable/>},
+        //tables
+        {path: "/table/base", component: <BaseTables/>},
+        {path: "/table/datatables/basic", component: <BasicTables/>},
+        {path: "/table/datatables/bordered", component: <Bordered/>},
+        {path: "/table/datatables/stripe", component: <Stripe/>},
+        {path: "/table/datatables/hover", component: <Hover/>},
+        {path: "/table/datatables/row-grouping", component: <RowGrouPing/>},
+        {path: "/table/datatables/enable-disable", component: <EnableDisable/>},
 
-    // ui elements
-    {path: "/ui/accordion", component: <Accodion/>},
-    {path: "/ui/alerts", component: <Alerts/>},
-    {path: "/ui/avatar", component: <Avatar/>},
+        // ui elements
+        {path: "/ui/accordion", component: <Accodion/>},
+        {path: "/ui/alerts", component: <Alerts/>},
+        {path: "/ui/avatar", component: <Avatar/>},
 
-    {path: "/ui/badge", component: <Badge/>},
-    {path: "/ui/breadcrumb", component: <BreadCrumbs/>},
-    {path: "/ui/buttons-group", component: <ButtonsGroup/>},
-    {path: "/ui/buttons", component: <Button/>},
-    {path: "/ui/button-navigation", component: <ButtonNavigation/>},
-    {path: "/ui/cards", component: <Cards/>},
-    {path: "/ui/colors", component: <Colors/>},
-    {path: "/ui/cookie", component: <Cookies/>},
-    {path: "/ui/drawer", component: <Drawer/>},
-    {path: "/ui/dropdown", component: <Dropdowns/>},
-    {path: "/ui/gallery", component: <Gallerys/>},
-    {path: "/ui/links", component: <Links/>},
-    {path: "/ui/list-group", component: <ListGroups/>},
-    {path: "/ui/loader", component: <Loader/>},
-    {path: "/ui/modal", component: <Modals/>},
-    {path: "/ui/notification", component: <Notifications/>},
-    {path: "/ui/pagination", component: <Paginations/>},
-    {path: "/ui/progress-bar", component: <ProgressBars/>},
-    {path: "/ui/tabs", component: <Tabs/>},
-    {path: "/ui/timeline", component: <TimeLine/>},
-    {path: "/ui/tooltips", component: <Tooltips/>},
-    {path: "/ui/typography", component: <Typographys/>},
-    {path: "/ui/video", component: <Videos/>},
+        {path: "/ui/badge", component: <Badge/>},
+        {path: "/ui/breadcrumb", component: <BreadCrumbs/>},
+        {path: "/ui/buttons-group", component: <ButtonsGroup/>},
+        {path: "/ui/buttons", component: <Button/>},
+        {path: "/ui/button-navigation", component: <ButtonNavigation/>},
+        {path: "/ui/cards", component: <Cards/>},
+        {path: "/ui/colors", component: <Colors/>},
+        {path: "/ui/cookie", component: <Cookies/>},
+        {path: "/ui/drawer", component: <Drawer/>},
+        {path: "/ui/dropdown", component: <Dropdowns/>},
+        {path: "/ui/gallery", component: <Gallerys/>},
+        {path: "/ui/links", component: <Links/>},
+        {path: "/ui/list-group", component: <ListGroups/>},
+        {path: "/ui/loader", component: <Loader/>},
+        {path: "/ui/modal", component: <Modals/>},
+        {path: "/ui/notification", component: <Notifications/>},
+        {path: "/ui/pagination", component: <Paginations/>},
+        {path: "/ui/progress-bar", component: <ProgressBars/>},
+        {path: "/ui/tabs", component: <Tabs/>},
+        {path: "/ui/timeline", component: <TimeLine/>},
+        {path: "/ui/tooltips", component: <Tooltips/>},
+        {path: "/ui/typography", component: <Typographys/>},
+        {path: "/ui/video", component: <Videos/>},
 
-    // advanced ui
-    {path: "/ui/advanced-3d-effect", component: <AdvancedEffect/>},
-    {path: "/ui/advanced-animation", component: <AdvancedAnimation/>},
-    {path: "/ui/advanced-bot", component: <Boat/>},
-    {path: "/ui/advanced-highlight", component: <Highlight/>},
-    {path: "/ui/advanced-mask", component: <Mask/>},
-    {path: "/ui/advanced-simplebar", component: <Simplebar/>},
-    {path: "/ui/advanced-swiper", component: <SwiperElement/>},
-    {path: "/ui/advanced-tree", component: <Tree/>},
-    {path: "/ui/advanced-word-counter", component: <WordCounters/>},
-    {path: "/ui/advanced-image-annotation", component: <ImageAnnotation/>},
+        // advanced ui
+        {path: "/ui/advanced-3d-effect", component: <AdvancedEffect/>},
+        {path: "/ui/advanced-animation", component: <AdvancedAnimation/>},
+        {path: "/ui/advanced-bot", component: <Boat/>},
+        {path: "/ui/advanced-highlight", component: <Highlight/>},
+        {path: "/ui/advanced-mask", component: <Mask/>},
+        {path: "/ui/advanced-simplebar", component: <Simplebar/>},
+        {path: "/ui/advanced-swiper", component: <SwiperElement/>},
+        {path: "/ui/advanced-tree", component: <Tree/>},
+        {path: "/ui/advanced-word-counter", component: <WordCounters/>},
+        {path: "/ui/advanced-image-annotation", component: <ImageAnnotation/>},
 
-    //charts
-    {path: "/apexchart/area", component: <AreaCharts/>},
-    {path: "/apexchart/bar", component: <BarCharts/>},
-    {path: "/apexchart/box-whisker", component: <BoxWhisker/>},
-    {path: "/apexchart/bubble", component: <BubbleChart/>},
-    {path: "/apexchart/candlestick", component: <CandlestickCharts/>},
-    {path: "/apexchart/column", component: <ColumnCharts/>},
-    {path: "/apexchart/funnel", component: <FunnelCharts/>},
-    {path: "/apexchart/heatmap", component: <HeatmapCharts/>},
-    {path: "/apexchart/line", component: <LineCharts/>},
-    {path: "/apexchart/mixed", component: <MixedCharts/>},
-    {path: "/apexchart/pie", component: <PieChart/>},
-    {path: "/apexchart/polar-area", component: <PolarAreaCharts/>},
-    {path: "/apexchart/radar", component: <RadarCharts/>},
-    {path: "/apexchart/radialbar", component: <RadialbarCharts/>},
-    {path: "/apexchart/range-area", component: <RangeAreaCharts/>},
-    {path: "/apexchart/scatter", component: <ScatterCharts/>},
-    {path: "/apexchart/slope", component: <SlopeCharts/>},
-    {path: "/apexchart/timeline", component: <TimelineChart/>},
-    {path: "/apexchart/treemap", component: <TreemapCharts/>},
+        //charts
+        {path: "/apexchart/area", component: <AreaCharts/>},
+        {path: "/apexchart/bar", component: <BarCharts/>},
+        {path: "/apexchart/box-whisker", component: <BoxWhisker/>},
+        {path: "/apexchart/bubble", component: <BubbleChart/>},
+        {path: "/apexchart/candlestick", component: <CandlestickCharts/>},
+        {path: "/apexchart/column", component: <ColumnCharts/>},
+        {path: "/apexchart/funnel", component: <FunnelCharts/>},
+        {path: "/apexchart/heatmap", component: <HeatmapCharts/>},
+        {path: "/apexchart/line", component: <LineCharts/>},
+        {path: "/apexchart/mixed", component: <MixedCharts/>},
+        {path: "/apexchart/pie", component: <PieChart/>},
+        {path: "/apexchart/polar-area", component: <PolarAreaCharts/>},
+        {path: "/apexchart/radar", component: <RadarCharts/>},
+        {path: "/apexchart/radialbar", component: <RadialbarCharts/>},
+        {path: "/apexchart/range-area", component: <RangeAreaCharts/>},
+        {path: "/apexchart/scatter", component: <ScatterCharts/>},
+        {path: "/apexchart/slope", component: <SlopeCharts/>},
+        {path: "/apexchart/timeline", component: <TimelineChart/>},
+        {path: "/apexchart/treemap", component: <TreemapCharts/>},
 
-    //apex tree
-    {path: "/apextree/top-bottom", component: <ApexTreeTopBottomChart/>},
-    {path: "/apextree/bottom-top", component: <ApexTreeBottomTopChart/>},
-    {path: "/apextree/left-right", component: <ApexTreeLeftRightChart/>},
-    {path: "/apextree/right-left", component: <ApexTreeRightLeftChart/>},
-    {
-        path: "/apextree/collapse-expand",
-        component: <ApexTreeCollapseExpandChart/>,
-    },
-    {path: "/apexsankey", component: <ApexSankeyChart/>},
+        //apex tree
+        {path: "/apextree/top-bottom", component: <ApexTreeTopBottomChart/>},
+        {path: "/apextree/bottom-top", component: <ApexTreeBottomTopChart/>},
+        {path: "/apextree/left-right", component: <ApexTreeLeftRightChart/>},
+        {path: "/apextree/right-left", component: <ApexTreeRightLeftChart/>},
+        {
+            path: "/apextree/collapse-expand",
+            component: <ApexTreeCollapseExpandChart/>,
+        },
+        {path: "/apexsankey", component: <ApexSankeyChart/>},
 
-    //echart
-    {path: "/echart/bar", component: <BarEcharts/>},
-    {path: "/echart/line", component: <LineECharts/>},
-    {path: "/echart/pie", component: <PieECharts/>},
+        //echart
+        {path: "/echart/bar", component: <BarEcharts/>},
+        {path: "/echart/line", component: <LineECharts/>},
+        {path: "/echart/pie", component: <PieECharts/>},
 
-    // widgets
-    {path: "/widgets/banners", component: <WidgetsBanners/>},
-    {path: "/widgets/cards", component: <WidgetsCard/>},
-    {path: "/widgets/charts", component: <WidgetsCharts/>},
-    {path: "/widgets/data", component: <WidgetsData/>},
+        // widgets
+        {path: "/widgets/banners", component: <WidgetsBanners/>},
+        {path: "/widgets/cards", component: <WidgetsCard/>},
+        {path: "/widgets/charts", component: <WidgetsCharts/>},
+        {path: "/widgets/data", component: <WidgetsData/>},
 
-    //page
-    {path: "/page/starter", component: <Starter/>},
-    {path: "/page/account-settings", component: <AccountSettings/>},
-    {path: "/page/account-security", component: <AccountSecurity/>},
-    // {path: "/page/account-billing-plan", component: <AccountBillingPlan/>},
-    {path: "/page/account-notification", component: <AccountNotification/>},
-    {path: "/page/account-statements", component: <AccountStatements/>},
-    {path: "/page/account-logs", component: <AccountLogs/>},
-    {path: "/page/user", component: <UserPage/>},
-    {path: "/page/user-activity", component: <UserActivity/>},
-    {path: "/page/user-followers", component: <UserFollowers/>},
-    {path: "/page/user-documents", component: <UserDocuments/>},
-    {path: "/page/user-notes", component: <UserNotes/>},
-    {path: "/page/user-projects", component: <UserProjects/>},
-    {path: "/page/pricing", component: <PricingPage/>},
-    {path: "/page/pricing-admin", component: <PricingAdmin/>},
-    {path: "/page/faq", component: <Faq/>},
-    {path: "/page/licenses", component: <Licenses/>},
-    {path: "/page/privacy-policy", component: <PrivacyPolicy/>},
-    {path: "/page/help-center", component: <HelpCenter/>},
+        //page
+        {path: "/page/starter", component: <Starter/>},
+        {path: "/page/pricing", component: <PricingPage/>},
+        {path: "/page/pricing-admin", component: <PricingAdmin/>},
+        {path: "/page/faq", component: <Faq/>},
+        {path: "/page/licenses", component: <Licenses/>},
+        {path: "/page/privacy-policy", component: <PrivacyPolicy/>},
+        {path: "/page/help-center", component: <HelpCenter/>},
 
-    //maps
-    {path: "/maps/google", component: <MapComponent/>},
-    {path: "/maps/vector", component: <VectorMaps/>},
+        //maps
+        {path: "/maps/google", component: <MapComponent/>},
+        {path: "/maps/vector", component: <VectorMaps/>},
 
-    // apps
+        // apps
 
-    // school
-    {path: "/apps/school/exam-schedule", component: <ExamSchedule/>},
-    {path: "/apps/school/exam-question", component: <QuestionExam/>},
-    {path: "/apps/school/students-list", component: <StudentsList/>},
-    {path: "/apps/school/students-overview", component: <StudentsOverview/>},
-    {path: "/apps/school/students-admission", component: <StudentsAdmission/>},
-    {path: "/apps/school/teachers-list", component: <TeachersList/>},
-    {path: "/apps/school/teachers-overview", component: <TeachersOverview/>},
-    {path: "/apps/school/teachers-payroll", component: <TeachersPayroll/>},
-    {path: "/apps/school/parents", component: <Parents/>},
-    {path: "/apps/school/library-book", component: <LibraryBook/>},
-    {
-        path: "/apps/school/attendances-students",
-        component: <StudentsAttendances/>,
-    },
+        // school
+        {path: "/apps/school/exam-schedule", component: <ExamSchedule/>},
+        {path: "/apps/school/exam-question", component: <QuestionExam/>},
+        {path: "/apps/school/students-list", component: <StudentsList/>},
+        {path: "/apps/school/students-overview", component: <StudentsOverview/>},
+        {path: "/apps/school/students-admission", component: <StudentsAdmission/>},
+        {path: "/apps/school/teachers-list", component: <TeachersList/>},
+        {path: "/apps/school/teachers-overview", component: <TeachersOverview/>},
+        {path: "/apps/school/teachers-payroll", component: <TeachersPayroll/>},
+        {path: "/apps/school/parents", component: <Parents/>},
+        {path: "/apps/school/library-book", component: <LibraryBook/>},
+        {
+            path: "/apps/school/attendances-students",
+            component: <StudentsAttendances/>,
+        },
 
-    {
-        path: "/account",
-        component: <Account />,
-        children: [
-            { index: true, element: <Navigate to="settings" replace /> },
-            { path: "settings", component: <AccountSettings /> },
-            { path: "security", component: <AccountSecurity /> },
-            { path: "notification", component: <AccountNotification /> },
-            { path: "logs", component: <AccountLogs /> },
-            { path: "statements", component: <AccountStatements /> },
-        ],
-    },
-];
+        {
+            path: "/profile",
+            component:
+                <UserPage/>,
+            children: [
+                {index: true, element: <Navigate to="overview" replace/>},
+                {path: "overview", component: <UserProfileOverView/>},
+                {path: "activity", component: <UserActivity/>},
+                {path: "documents", component: <UserDocuments/>},
+                {path: "notes", component: <UserNotes/>},
+                {path: "projects", component: <AccountStatements/>},
+            ],
+        },
+
+        {
+            path: "/account",
+            component:
+                <Account/>,
+            children:
+                [
+                    {index: true, element: <Navigate to="settings" replace/>},
+                    {path: "settings", component: <AccountSettings/>},
+                    {path: "security", component: <AccountSecurity/>},
+                    {path: "notification", component: <AccountNotification/>},
+                    {path: "sessions", component: <AccountSessions/>},
+                    {path: "statements", component: <AccountStatements/>},
+                ]
+        }
+    ]
+;
 
 const nonAuthRoutes: IRoute[] = [
     {path: "/page/contact-us", component: <ContactUs/>},
@@ -530,7 +539,6 @@ const nonAuthRoutes: IRoute[] = [
     {path: "/landing/school", component: <SchoolLanding/>},
 
     // account
-
 
 
     //  authentication
@@ -598,6 +606,7 @@ const nonAuthRoutes: IRoute[] = [
         path: "/auth/account-deactivation-creative",
         component: <AccountDeactivationCreativePage/>,
     },
+    { path: "*", component: <PageNotFoundError /> },
 ];
 
 export {routes, nonAuthRoutes};

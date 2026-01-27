@@ -53,19 +53,19 @@ module.exports = plugin(function ({ addComponents, theme }) {
 
       ".input-spin-minus": {
         "@apply flex items-center justify-center transition duration-200 ease-linear border border-gray-200 ltr:border-r-0 rtl:border-l-0 ltr:rounded-l-md rtl:rounded-r-md size-10 shrink-0":
-          {},
+            {},
         /*-----dark mode-----*/
         "@apply dark:border-dark-800": {},
       },
       ".input-spin-plus": {
         "@apply flex items-center justify-center transition duration-200 ease-linear border border-gray-200 ltr:border-l-0 rtl:border-r-0 ltr:rounded-r-md rtl:rounded-l-md size-10 shrink-0":
-          {},
+            {},
         /*-----dark mode-----*/
         "@apply dark:border-dark-800": {},
       },
       ".input-spin": {
         "@apply p-0 text-center rounded-none focus:border-gray-200 dark:focus:border-dark-800":
-          {},
+            {},
       },
     },
     ...spinBasicComponents,

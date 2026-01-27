@@ -9,7 +9,7 @@ const Account: NextPageWithLayout = () => {
 
     useEffect(() => {
         document.title =
-            "Account Settings | Domiex - React TS Admin & Dashboard Template";
+            "Account Settings | ResuCraft";
     }, []);
 
     return (
@@ -47,7 +47,7 @@ const Account: NextPageWithLayout = () => {
                 <Tab
                     icon={<LogOut className="inline-block size-4 ltr:mr-2 rtl:ml-2"/>}
                     label="Sessions"
-                    path="/account/logs"
+                    path="/account/sessions"
                 >
                     <div>Logs Content</div>
                 </Tab>
