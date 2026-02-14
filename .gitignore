@@ -9,8 +9,7 @@ lerna-debug.log*
 
 node_modules\
 node_modules
-\public\assets
-\public\assets\
+
 dist
 dist-ssr
 *.local
