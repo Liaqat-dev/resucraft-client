@@ -2033,39 +2033,6 @@ const menu: MegaMenu[] = [
       },
     ],
   },
-  {
-    separator: true,
-    title: "Docs & ChangeLog",
-    lang: "pe-docs-changeLog",
-    children: [],
-  },
-  {
-    title: "Support",
-    lang: "pe-support",
-    icon: "life-buoy",
-    separator: false,
-    link: "#!",
-    dropdownPosition: null,
-    children: [],
-  },
-  {
-    title: "Documentation",
-    lang: "pe-documentation",
-    icon: "file-textt",
-    separator: false,
-    link: "#!",
-    dropdownPosition: null,
-    children: [],
-  },
-  {
-    title: "ChangeLog",
-    lang: "pe-changelog",
-    icon: "feather",
-    separator: false,
-    link: "#!",
-    dropdownPosition: null,
-    children: [],
-  },
 ];
 
 export { menu };

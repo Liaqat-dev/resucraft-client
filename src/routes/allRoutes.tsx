@@ -99,7 +99,6 @@ import AccountSecurity from "@pages/account/security";
 // import AccountBillingPlan from "@pages/accountBillingPlan";
 import AccountNotification from "@pages/account/notification";
 import AccountStatements from "@pages/account/statements";
-import AccountLogs from "@pages/account/sessions";
 import UserPage from "@pages/profile";
 import UserActivity from "@pages/profile/userActivity";
 import UserDocuments from "@pages/profile/userDocuments";
