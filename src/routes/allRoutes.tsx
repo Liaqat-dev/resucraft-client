@@ -233,8 +233,9 @@ import Account from "@pages/account";
 import {Navigate} from "react-router";
 import UserProfileOverView from "@pages/profile/overview";
 import SpinLoader from '@src/components/custom/Loader.tsx'
-import AccountSessions from "@pages/account/sessions";
-
+import AccountSessions from "@pages/account/statements";
+import EducationPage  from "@pages/profile/education/educationPage.tsx";
+import ExperiencePage  from "@pages/profile/experience/experiencePage.tsx";
 interface IRoute {
     path: string;
     component: ReactNode;
@@ -499,6 +500,8 @@ const routes: IRoute[] = [
                 {path: "documents", component: <UserDocuments/>},
                 {path: "notes", component: <UserNotes/>},
                 {path: "projects", component: <AccountStatements/>},
+                    {path: "education", component: <EducationPage/>},
+                    { path: "experience", component: <ExperiencePage /> },
             ],
         },
 

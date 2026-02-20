@@ -5,7 +5,8 @@ import CommonAccount from "@src/components/common/commonAccount.tsx";
 import { Eye , FileText,
     List,
     Monitor,
-    Sparkles, } from "lucide-react";
+    Sparkles, GraduationCap,
+    Briefcase } from "lucide-react";
 
 const Profile: NextPageWithLayout = () => {
     useEffect(() => {
@@ -29,6 +30,26 @@ const Profile: NextPageWithLayout = () => {
                     label="Overview"
                     path="/profile/overview"
                 ></Tab>
+                <Tab
+                    icon={
+                        <GraduationCap className="inline-block size-4 ltr:mr-2 rtl:ml-2" />
+                    }
+                    label="Education"
+                    path="/profile/education"
+                >
+                    <div>Education Content</div>
+                </Tab>
+
+                <Tab
+                    icon={
+                        <Briefcase className="inline-block size-4 ltr:mr-2 rtl:ml-2" />
+                    }
+                    label="Experience"
+                    path="/profile/experience"
+                >
+                    <div>Experience Content</div>
+                </Tab>
+
                 <Tab
                     icon={
                         <Sparkles className="inline-block size-4 ltr:mr-2 rtl:ml-2" />
