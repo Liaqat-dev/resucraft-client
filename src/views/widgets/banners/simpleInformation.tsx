@@ -1,6 +1,6 @@
 import React from "react";
 
-import imag1 from "@assets/images/dashboards/img-1.png";
+import imag1 from "@assets/images/auth/QRCode.png";
 import { Link } from "react-router-dom";
 
 const SimpleInformation = () => {

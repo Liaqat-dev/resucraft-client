@@ -1,5 +1,5 @@
 import React from "react";
-import user from "@assets/images/avatar/user-39.png";
+import user from "@assets/images/avatar/user-3.png";
 import { MessageCircleMore } from "lucide-react";
 import { Link } from "react-router-dom";
 

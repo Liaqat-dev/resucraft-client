@@ -2,12 +2,12 @@ import { UserFollowerRecord } from "@src/dtos";
 
 import user13 from "@assets/images/avatar/user-13.png";
 import user14 from "@assets/images/avatar/user-14.png";
-import user15 from "@assets/images/avatar/user-15.png";
-import user19 from "@assets/images/avatar/user-19.png";
-import user20 from "@assets/images/avatar/user-20.png";
-import user35 from "@assets/images/avatar/user-35.png";
-import user38 from "@assets/images/avatar/user-38.png";
-import user45 from "@assets/images/avatar/user-45.png";
+import user15 from "@assets/images/avatar/user-1.png";
+import user19 from "@assets/images/avatar/user-1.png";
+import user20 from "@assets/images/avatar/user-2.png";
+import user35 from "@assets/images/avatar/user-3.png";
+import user38 from "@assets/images/avatar/user-3.png";
+import user45 from "@assets/images/avatar/user-4.png";
 
 const userFollowersData: UserFollowerRecord[] = [
   {

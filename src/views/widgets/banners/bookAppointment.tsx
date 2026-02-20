@@ -1,5 +1,5 @@
 import React from "react";
-import image2 from "@assets/images/dashboards/img-2.png";
+import image2 from "@assets/images/auth/coming_soon_2.png";
 import { CalendarDays } from "lucide-react";
 import { Link } from "react-router-dom";
 

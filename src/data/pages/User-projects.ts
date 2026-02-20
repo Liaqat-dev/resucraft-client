@@ -5,12 +5,12 @@ import user10 from "@assets/images/avatar/user-10.png";
 import user13 from "@assets/images/avatar/user-13.png";
 import user14 from "@assets/images/avatar/user-14.png";
 import user15 from "@assets/images/avatar/user-15.png";
-import user16 from "@assets/images/avatar/user-16.png";
-import user17 from "@assets/images/avatar/user-17.png";
-import user18 from "@assets/images/avatar/user-18.png";
-import user20 from "@assets/images/avatar/user-20.png";
-import user22 from "@assets/images/avatar/user-22.png";
-import user23 from "@assets/images/avatar/user-23.png";
+import user16 from "@assets/images/avatar/user-1.png";
+import user17 from "@assets/images/avatar/user-1.png";
+import user18 from "@assets/images/avatar/user-1.png";
+import user20 from "@assets/images/avatar/user-2.png";
+import user22 from "@assets/images/avatar/user-2.png";
+import user23 from "@assets/images/avatar/user-2.png";
 
 const userProjectsData = [
   {

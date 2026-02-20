@@ -1,24 +1,24 @@
-import client15 from "@assets/images/avatar/user-15.png";
-import client18 from "@assets/images/avatar/user-18.png";
+import client15 from "@assets/images/avatar/user-1.png";
+import client18 from "@assets/images/avatar/user-1.png";
 
 import employee8 from "@assets/images/avatar/user-8.png";
-import employee10 from "@assets/images/avatar/user-10.png";
-import employee11 from "@assets/images/avatar/user-11.png";
-import employee12 from "@assets/images/avatar/user-12.png";
-import employee13 from "@assets/images/avatar/user-13.png";
-import employee14 from "@assets/images/avatar/user-14.png";
+import employee10 from "@assets/images/avatar/user-1.png";
+import employee11 from "@assets/images/avatar/user-1.png";
+import employee12 from "@assets/images/avatar/user-1.png";
+import employee13 from "@assets/images/avatar/user-1.png";
+import employee14 from "@assets/images/avatar/user-1.png";
 
-import internDoctor15 from "@assets/images/avatar/user-15.png";
-import internDoctor16 from "@assets/images/avatar/user-16.png";
-import internDoctor17 from "@assets/images/avatar/user-17.png";
-import internDoctor18 from "@assets/images/avatar/user-18.png";
-import internDoctor20 from "@assets/images/avatar/user-20.png";
-import internDoctor21 from "@assets/images/avatar/user-21.png";
-import internDoctor22 from "@assets/images/avatar/user-22.png";
+import internDoctor15 from "@assets/images/avatar/user-1.png";
+import internDoctor16 from "@assets/images/avatar/user-1.png";
+import internDoctor17 from "@assets/images/avatar/user-1.png";
+import internDoctor18 from "@assets/images/avatar/user-1.png";
+import internDoctor20 from "@assets/images/avatar/user-2.png";
+import internDoctor21 from "@assets/images/avatar/user-2.png";
+import internDoctor22 from "@assets/images/avatar/user-2.png";
 
-import patients14 from "@assets/images/avatar/user-14.png";
-import patients16 from "@assets/images/avatar/user-16.png";
-import patients18 from "@assets/images/avatar/user-18.png";
+import patients14 from "@assets/images/avatar/user-1.png";
+import patients16 from "@assets/images/avatar/user-1.png";
+import patients18 from "@assets/images/avatar/user-1.png";
 import { Dot, TrendingDown, TrendingUp } from "lucide-react";
 
 const information = [
