@@ -3,7 +3,7 @@ const plugin = require("tailwindcss/plugin");
 module.exports = plugin(function ({ addComponents }) {
   addComponents({
     ".page-wrapper": {
-      '@apply ltr:group-data-[layout=horizontal]:ml-0 rtl:group-data-[layout=horizontal]:mr-0 group-data-[layout=horizontal]:lg:pt-[calc(theme("spacing.topbar")_*_1.9)] group-data-[layout=horizontal]:pt-[calc(theme("spacing.topbar")_*_1.2)]':
+      '@apply ltr:group-data-[layout=horizontal]:ml-0 rtl:group-data-[layout=horizontal]:mr-0':
         {},
     },
     ".main-footer": {

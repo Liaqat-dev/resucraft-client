@@ -116,13 +116,6 @@ const TopBar: React.FC<TopBarProps> = ({
                                     />
                                 </Link>
                             </div>
-                            <button
-                                onClick={() => toggleSidebar()}
-                                className="sidebar-toggle group-data-[layout=horizontal]:lg:hidden"
-                                title="sidebar-toggle"
-                            >
-                                <PanelRightOpen className="size-4"/>
-                            </button>
                         </div>
 
                         {/* Search */}
@@ -132,7 +125,7 @@ const TopBar: React.FC<TopBarProps> = ({
                             <input
                                 type="search"
                                 className="border-0 w-72 ltr:pl-8 rtl:pr-8 form-input focus:outline-none group-data-[nav-type=pattern]:bg-transparent group-data-[nav-type=pattern]:placeholder:text-white/50 group-data-[nav-type=pattern]:text-white"
-                                placeholder="Search for Domiex"
+                                placeholder="Search "
                                 value={searchText}
                                 onChange={(e: ChangeEvent<HTMLInputElement>) =>
                                     searchMenu(e.target.value)

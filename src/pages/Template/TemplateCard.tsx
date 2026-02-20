@@ -1,4 +1,6 @@
-const TemplateCard = ({ template, onLoad, onDelete }) => {
+import { Loader2, Pencil, Trash2 } from 'lucide-react';
+
+const TemplateCard = ({ template, onLoad, onDelete, isLoading = false }) => {
     const { data } = template;
 
     // Transform nested format to flat format for rendering
@@ -10,7 +12,6 @@ const TemplateCard = ({ template, onLoad, onDelete }) => {
             const { 'sub-sections': subsections, elements: sectionElements, backgroundColor, borderColor, direction, ...sectionData } = section;
             sections.push(sectionData);
 
-            // Process section's direct elements
             if (sectionElements && sectionElements.length > 0) {
                 sectionElements.forEach(el => {
                     elements.push({
@@ -22,7 +23,6 @@ const TemplateCard = ({ template, onLoad, onDelete }) => {
                 });
             }
 
-            // Process subsections
             if (subsections && subsections.length > 0) {
                 subsections.forEach(subsection => {
                     const { elements: subElements, backgroundColor: _bg, borderColor: _bc, direction: _dir, ...subsectionData } = subsection;
@@ -55,28 +55,22 @@ const TemplateCard = ({ template, onLoad, onDelete }) => {
     const { elements, sections } = nestedToFlat(data || {});
     const { canvasSettings = {} } = data || {};
 
-    // Calculate scale to maintain A4 aspect ratio
-    // A4 dimensions: 210mm x 297mm (aspect ratio 1:1.414)
     const A4_WIDTH_MM = 210;
     const A4_HEIGHT_MM = 297;
-    const A4_ASPECT_RATIO = A4_HEIGHT_MM / A4_WIDTH_MM; // ~1.414
+    const A4_ASPECT_RATIO = A4_HEIGHT_MM / A4_WIDTH_MM;
 
-    // Card preview dimensions (maintaining A4 ratio)
-    const previewWidth = 330; // px
-    const previewHeight = previewWidth * A4_ASPECT_RATIO; // ~396px
+    const previewWidth = 330;
+    const previewHeight = previewWidth * A4_ASPECT_RATIO;
 
-    // Get actual canvas dimensions in pixels (convert mm to px: 1mm = 96/25.4 px)
     const canvasWidth = canvasSettings?.width
         ? parseFloat(canvasSettings.width) * 96 / 25.4
-        : A4_WIDTH_MM * 96 / 25.4; // ~794px
+        : A4_WIDTH_MM * 96 / 25.4;
     const canvasHeight = canvasSettings?.height
         ? parseFloat(canvasSettings.height) * 96 / 25.4
-        : A4_HEIGHT_MM * 96 / 25.4; // ~1123px
+        : A4_HEIGHT_MM * 96 / 25.4;
 
-    // Calculate scale factor
     const scale = previewWidth / canvasWidth;
 
-    // Render element inner content
     const renderElementContent = (el) => {
         if (el.type === 'line-break') {
             return (
@@ -90,7 +84,6 @@ const TemplateCard = ({ template, onLoad, onDelete }) => {
         return el.content;
     };
 
-    // Render a mini element
     const renderElement = (el) => {
         const isLineBreak = el.type === 'line-break';
         const style = {
@@ -123,9 +116,8 @@ const TemplateCard = ({ template, onLoad, onDelete }) => {
         );
     };
 
-    // Render a mini section
     const renderSection = (section) => {
-        if (section.parentSection) return null; // Skip subsections, they'll be rendered by parent
+        if (section.parentSection) return null;
 
         const style = {
             position: 'absolute',
@@ -133,19 +125,14 @@ const TemplateCard = ({ template, onLoad, onDelete }) => {
             top: `${section.y * scale}px`,
             width: `${section.width * scale}px`,
             height: `${section.height * scale}px`,
-            // backgroundColor: section.backgroundColor || '#f9fafb',
-            // border: `1px solid ${section.borderColor || '#9ca3af'}`,
-            // borderRadius: '1px',
             boxSizing: 'border-box',
             padding: `${2 * scale}px`
         };
 
-        // Get subsections
         const subsections = sections.filter(s => s.parentSection === section.id);
 
         return (
             <div key={section.id} style={style}>
-                {/* Section Title */}
                 {section.title && section.headerVisible !== false && (
                     <div style={{
                         fontSize: `${(section.headerFontSize || 18) * scale}px`,
@@ -161,7 +148,6 @@ const TemplateCard = ({ template, onLoad, onDelete }) => {
                     </div>
                 )}
 
-                {/* Render subsections */}
                 {subsections.map(subsection => (
                     <div
                         key={subsection.id}
@@ -174,7 +160,6 @@ const TemplateCard = ({ template, onLoad, onDelete }) => {
                             boxSizing: 'border-box'
                         }}
                     >
-                        {/* Render elements in subsection */}
                         {elements
                             .filter(el => el.parentSection === subsection.id)
                             .map(el => (
@@ -209,7 +194,6 @@ const TemplateCard = ({ template, onLoad, onDelete }) => {
                     </div>
                 ))}
 
-                {/* Render elements directly in section */}
                 {elements
                     .filter(el => {
                         if (el.parentSection !== section.id) return false;
@@ -259,97 +243,58 @@ const TemplateCard = ({ template, onLoad, onDelete }) => {
     };
 
     return (
-        <div style={{
-            border: '1px solid #e5e7eb',
-            borderRadius: '8px',
-            overflow: 'hidden',
-            backgroundColor: 'white',
-            boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
-            transition: 'all 0.2s',
-            cursor: 'pointer',
-            ':hover': {
-                boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
-                transform: 'translateY(-2px)'
-            }
-        }}
-            onMouseEnter={(e) => {
-                e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.15)';
-                e.currentTarget.style.transform = 'translateY(-2px)';
-            }}
-            onMouseLeave={(e) => {
-                e.currentTarget.style.boxShadow = '0 1px 3px rgba(0,0,0,0.1)';
-                e.currentTarget.style.transform = 'translateY(0)';
-            }}>
-            {/* Preview */}
-            <div
-                onClick={() => onLoad(template)}
-                style={{
-                    width: '100%',
-                    height: `${previewHeight}px`,
-                    backgroundColor: '#ffffff',
-                    position: 'relative',
-                    overflow: 'hidden',
-                    borderBottom: '1px solid #e5e7eb'
-                }}
-            >
-                {/* Render sections */}
-                {sections.map(section => renderSection(section))}
+        <div className="group bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-200 cursor-pointer">
 
-                {/* Render root elements (no parent section) */}
+            {/* Preview area */}
+            <div
+                onClick={() => { if (!isLoading) onLoad(template); }}
+                className="relative w-full overflow-hidden border-b border-gray-100 bg-white"
+                style={{ height: `${previewHeight}px` }}
+            >
+                {/* Scaled resume content — positions are computed, must stay inline */}
+                {sections.map(section => renderSection(section))}
                 {elements
                     .filter(el => !el.parentSection)
                     .map(el => renderElement(el))}
+
+                {/* Hover overlay */}
+                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 flex items-center justify-center transition-all duration-200 pointer-events-none">
+                    <span className="opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-200 px-5 py-2 bg-white rounded-lg text-sm font-semibold text-gray-900 shadow-lg">
+                        Open in Builder
+                    </span>
+                </div>
             </div>
 
-             {/*Info */}
-            <div style={{ padding: '12px' }}>
-                <h3 style={{
-                    margin: '0 0 8px 0',
-                    fontSize: '16px',
-                    fontWeight: '600',
-                    color: '#111827',
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                    whiteSpace: 'nowrap'
-                }}>
+            {/* Card info */}
+            <div className="p-3.5">
+                <h3 className="font-semibold text-gray-900 text-sm truncate mb-1">
                     {template.name}
                 </h3>
 
-                <div style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    fontSize: '12px',
-                    color: '#6b7280',
-                    marginBottom: '12px'
-                }}>
-                    <span>Updated {formatDate(template.updatedAt)}</span>
-                    <span>{elements.length} elements</span>
+                <div className="flex items-center justify-between mb-3">
+                    <span className="text-xs text-gray-400">
+                        {formatDate(template.updatedAt)}
+                    </span>
+                    <span className="text-xs font-medium text-gray-500 bg-gray-100 rounded-full px-2 py-0.5">
+                        {elements.length} elements
+                    </span>
                 </div>
 
                 {/* Actions */}
-                <div style={{ display: 'flex', gap: '8px' }}>
+                <div className="flex gap-2">
                     <button
                         onClick={(e) => {
                             e.stopPropagation();
-                            onLoad(template);
+                            if (!isLoading) onLoad(template);
                         }}
-                        style={{
-                            flex: 1,
-                            padding: '8px 16px',
-                            backgroundColor: '#3b82f6',
-                            color: 'white',
-                            border: 'none',
-                            borderRadius: '6px',
-                            fontSize: '14px',
-                            fontWeight: '500',
-                            cursor: 'pointer',
-                            transition: 'background-color 0.2s'
-                        }}
-                        onMouseEnter={(e) => e.target.style.backgroundColor = '#2563eb'}
-                        onMouseLeave={(e) => e.target.style.backgroundColor = '#3b82f6'}
+                        disabled={isLoading}
+                        className="flex-1 inline-flex items-center justify-center gap-1.5 py-2 bg-primary-500 hover:bg-primary-600 disabled:opacity-60 disabled:cursor-not-allowed text-white text-xs font-semibold rounded-md transition-colors duration-150 active:scale-95"
                     >
-                        Load
+                        {isLoading
+                            ? <Loader2 className="size-3 animate-spin" />
+                            : <Pencil className="size-3" />
+                        }
+                        {isLoading ? 'Loading…' : 'Load'}
                     </button>
                     <button
                         onClick={(e) => {
@@ -358,20 +303,9 @@ const TemplateCard = ({ template, onLoad, onDelete }) => {
                                 onDelete(template._id);
                             }
                         }}
-                        style={{
-                            padding: '8px 16px',
-                            backgroundColor: '#ef4444',
-                            color: 'white',
-                            border: 'none',
-                            borderRadius: '6px',
-                            fontSize: '14px',
-                            fontWeight: '500',
-                            cursor: 'pointer',
-                            transition: 'background-color 0.2s'
-                        }}
-                        onMouseEnter={(e) => e.target.style.backgroundColor = '#dc2626'}
-                        onMouseLeave={(e) => e.target.style.backgroundColor = '#ef4444'}
+                        className="inline-flex items-center justify-center gap-1.5 px-3 py-2 bg-red-50 hover:bg-red-500 text-red-500 hover:text-white text-xs font-semibold rounded-md border border-red-200 hover:border-red-500 transition-all duration-150 active:scale-95"
                     >
+                        <Trash2 className="size-3" />
                         Delete
                     </button>
                 </div>

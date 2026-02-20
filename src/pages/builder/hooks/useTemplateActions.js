@@ -10,7 +10,7 @@ export function useTemplateActions({
 
     const exportToPDF = async () => {
         try {
-            const response = await fetch('http://localhost:3001/api/generate-pdf', {
+            const response = await fetch('http://localhost:5000/api/pdf/generate-pdf', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -39,7 +39,7 @@ export function useTemplateActions({
             alert('✅ PDF exported successfully!');
         } catch (error) {
             console.error('Export error:', error);
-            alert('❌ Failed to export PDF. Make sure the backend server is running on http://localhost:3001');
+            alert('❌ Failed to export PDF. Make sure the backend server is running on http://localhost:5000');
         }
     };
 
@@ -68,7 +68,7 @@ export function useTemplateActions({
 
         try {
             // Save to MongoDB via backend
-            const response = await fetch('http://localhost:3001/api/templates/save', {
+            const response = await fetch('http://localhost:5000/api/templates/save', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(templateData)
@@ -116,7 +116,7 @@ export function useTemplateActions({
         };
 
         try {
-            const response = await fetch(`http://localhost:3001/api/templates/${templateId}`, {
+            const response = await fetch(`http://localhost:5000/api/templates/${templateId}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(templateData)
@@ -138,7 +138,7 @@ export function useTemplateActions({
     const loadTemplate = async (loadId) => {
         try {
             // Try loading from MongoDB
-            const response = await fetch(`http://localhost:3001/api/templates/${loadId}`);
+            const response = await fetch(`http://localhost:5000/api/templates/${loadId}`);
 
             if (response.ok) {
                 const templateData = await response.json();

@@ -202,8 +202,7 @@ const Layout = ({children, breadcrumbTitle}: LayoutProps) => {
 
             <div
                 className="relative min-h-screen group-data-[layout=boxed]:bg-white group-data-[layout=boxed]:rounded-md">
-                <div className="page-wrapper
-                pt-[calc(theme('spacing.topbar')_*_1.2)]
+                <div className="page-wrapper pt-[calc(theme('spacing.topbar')_*_1.2)]
                 ">
                     {" "}
                     {children}
