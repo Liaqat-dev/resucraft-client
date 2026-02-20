@@ -26,7 +26,7 @@ interface Session {
 
 const DeviceCardSkeleton: React.FC = () => {
     return (
-        <div className="mb-0 card S">
+        <div className="mb-0 card ">
             <div className="flex items-center gap-3 card-body">
                 <div className="flex items-center justify-center size-12 shrink-0">
                     <Skeleton circle width={48} height={48} />

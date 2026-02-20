@@ -87,6 +87,7 @@ import UserProfileOverView from "@pages/profile/overview";
 import SpinLoader from '@src/components/custom/Loader.tsx'
 import EducationPage from "@pages/profile/education/educationPage.tsx";
 import ExperiencePage from "@pages/profile/experience/experiencePage.tsx";
+import ResumeBuilder from '@pages/builder/ResumeBuilder.tsx'
 
 
 import TemplateGallery from '@pages/Template/TemplatesGallery.tsx'
@@ -103,6 +104,7 @@ const routes: IRoute[] = [
         //dashboards
         {path: "/loading", component: <SpinLoader/>},
         {path: "/", component: <TemplateGallery/>},
+        {path: "/builder", component: <ResumeBuilder/>},
 
         // forms
         {path: "/form/basic-input", component: <BasicInput/>},

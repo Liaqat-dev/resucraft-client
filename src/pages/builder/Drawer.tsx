@@ -1,5 +1,5 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { FloatingInput, FloatingSelect, FloatingTextarea } from '../components/FloatingInput';
+import  { useState, useRef, useEffect } from 'react';
+import { FloatingInput, FloatingSelect, FloatingTextarea } from '@src/components/common/FloatingInput.tsx';
 
 const fontFamilyOptions = [
     'Arial', 'Helvetica', 'Times New Roman', 'Georgia', 'Courier New',

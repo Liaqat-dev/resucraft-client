@@ -20,9 +20,6 @@ import {
 
 // -------- Dashboard ------- :)
 import { Campaign, Transaction } from "./apps/campaignperformance";
-import { Student } from "./dashboards/studentdata";
-import { Song, Singer } from "./dashboards/musicdata";
-
 // -------- Apps ------- :)
 // ecommerce =====================
 import { ProductListItem, ProductCategory } from "./apps/products";
@@ -33,7 +30,6 @@ import { ProductGridItem } from "./apps/productgrid";
 import { CustomerRecord } from "./apps/customer";
 
 // calendar ======================
-import { EventItem } from "./apps/calendar";
 
 // projects ======================
 import { ProjectList } from "./apps/projects";
@@ -90,7 +86,6 @@ import { StaffList } from "./apps/stafflists";
 
 import { TodayAppointments } from "./apps/todayAppointments";
 
-import { AppointmentList } from "./apps/appointmentsList";
 
 //school
 
@@ -151,9 +146,6 @@ export type {
   // dashboards
   Campaign,
   Transaction,
-  Student,
-  Song,
-  Singer,
 
   // components type
   NextPageWithLayout,
@@ -186,9 +178,6 @@ export type {
 
   // projects
   ProjectList,
-
-  // calendar
-  EventItem,
 
   // user profile
   TypeOptionsDataRecord,
@@ -244,9 +233,7 @@ export type {
 
   // Appointments
   TodayAppointments,
-  AppointmentList,
 
-  //scholl
   LibraryBook,
   ExamSchedule,
   Parents,

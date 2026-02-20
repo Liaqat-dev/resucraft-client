@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useCallback } from 'react';
-import ResizeHandle from './ResizeHandle';
+import ResizeHandle from './ResizeHandle.js';
 
 function CanvasElement({ element, isSelected, onMouseDown, isDragging, onContentChange, onResizeMouseDown, isSingleSelection, onAutoResize }) {
     const contentRef = useRef(null);

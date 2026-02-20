@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FloatingInput, FloatingNumber, FloatingSelect } from '../components/FloatingInput';
+import { FloatingInput, FloatingNumber, FloatingSelect } from '@src/components/common/FloatingInput.tsx';
 
 /* ─── Icons ─── */
 

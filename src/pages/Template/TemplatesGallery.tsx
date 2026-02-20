@@ -87,7 +87,7 @@ const TemplatesGallery = () => {
                     </h1>
 
                     <button
-                        onClick={() => navigate('/')}
+                        onClick={() => navigate('/builder')}
                         style={{
                             padding: '12px 24px',
                             backgroundColor: '#3b82f6',
@@ -220,7 +220,7 @@ const TemplatesGallery = () => {
                             Create your first resume template to get started
                         </p>
                         <button
-                            onClick={() => navigate('/')}
+                            onClick={() => navigate('/builder')}
                             style={{
                                 padding: '12px 32px',
                                 backgroundColor: '#3b82f6',

@@ -97,7 +97,7 @@ const TopBar: React.FC<TopBarProps> = ({
                         {/* Logo */}
                         <div className="navbar-brand">
                             <div className="logos">
-                                <Link to="/dashboards/ecommerce">
+                                <Link to="/">
                                     <img
                                         src={logo}
                                         aria-label="Read more about Seminole tax hike"

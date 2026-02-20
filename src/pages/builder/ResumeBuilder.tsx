@@ -1,8 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
-import Toolbar from './Toolbar.jsx';
-import EditDrawer from './Drawer.jsx';
-import CanvasSection from './Section.jsx';
-import CanvasElement from './Element.jsx';
+import Toolbar from './Toolbar.tsx';
+import EditDrawer from './Drawer.tsx';
+import CanvasSection from './Section.tsx';
+import CanvasElement from './Element.tsx';
 import { CANVAS_SIZES } from './constants';
 import { nestedToFlat } from './utils/transformUtils';
 import { useSelectionDrawer } from './hooks/useSelectionDrawer';
