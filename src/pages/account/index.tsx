@@ -13,7 +13,7 @@ const Account: NextPageWithLayout = () => {
     }, []);
 
     return (
-        <React.Fragment>
+        <div className={'container mx-auto'}>
             <CommonAccount/>
 
             <Tabs
@@ -59,7 +59,7 @@ const Account: NextPageWithLayout = () => {
                     <div>Statements Content</div>
                 </Tab>
             </Tabs>
-        </React.Fragment>
+        </div>
     );
 };
 export default Account;

@@ -106,7 +106,7 @@ const routes: IRoute[] = [
         //dashboards
         {path: "/loading", component: <SpinLoader/>},
         {path: "/", component: <TemplateGallery/>},
-        {path: "/builder", component: <ResumeBuilder/>},
+
 
         // forms
         {path: "/form/basic-input", component: <BasicInput/>},
@@ -186,7 +186,7 @@ const routes: IRoute[] = [
         {path: "/page/faq", component: <Faq/>},
 
         {path: "/page/privacy-policy", component: <PrivacyPolicy/>},
-        {path: "/page/help-center", component: <HelpCenter/>},
+        {path: "/help-center", component: <HelpCenter/>},
 
 
         {
@@ -238,5 +238,8 @@ const nonAuthRoutes: IRoute[] = [
     {path: "/auth/forgot-password", component: <ForgotPassword/>},
     {path: "*", component: <PageNotFoundError/>},
 ];
+const builderRoutes: IRoute[] = [
+    {path: "/builder", component: <ResumeBuilder/>},
+]
 
-export {routes, nonAuthRoutes};
+export {routes, nonAuthRoutes, builderRoutes};

@@ -1,4 +1,4 @@
-import {BellRing, Moon, PanelRightOpen, Search, Settings, ShoppingBag, Sun,} from "lucide-react";
+import {BellRing, Moon, Search, Settings, Sun,} from "lucide-react";
 import {Link} from "react-router-dom";
 import React, {ChangeEvent, useEffect, useRef, useState} from "react";
 import logo from "@assets/images/main-logo.png";
@@ -14,8 +14,6 @@ import user18 from "@assets/images/avatar/user-18.png";
 import SimpleBar from "simplebar-react";
 import SettingsModal from "@src/components/layout/settingsModal.tsx";
 import {LAYOUT_MODE_TYPES, SIDEBAR_COLOR,} from "@constants/layout.tsx";
-
-import CardSidebar from "../../components/layout/cardSidebar.tsx";
 import {changeSettingModalOpen} from "@src/slices/layout/reducer.ts";
 
 import Profile from "@layout/topBar/profile.tsx";
@@ -29,14 +27,12 @@ interface TopBarProps {
 const TopBar: React.FC<TopBarProps> = ({
                                            searchMenu,
                                            searchText,
-                                           toggleSidebar,
                                        }) => {
     const {layoutMode, isSettingModalOpen, layoutSidebarColor} = useSelector(
         (state: RootState) => state.Layout,
     );
     const dispatch = useDispatch<AppDispatch>();
     const [scrolled, setScrolled] = useState(false);
-    const [cardOpen, setCardOpen] = useState(false);
     const [open, setOpen] = useState(false);
     const flatpickrRef = useRef<any>(null);
     const [isOpen] = useState(false);
@@ -61,14 +57,7 @@ const TopBar: React.FC<TopBarProps> = ({
             window.removeEventListener("scroll", handleScroll);
         };
     }, []);
-    // call modal
-    const handleOpenCardModal = () => {
-        setCardOpen(true);
-    };
 
-    const handleCloseCardModal = () => {
-        setCardOpen(false);
-    };
     const handleCloseModal = () => {
         setOpen(false);
     };
@@ -168,27 +157,6 @@ const TopBar: React.FC<TopBarProps> = ({
                                 )}
                             </button>
 
-                            {/* Tool Apps */}
-                            {/*<button*/}
-                            {/*    className="hidden topbar-link sm:flex"*/}
-                            {/*    title="tools-apps-modal"*/}
-                            {/*    data-modal-target="toolsAppsModal"*/}
-                            {/*    onClick={handleOpenModal}*/}
-                            {/*>*/}
-                            {/*    <LayoutGrid className="size-4"></LayoutGrid>*/}
-                            {/*</button>*/}
-                            <button
-                                className="relative hidden topbar-link sm:flex"
-                                title="shopping-cart"
-                                data-drawer-target="basicEnd"
-                                onClick={handleOpenCardModal}
-                            >
-                                <ShoppingBag className="size-4"/>
-                                <span
-                                    className="absolute right-0 p-0 border-2 border-white rounded-full dark:border-dark-900 badge badge-square badge-solid-red top-3.5 size-5">
-                  3
-                </span>
-                            </button>
 
                             {/* Notifications */}
 
@@ -319,8 +287,6 @@ const TopBar: React.FC<TopBarProps> = ({
                 open={isSettingModalOpen}
                 handleCloseModal={handleCloseThemeModal}
             />
-
-            <CardSidebar open={cardOpen} handleCloseModal={handleCloseCardModal}/>
         </React.Fragment>
     );
 };

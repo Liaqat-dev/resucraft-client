@@ -1,8 +1,9 @@
 import React from "react";
 import { Route, Routes } from "react-router-dom";
-import { nonAuthRoutes, routes } from "./allRoutes";
+import {builderRoutes, nonAuthRoutes, routes} from "./allRoutes";
 import NonLayout from "@src/layout/nonLayout";
 import Layout from "@src/layout/layout";
+import BuilderLayout from "@layout/builderLayout.tsx";
 
 const Routing = () => {
     function renderRoutes(routes: any[]) {
@@ -39,6 +40,14 @@ const Routing = () => {
                         element={<NonLayout>{item.component}</NonLayout>}
                     />
                 ))}
+                {(builderRoutes || []).map((item, key) => (
+                    <Route
+                        key={key}
+                        path={item.path}
+                        element={<BuilderLayout>{item.component}</BuilderLayout>}
+                    />
+                ))}
+
             </Routes>
         </React.Fragment>
     );

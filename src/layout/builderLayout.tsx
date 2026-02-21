@@ -4,24 +4,20 @@ import {useDispatch, useSelector} from "react-redux";
 import {AppDispatch, RootState} from "@src/slices/store.ts";
 import {changeSidebarSize} from "@src/slices/thunk";
 import TopBar from "./topBar/topBar.tsx";
-import {MainMenu, MegaMenu, SubMenu} from "@src/dtos";
 import {LAYOUT_TYPES, SIDEBAR_SIZE} from "@src/components/constants/layout";
-import {menu} from "@src/data";
 import {changeHTMLAttribute, setNewThemeData} from "@src/slices/layout/utils";
 import {changeSettingModalOpen} from "@src/slices/layout/reducer";
-import {useLocation, useNavigate} from "react-router-dom";
+import {useLocation} from "react-router-dom";
 
 interface LayoutProps {
     children: React.ReactNode;
     breadcrumbTitle?: string;
 }
 
-const Layout = ({children, breadcrumbTitle}: LayoutProps) => {
+const BuilderLayout = ({children, breadcrumbTitle}: LayoutProps) => {
     const title = breadcrumbTitle
-        ? ` ${breadcrumbTitle} |Resucraft `
-        : "Resucraft";
-
-    const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false);
+        ? ` ${breadcrumbTitle} | ResuCraft `
+        : "ResuCraft";
     const {
         layoutMode,
         layoutType,
@@ -33,10 +29,8 @@ const Layout = ({children, breadcrumbTitle}: LayoutProps) => {
         layoutDirection,
     } = useSelector((state: RootState) => state.Layout);
     const dispatch = useDispatch<AppDispatch>();
-    const [searchSidebar, setSearchSidebar] = useState<MegaMenu[]>(menu);
     const [searchValue, setSearchValue] = useState<string>("");
     const router = useLocation();
-    const navigate = useNavigate();
     useEffect(() => {
         // If the user has no session and has no prior login, redirect to login page
         if (!localStorage.getItem("wasLoggedIn")) {
@@ -65,7 +59,6 @@ const Layout = ({children, breadcrumbTitle}: LayoutProps) => {
     const toggleSidebar = () => {
         if (window.innerWidth < 1000) {
             // Toggle sidebar open/close for small screens
-            setIsSidebarOpen((prev) => !prev);
             setNewThemeData("data-sidebar-size", SIDEBAR_SIZE.DEFAULT);
             changeHTMLAttribute("data-sidebar", SIDEBAR_SIZE.DEFAULT);
             dispatch(changeSidebarSize(SIDEBAR_SIZE.DEFAULT));
@@ -78,7 +71,6 @@ const Layout = ({children, breadcrumbTitle}: LayoutProps) => {
     useEffect(() => {
         const handleResize = () => {
             // Update the sidebar state based on the window width
-            setIsSidebarOpen(window.innerWidth >= 1024);
             if (
                 layoutType === LAYOUT_TYPES.SEMIBOX ||
                 layoutType === LAYOUT_TYPES.MODERN
@@ -107,48 +99,6 @@ const Layout = ({children, breadcrumbTitle}: LayoutProps) => {
     // handle search menu
     const handleSearchClient = (value: string) => {
         setSearchValue(value);
-
-        if (value.trim() !== "") {
-            const filteredMenu: MegaMenu[] = menu.filter((megaItem: MegaMenu) => {
-                // Filter the first level: MegaMenu
-                const isMegaMenuMatch =
-                    megaItem.title.toLowerCase().includes(value.toLowerCase()) ||
-                    megaItem.lang.toLowerCase().includes(value.toLowerCase());
-
-                // Filter the second level: MainMenu (children of MegaMenu)
-                const filteredMainMenu = megaItem.children?.filter(
-                    (mainItem: MainMenu) => {
-                        const isMainMenuMatch =
-                            mainItem.title.toLowerCase().includes(value.toLowerCase()) ||
-                            mainItem.lang.toLowerCase().includes(value.toLowerCase());
-
-                        // Filter the third level: SubMenu (children of MainMenu)
-                        const filteredSubMenu = mainItem.children?.filter(
-                            (subItem: SubMenu) => {
-                                return (
-                                    subItem.title.toLowerCase().includes(value.toLowerCase()) ||
-                                    subItem.lang.toLowerCase().includes(value.toLowerCase())
-                                );
-                            },
-                        );
-
-                        // If SubMenu matches or MainMenu matches, return the filtered item
-                        return (
-                            isMainMenuMatch || (filteredSubMenu && filteredSubMenu.length > 0)
-                        );
-                    },
-                );
-
-                // Return MegaMenu item if it matches or has any matching MainMenu children
-                return (
-                    isMegaMenuMatch || (filteredMainMenu && filteredMainMenu.length > 0)
-                );
-            });
-
-            setSearchSidebar(filteredMenu);
-        } else {
-            setSearchSidebar(menu);
-        }
     };
     useEffect(() => {
         let timer: NodeJS.Timeout;
@@ -191,11 +141,17 @@ const Layout = ({children, breadcrumbTitle}: LayoutProps) => {
                 toggleSidebar={toggleSidebar}
             />
 
+            {/* sidebar */}
+
+            {/*<Sidebar*/}
+            {/*    searchSidebar={searchSidebar}*/}
+            {/*    isSidebarOpen={isSidebarOpen}*/}
+            {/*    toggleSidebar={toggleSidebar}*/}
+            {/*/>*/}
+
             <div
                 className="relative min-h-screen group-data-[layout=boxed]:bg-white group-data-[layout=boxed]:rounded-md">
-                <div className="
-                {/*page-wrapper*/}
-                container mx-auto pt-[calc(theme('spacing.topbar')_*_1.2)]
+                <div className=" pt-[calc(theme('spacing.topbar')_*_1.0)]
                 ">
                     {" "}
                     {children}
@@ -206,4 +162,4 @@ const Layout = ({children, breadcrumbTitle}: LayoutProps) => {
     );
 };
 
-export default Layout;
+export default BuilderLayout;

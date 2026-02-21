@@ -115,7 +115,7 @@ function Profile() {
                         </button>
                         <Link
                             onClick={handleClose}
-                            to=""
+                            to="/help-center"
                             className="flex items-center gap-2 w-full px-4 py-2.5 text-sm hover:bg-gray-50 dark:hover:bg-dark-850"
                         >
                             <i className="align-baseline ltr:mr-1 rtl:ml-1 ri-customer-service-2-line"></i>
