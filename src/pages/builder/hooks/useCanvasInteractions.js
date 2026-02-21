@@ -5,6 +5,7 @@ export function useCanvasInteractions({
     setSections, setElements, setSelectedIds, updateSection, updateElement
 }) {
     const [isDragging, setIsDragging] = useState(false);
+    const [draggingSectionId, setDraggingSectionId] = useState(null);
     const [selectionBox, setSelectionBox] = useState(null);
 
     const snapToGrid = (value) => {
@@ -12,6 +13,7 @@ export function useCanvasInteractions({
         return Math.round(value / gridSize) * gridSize;
     };
 
+    // Still used for resize overlap prevention
     const checkSectionOverlap = (sectionId, newX, newY, newWidth, newHeight, excludeIds = new Set()) => {
         const section = sections.find(s => s.id === sectionId);
         if (!section || section.type === 'subsection') return false;
@@ -28,23 +30,19 @@ export function useCanvasInteractions({
                 newY + newHeight <= otherSection.y ||
                 newY >= otherSection.y + otherSection.height
             );
-
             if (overlap) return true;
         }
         return false;
     };
 
-    // Find sections that already overlap with a given section at its current position
     const getAlreadyOverlapping = (sectionId) => {
         const section = sections.find(s => s.id === sectionId);
         if (!section || section.type === 'subsection') return new Set();
-
         const overlapping = new Set();
         for (const otherSection of sections) {
             if (otherSection.id === sectionId) continue;
             if (otherSection.type === 'subsection') continue;
             if (otherSection.parentSection) continue;
-
             const overlap = !(
                 section.x + section.width <= otherSection.x ||
                 section.x >= otherSection.x + otherSection.width ||
@@ -68,6 +66,189 @@ export function useCanvasInteractions({
     };
 
     const startDragging = (e, id) => {
+        const draggingSection = sections.find(s => s.id === id);
+        const isTopLevelSection =
+            draggingSection &&
+            draggingSection.type !== 'subsection' &&
+            !draggingSection.parentSection;
+
+        // Single top-level section drag → reorder mode
+        if (isTopLevelSection && selectedIds.length === 1) {
+            startSectionReorderDrag(e, id, draggingSection);
+        } else {
+            startFreeDrag(e, id);
+        }
+    };
+
+    // ── Reorder drag: top-level sections slide past each other ──────────────
+
+    const startSectionReorderDrag = (e, id, draggingSection) => {
+        setIsDragging(true);
+        setDraggingSectionId(id);
+
+        const startClientY = e.clientY;
+        const startSectionY = draggingSection.y;
+
+        // Snapshot all top-level sections sorted by y at drag start
+        const topLevelSecs = sections
+            .filter(s => s.type !== 'subsection' && !s.parentSection)
+            .sort((a, b) => a.y - b.y);
+
+        // If only one section there's nothing to reorder
+        if (topLevelSecs.length <= 1) {
+            setIsDragging(false);
+            setDraggingSectionId(null);
+            startFreeDrag(e, id);
+            return;
+        }
+
+        // Heights captured at drag start (don't change during drag)
+        const heights = new Map(topLevelSecs.map(s => [s.id, s.height]));
+
+        // Stack anchor — where the top of the first section sits
+        const baseY = topLevelSecs[0].y;
+
+        // Vertical gap between sections
+        const GAP = 8;
+
+        // Build a descendant lookup for ALL top-level sections:
+        //   descendantLookup: descendantId → { topLevelId, offsetY }
+        // This lets us move every element/subsection when its ancestor top-level section moves.
+        const descendantLookup = new Map();
+        const collectDescendants = (topLevelId, parentId, topLevelY) => {
+            sections.forEach(sec => {
+                if (sec.parentSection === parentId) {
+                    descendantLookup.set(sec.id, { topLevelId, offsetY: sec.y - topLevelY });
+                    collectDescendants(topLevelId, sec.id, topLevelY);
+                }
+            });
+            elements.forEach(el => {
+                if (el.parentSection === parentId) {
+                    descendantLookup.set(el.id, { topLevelId, offsetY: el.y - topLevelY });
+                }
+            });
+        };
+        topLevelSecs.forEach(sec => collectDescendants(sec.id, sec.id, sec.y));
+
+        // Live order — mutable so we can mutate it in-place across mouse moves
+        const currentOrder = topLevelSecs.map(s => s.id);
+
+        // Compute the packed slot y for every section in a given order
+        const computeSlots = (orderIds) => {
+            const slots = {};
+            let y = baseY;
+            for (const sid of orderIds) {
+                slots[sid] = y;
+                y += (heights.get(sid) ?? 0) + GAP;
+            }
+            return slots;
+        };
+
+        const handleMouseMove = (moveEvent) => {
+            const deltaY = (moveEvent.clientY - startClientY) / scale;
+            const newSectionY = snapToGrid(startSectionY + deltaY);
+
+            // Dragged section's vertical midpoint
+            const draggedMid = newSectionY + (heights.get(id) ?? 0) / 2;
+
+            // Use current slot positions as reference midpoints for other sections
+            const slots = computeSlots(currentOrder);
+            const others = currentOrder.filter(sid => sid !== id);
+
+            // Find where dragged section should be inserted
+            let insertIdx = others.length;
+            for (let i = 0; i < others.length; i++) {
+                const slotMid = slots[others[i]] + (heights.get(others[i]) ?? 0) / 2;
+                if (draggedMid < slotMid) {
+                    insertIdx = i;
+                    break;
+                }
+            }
+
+            // Rebuild order with dragged section in new position
+            const newOrder = [
+                ...others.slice(0, insertIdx),
+                id,
+                ...others.slice(insertIdx),
+            ];
+
+            // Mutate currentOrder only when it actually changes
+            const orderChanged = newOrder.some((sid, i) => sid !== currentOrder[i]);
+            if (orderChanged) {
+                currentOrder.length = 0;
+                newOrder.forEach(sid => currentOrder.push(sid));
+            }
+
+            // Compute fresh slots after potential order change
+            const activeSlots = computeSlots(currentOrder);
+
+            setSections(prev => prev.map(sec => {
+                // Dragged top-level section: follows mouse
+                if (sec.id === id) return { ...sec, y: newSectionY };
+                // Other top-level sections: move to their reflow slot
+                if (activeSlots[sec.id] !== undefined) return { ...sec, y: activeSlots[sec.id] };
+                // Subsections: move with their top-level ancestor
+                const info = descendantLookup.get(sec.id);
+                if (info) {
+                    const parentY = info.topLevelId === id
+                        ? newSectionY
+                        : activeSlots[info.topLevelId];
+                    if (parentY !== undefined) return { ...sec, y: parentY + info.offsetY };
+                }
+                return sec;
+            }));
+
+            setElements(prev => prev.map(el => {
+                // All elements: move with their top-level ancestor
+                const info = descendantLookup.get(el.id);
+                if (info) {
+                    const parentY = info.topLevelId === id
+                        ? newSectionY
+                        : activeSlots[info.topLevelId];
+                    if (parentY !== undefined) return { ...el, y: parentY + info.offsetY };
+                }
+                return el;
+            }));
+        };
+
+        const handleMouseUp = () => {
+            // Snap every section into its final slot
+            const finalSlots = computeSlots(currentOrder);
+
+            setSections(prev => prev.map(sec => {
+                // Top-level sections (including dragged) → final slot
+                if (finalSlots[sec.id] !== undefined) return { ...sec, y: finalSlots[sec.id] };
+                // Subsections → move with their top-level ancestor's final slot
+                const info = descendantLookup.get(sec.id);
+                if (info) {
+                    const parentY = finalSlots[info.topLevelId];
+                    if (parentY !== undefined) return { ...sec, y: parentY + info.offsetY };
+                }
+                return sec;
+            }));
+
+            setElements(prev => prev.map(el => {
+                const info = descendantLookup.get(el.id);
+                if (info) {
+                    const parentY = finalSlots[info.topLevelId];
+                    if (parentY !== undefined) return { ...el, y: parentY + info.offsetY };
+                }
+                return el;
+            }));
+
+            setIsDragging(false);
+            setDraggingSectionId(null);
+            document.removeEventListener('mousemove', handleMouseMove);
+            document.removeEventListener('mouseup', handleMouseUp);
+        };
+
+        document.addEventListener('mousemove', handleMouseMove);
+        document.addEventListener('mouseup', handleMouseUp);
+    };
+
+    // ── Free drag: subsections, elements, and multi-selection ───────────────
+
+    const startFreeDrag = (e, id) => {
         setIsDragging(true);
 
         const startX = e.clientX;
@@ -75,12 +256,9 @@ export function useCanvasInteractions({
 
         let itemsToMove = new Set(selectedIds);
 
-        // Recursively collect all children (subsections and elements)
         const collectChildren = (parentId) => {
             elements.forEach(el => {
-                if (el.parentSection === parentId) {
-                    itemsToMove.add(el.id);
-                }
+                if (el.parentSection === parentId) itemsToMove.add(el.id);
             });
             sections.forEach(sec => {
                 if (sec.parentSection === parentId) {
@@ -89,69 +267,39 @@ export function useCanvasInteractions({
                 }
             });
         };
-
-        selectedIds.forEach(selectedId => {
-            collectChildren(selectedId);
-        });
+        selectedIds.forEach(selectedId => collectChildren(selectedId));
 
         const initialPositions = new Map();
-
         itemsToMove.forEach(itemId => {
             const section = sections.find(s => s.id === itemId);
             const element = elements.find(el => el.id === itemId);
-
-            if (section) {
-                initialPositions.set(itemId, { x: section.x, y: section.y });
-            } else if (element) {
-                initialPositions.set(itemId, { x: element.x, y: element.y });
-            }
-        });
-
-        // Find sections already overlapping at drag start so we can exclude them
-        // This allows dragging sections apart even if they currently overlap
-        const alreadyOverlapping = new Set();
-        selectedIds.forEach(selectedId => {
-            const overlaps = getAlreadyOverlapping(selectedId);
-            overlaps.forEach(oid => alreadyOverlapping.add(oid));
+            if (section) initialPositions.set(itemId, { x: section.x, y: section.y });
+            else if (element) initialPositions.set(itemId, { x: element.x, y: element.y });
         });
 
         const handleMouseMove = (moveEvent) => {
             const deltaX = (moveEvent.clientX - startX) / scale;
             const deltaY = (moveEvent.clientY - startY) / scale;
 
-            // Snap the primary dragged item to get a consistent offset for all items
             const primaryPos = initialPositions.get(id);
             const snappedPrimaryX = snapToGrid(primaryPos.x + deltaX);
             const snappedPrimaryY = snapToGrid(primaryPos.y + deltaY);
             const snappedDeltaX = snappedPrimaryX - primaryPos.x;
             const snappedDeltaY = snappedPrimaryY - primaryPos.y;
 
-            itemsToMove.forEach(itemId => {
-                const initialPos = initialPositions.get(itemId);
-                if (!initialPos) return;
+            setSections(prev => prev.map(sec => {
+                if (!itemsToMove.has(sec.id)) return sec;
+                const initialPos = initialPositions.get(sec.id);
+                if (!initialPos) return sec;
+                return { ...sec, x: initialPos.x + snappedDeltaX, y: initialPos.y + snappedDeltaY };
+            }));
 
-                const newX = initialPos.x + snappedDeltaX;
-                const newY = initialPos.y + snappedDeltaY;
-
-                const section = sections.find(s => s.id === itemId);
-
-                if (section) {
-                    // Check overlap for main sections (skip sections already overlapping at drag start)
-                    if (section.type !== 'subsection' && !section.parentSection) {
-                        if (checkSectionOverlap(itemId, newX, newY, section.width, section.height, alreadyOverlapping)) {
-                            return; // Don't move if overlap
-                        }
-                    }
-
-                    setSections(prev => prev.map(sec =>
-                        sec.id === itemId ? { ...sec, x: newX, y: newY } : sec
-                    ));
-                } else {
-                    setElements(prev => prev.map(el =>
-                        el.id === itemId ? { ...el, x: newX, y: newY } : el
-                    ));
-                }
-            });
+            setElements(prev => prev.map(el => {
+                if (!itemsToMove.has(el.id)) return el;
+                const initialPos = initialPositions.get(el.id);
+                if (!initialPos) return el;
+                return { ...el, x: initialPos.x + snappedDeltaX, y: initialPos.y + snappedDeltaY };
+            }));
         };
 
         const handleMouseUp = () => {
@@ -163,6 +311,8 @@ export function useCanvasInteractions({
         document.addEventListener('mousemove', handleMouseMove);
         document.addEventListener('mouseup', handleMouseUp);
     };
+
+    // ────────────────────────────────────────────────────────────────────────
 
     const handleItemMouseDown = (e, id) => {
         e.stopPropagation();
@@ -337,7 +487,6 @@ export function useCanvasInteractions({
         const startPosX = item.x;
         const startPosY = item.y;
 
-        // Exclude sections already overlapping at resize start
         const resizeExcludeIds = isSection ? getAlreadyOverlapping(id) : new Set();
 
         const handleMouseMove = (moveEvent) => {
@@ -395,7 +544,6 @@ export function useCanvasInteractions({
                     break;
             }
 
-            // Check overlap for sections
             if (isSection && item.type !== 'subsection' && !item.parentSection) {
                 const newX = updates.x !== undefined ? updates.x : item.x;
                 const newY = updates.y !== undefined ? updates.y : item.y;
@@ -403,7 +551,7 @@ export function useCanvasInteractions({
                 const newHeight = updates.height !== undefined ? updates.height : item.height;
 
                 if (checkSectionOverlap(id, newX, newY, newWidth, newHeight, resizeExcludeIds)) {
-                    return; // Don't resize if it would cause overlap
+                    return;
                 }
             }
 
@@ -425,6 +573,7 @@ export function useCanvasInteractions({
 
     return {
         isDragging,
+        draggingSectionId,
         selectionBox,
         handleCanvasMouseDown,
         handleCanvasDoubleClick,

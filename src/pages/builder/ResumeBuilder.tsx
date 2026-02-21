@@ -65,7 +65,7 @@ function ResumeBuilder() {
     };
 
     const {
-        isDragging, selectionBox,
+        isDragging, draggingSectionId, selectionBox,
         handleCanvasMouseDown, handleCanvasDoubleClick,
         handleItemMouseDown, handleResizeMouseDown
     } = useCanvasInteractions({
@@ -370,6 +370,8 @@ function ResumeBuilder() {
                                 childCount={childCount}
                                 isSelected={isSelected}
                                 isDragging={isDragging}
+                                isBeingDragged={draggingSectionId === section.id}
+                                isReordering={!!draggingSectionId}
                                 isSingleSelection={selectedIds.length === 1}
                                 onMouseDown={handleItemMouseDown}
                                 onTitleChange={(id, title) => updateSection(id, { title })}

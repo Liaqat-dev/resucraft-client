@@ -7,6 +7,17 @@ export function useSectionActions({
         const canvasWidthPx = parseFloat(customWidth) * (96 / 25.4);
         const marginLeftPx = margins.left * 96;
         const marginRightPx = margins.right * 96;
+        const marginTopPx = margins.top * 96;
+
+        // Place new section below all existing top-level sections
+        const GAP = 8;
+        const topLevelSections = sections
+            .filter(s => !s.parentSection && s.type !== 'subsection')
+            .sort((a, b) => (a.y + a.height) - (b.y + b.height));
+        const newY = topLevelSections.length > 0
+            ? topLevelSections[topLevelSections.length - 1].y +
+              topLevelSections[topLevelSections.length - 1].height + GAP
+            : marginTopPx;
 
         const newSection = {
             id: 'section-' + Date.now(),
@@ -14,7 +25,7 @@ export function useSectionActions({
             title: 'New Section',
             ai_description: 'Section for organizing related content',
             x: marginLeftPx,
-            y: 200,
+            y: newY,
             width: canvasWidthPx - marginLeftPx - marginRightPx,
             height: 200,
             contentType: 'text',

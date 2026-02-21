@@ -24,11 +24,6 @@ const Account: NextPageWithLayout = () => {
                 spanProps="align-middle whitespace-nowrap"
             >
                 <Tab
-                    icon={<UserRound className="inline-block size-4 ltr:mr-2 rtl:ml-2"/>}
-                    label="Account"
-                    path="/account/settings"
-                ></Tab>
-                <Tab
                     icon={
                         <ShieldCheck className="inline-block size-4 ltr:mr-2 rtl:ml-2"/>
                     }

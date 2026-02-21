@@ -56,7 +56,6 @@ import WidgetsBanners from "@pages/widgets/banners";
 import WidgetsCard from "@pages/widgets/cards";
 import WidgetsCharts from "@pages/widgets/charts";
 import WidgetsData from "@pages/widgets/widgetsData";
-import AccountSettings from "@pages/account/settings";
 import AccountSecurity from "@pages/account/security";
 import SkillsPage from "@pages/profile/skills/skillsPage.tsx";
 import PersonalInfoPage from "@pages/profile/personalInfo/personalInfoPage.tsx";
@@ -202,7 +201,7 @@ const routes: IRoute[] = [
                 {path: "education", component: <EducationPage/>},
                 {path: "experience", component: <ExperiencePage/>},
                 {path: "skills", component: <SkillsPage/>},
-                { path: "personal-info", component: <PersonalInfoPage /> },
+                {path: "personal-info", component: <PersonalInfoPage/>},
             ],
         },
 
@@ -212,8 +211,7 @@ const routes: IRoute[] = [
                 <Account/>,
             children:
                 [
-                    {index: true, element: <Navigate to="settings" replace/>},
-                    {path: "settings", component: <AccountSettings/>},
+                    {index: true, element: <Navigate to="security" replace/>},
                     {path: "security", component: <AccountSecurity/>},
                     {path: "notification", component: <AccountNotification/>},
                     {path: "sessions", component: <AccountSessions/>},

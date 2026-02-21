@@ -48,6 +48,8 @@ const CanvasSection = ({
     childCount,
     isSelected,
     isDragging,
+    isBeingDragged,
+    isReordering,
     isSingleSelection,
     onMouseDown,
     onTitleChange,
@@ -127,10 +129,18 @@ const CanvasSection = ({
                 marginRight: `${section.mx ?? 0}px`,
                 marginTop: `${section.my ?? 0}px`,
                 marginBottom: `${section.my ?? 0}px`,
-                boxShadow: isSelected
-                    ? '0 0 0 3px rgba(59, 130, 246, 0.1)'
-                    : 'none',
-                transition: isSelected ? 'none' : 'border 0.15s, box-shadow 0.15s'
+                boxShadow: isBeingDragged
+                    ? '0 8px 32px rgba(0,0,0,0.18)'
+                    : isSelected
+                        ? '0 0 0 3px rgba(59, 130, 246, 0.1)'
+                        : 'none',
+                zIndex: isBeingDragged ? 100 : isSelected ? 10 : 1,
+                opacity: isBeingDragged ? 0.92 : 1,
+                transition: isBeingDragged
+                    ? 'none'
+                    : isReordering
+                        ? 'top 0.12s cubic-bezier(0.4,0,0.2,1), box-shadow 0.15s'
+                        : 'border 0.15s, box-shadow 0.15s'
             }}
         >
             {/* ── Main Section Header ── */}
