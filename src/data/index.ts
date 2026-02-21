@@ -21,7 +21,6 @@ import {userFollowersData} from "./pages/User-followers";
 import {userDocumentsFileData, userDocumentsFolderData, userDocumentsMediaData,} from "./pages/user-documents";
 import {userProjectsData} from "./pages/User-projects";
 import {countryCode} from "./countryCode/country-code";
-import {examInformation} from "./examInfo/exam-Information";
 import {orderData} from "./orderTrack/order-track";
 import {orders} from "./orderListWidget/order-list-widget";
 import {defaultInvoice} from "./invoice/default-Invoice";
@@ -68,7 +67,6 @@ export {
     userDocumentsFolderData,
     userProjectsData,
     countryCode,
-    examInformation,
     orderData,
     orders,
     defaultInvoice,

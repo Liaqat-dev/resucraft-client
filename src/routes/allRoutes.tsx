@@ -58,7 +58,6 @@ import WidgetsCharts from "@pages/widgets/charts";
 import WidgetsData from "@pages/widgets/widgetsData";
 import AccountSettings from "@pages/account/settings";
 import AccountSecurity from "@pages/account/security";
-// import AccountBillingPlan from "@pages/accountBillingPlan";
 import SkillsPage from "@pages/profile/skills/skillsPage.tsx";
 import PersonalInfoPage from "@pages/profile/personalInfo/personalInfoPage.tsx";
 import AccountNotification from "@pages/account/notification";

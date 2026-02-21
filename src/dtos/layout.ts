@@ -49,29 +49,3 @@ export interface Teacher {
   performance: string;
   status: string;
 }
-export interface TeacherList {
-  teacherId: string;
-  teacherName: string;
-  image?: string;
-  email: string;
-  phone: string;
-  salary: number;
-  experience: number;
-  title: string;
-  date: string;
-}
-
-export interface TeacherListList {
-  _id: string;
-  lastSchool: string;
-
-  teacherId: string;
-  teacherName: string;
-  image?: string;
-  email: string;
-  phone: string;
-  salary: number;
-  experience: number;
-  title: string;
-  date: string;
-}
