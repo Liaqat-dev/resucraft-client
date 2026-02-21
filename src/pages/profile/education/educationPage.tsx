@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
-import { Education } from "@dtos/education";
-import { educationService } from "../../../services/education.service.ts";
+import React, {useEffect, useState} from "react";
+import {Education} from "@dtos/education";
+import {educationService} from "../../../services/education.service.ts";
 import EducationCard from "./educationCard.tsx";
 import EducationModal from "./educationModal";
 import DeleteConfirmModal from "../../../components/common/deleteConfirmModal";
@@ -39,34 +39,41 @@ const EducationPage: React.FC = () => {
     };
 
     return (
-        <div className="card p-6">
-            <div className="flex justify-between items-center mb-6">
+        <div className="card">
+            <div className="card-header flex justify-between items-center mb-6">
                 <h4 className="text-lg font-semibold">Education ({data.length})</h4>
                 <button onClick={() => setOpen(true)} className="btn btn-primary px-4 py-2">
                     Add Education
                 </button>
             </div>
-
-            {loading ? (
-                <p>Loading...</p>
-            ) : data.length === 0 ? (
-                <p className="text-gray-500">No education found.</p>
-            ) : (
-                <div className="flex flex-col gap-4">
-                    {data.map(edu => (
-                        <EducationCard
-                            key={edu._id}
-                            edu={edu}
-                            onDelete={() => setDeleteId(edu._id)}
-                            onEdit={(e) => { setEditingEducation(e); setOpen(true); }}
-                        />
-                    ))}
-                </div>
-            )}
+            <div className={'card-body'}>
+                {loading ? (
+                    <p>Loading...</p>
+                ) : data.length === 0 ? (
+                    <p className="text-gray-500">No education found.</p>
+                ) : (
+                    <div className="flex flex-col gap-4">
+                        {data.map(edu => (
+                            <EducationCard
+                                key={edu._id}
+                                edu={edu}
+                                onDelete={() => setDeleteId(edu._id)}
+                                onEdit={(e) => {
+                                    setEditingEducation(e);
+                                    setOpen(true);
+                                }}
+                            />
+                        ))}
+                    </div>
+                )}
+            </div>
 
             {open && (
                 <EducationModal
-                    onClose={() => { setEditingEducation(null); setOpen(false); }}
+                    onClose={() => {
+                        setEditingEducation(null);
+                        setOpen(false);
+                    }}
                     onSaved={load}
                     educationToEdit={editingEducation ?? undefined}
                 />

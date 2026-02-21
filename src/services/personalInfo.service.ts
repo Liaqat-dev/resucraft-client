@@ -2,19 +2,14 @@ import axiosInstance from "@src/utils/axios_api";
 import { PersonalInfo, UpdatePersonalInfoData } from "@dtos/personalInfo";
 
 const BASE_URL = "/personal-info";
-const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
-const attachProfileURL = (data: PersonalInfo): PersonalInfo => {
-    if (data.profilePic && !data.profilePic.startsWith("http")) {
-        data.profilePic = `${API_BASE}/uploads/profilePics/${data.profilePic}`;
-    }
-    return data;
-};
+// imgbb always returns a full https:// URL, so no transformation is needed.
+const normaliseProfilePic = (data: PersonalInfo): PersonalInfo => data;
 
 export const personalInfoService = {
     async get(): Promise<PersonalInfo> {
         const res = await axiosInstance.get(BASE_URL);
-        return attachProfileURL(res.data.personalInfo);
+        return normaliseProfilePic(res.data.personalInfo);
     },
 
     async update(form: UpdatePersonalInfoData): Promise<PersonalInfo> {
@@ -36,6 +31,6 @@ export const personalInfoService = {
             headers: { "Content-Type": "multipart/form-data" },
         });
 
-        return attachProfileURL(res.data.personalInfo);
+        return normaliseProfilePic(res.data.personalInfo);
     },
 };

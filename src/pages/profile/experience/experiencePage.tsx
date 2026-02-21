@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
-import { Experience } from "@dtos/experience";
-import { experienceService } from "../../../services/experience.service";
+import React, {useEffect, useState} from "react";
+import {Experience} from "@dtos/experience";
+import {experienceService} from "../../../services/experience.service";
 import ExperienceModal from "./experienceModal";
 import ExperienceCard from "./experienceCard";
 import DeleteConfirmModal from "../../../components/common/deleteConfirmModal.tsx";
@@ -52,28 +52,30 @@ const ExperiencePage: React.FC = () => {
     };
 
     return (
-        <div className="p-4">
-            <div className="flex justify-between items-center mb-4">
+        <div className="card">
+            <div className="card-header flex justify-between items-center mb-4">
                 <h2 className="text-xl font-bold">Experience</h2>
                 <button onClick={handleAdd} className="btn btn-primary">
                     Add Experience
                 </button>
             </div>
+            <div className={'card-body'}>
 
-            {experiences.length === 0 ? (
-                <p className="text-gray-500">No experiences added yet.</p>
-            ) : (
-                <div className="space-y-4">
-                    {experiences.map((exp) => (
-                        <ExperienceCard
-                            key={exp._id}
-                            exp={exp}
-                            onEdit={handleEdit}
-                            onDelete={() => setDeleteId(exp._id)}
-                        />
-                    ))}
-                </div>
-            )}
+                {experiences.length === 0 ? (
+                    <p className="text-gray-500">No experiences added yet.</p>
+                ) : (
+                    <div className=" space-y-4">
+                        {experiences.map((exp) => (
+                            <ExperienceCard
+                                key={exp._id}
+                                exp={exp}
+                                onEdit={handleEdit}
+                                onDelete={() => setDeleteId(exp._id)}
+                            />
+                        ))}
+                    </div>
+                )}
+            </div>
 
             {showModal && (
                 <ExperienceModal

@@ -93,7 +93,7 @@ const IconCheck = () => (
 /* ─── Section Wrapper ─── */
 
 const PanelSection = ({ children, className = '' }) => (
-    <div className={`bg-white rounded-xl border border-gray-100 shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-3 ${className}`}>
+    <div className={`bg-white rounded-xl border border-gray-100 shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-2 ${className}`}>
         {children}
     </div>
 );
@@ -150,7 +150,7 @@ const Toolbar = ({
     }));
 
     return (
-        <div className="fixed top-4 left-4 flex flex-col gap-2 z-[100] w-[252px] max-h-[calc(100vh-32px)] overflow-y-auto overflow-x-hidden toolbar-scroll">
+        <div className="fixed top-20 left-4 flex flex-col gap-2 z-[100] w-[212px] max-h-[calc(100vh-32px)] overflow-y-auto overflow-x-hidden toolbar-scroll">
             <style>{`
                 .toolbar-scroll::-webkit-scrollbar { width: 4px; }
                 .toolbar-scroll::-webkit-scrollbar-track { background: transparent; }

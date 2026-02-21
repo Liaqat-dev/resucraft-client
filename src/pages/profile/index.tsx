@@ -1,13 +1,8 @@
-import { NextPageWithLayout } from "@dtos/layout";
-import React, { useEffect } from "react";
-import { Tab, Tabs } from "@src/components/custom/tabs/tabOutletBased.tsx";
+import {NextPageWithLayout} from "@dtos/layout";
+import React, {useEffect} from "react";
+import {Tab, Tabs} from "@src/components/custom/tabs/tabOutletBased.tsx";
 import CommonAccount from "@src/components/common/commonAccount.tsx";
-import { Eye , FileText,
-    List,
-    Monitor,
-    Sparkles, GraduationCap,
-    Briefcase,User,
-    Lightbulb } from "lucide-react";
+import {Briefcase, Eye, GraduationCap, Lightbulb, Monitor, Sparkles, User} from "lucide-react";
 
 const Profile: NextPageWithLayout = () => {
     useEffect(() => {
@@ -16,8 +11,8 @@ const Profile: NextPageWithLayout = () => {
     }, []);
 
     return (
-        <React.Fragment>
-            <CommonAccount />
+        <div className={'container mx-auto'}>
+            <CommonAccount/>
 
             <Tabs
                 ulProps="pb-2 overflow-x-auto tabs-pills lg:pb-0"
@@ -27,20 +22,20 @@ const Profile: NextPageWithLayout = () => {
                 spanProps="align-middle whitespace-nowrap"
             >
                 <Tab
-                    icon={<User className="inline-block size-4 ltr:mr-2 rtl:ml-2" />}
+                    icon={<Eye className="inline-block size-4 ltr:mr-2 rtl:ml-2"/>}
+                    label="Overview"
+                    path="/profile/overview"
+                ></Tab>
+                <Tab
+                    icon={<User className="inline-block size-4 ltr:mr-2 rtl:ml-2"/>}
                     label="Personal Info"
                     path="/profile/personal-info"
                 >
                     <div>Personal Info Content</div>
                 </Tab>
                 <Tab
-                    icon={<Eye className="inline-block size-4 ltr:mr-2 rtl:ml-2" />}
-                    label="Overview"
-                    path="/profile/overview"
-                ></Tab>
-                <Tab
                     icon={
-                        <GraduationCap className="inline-block size-4 ltr:mr-2 rtl:ml-2" />
+                        <GraduationCap className="inline-block size-4 ltr:mr-2 rtl:ml-2"/>
                     }
                     label="Education"
                     path="/profile/education"
@@ -50,7 +45,7 @@ const Profile: NextPageWithLayout = () => {
 
                 <Tab
                     icon={
-                        <Briefcase className="inline-block size-4 ltr:mr-2 rtl:ml-2" />
+                        <Briefcase className="inline-block size-4 ltr:mr-2 rtl:ml-2"/>
                     }
                     label="Experience"
                     path="/profile/experience"
@@ -58,7 +53,7 @@ const Profile: NextPageWithLayout = () => {
                     <div>Experience Content</div>
                 </Tab>
                 <Tab
-                    icon={<Lightbulb className="inline-block size-4 ltr:mr-2 rtl:ml-2" />}
+                    icon={<Lightbulb className="inline-block size-4 ltr:mr-2 rtl:ml-2"/>}
                     label="Skills"
                     path="/profile/skills"
                 >
@@ -66,7 +61,7 @@ const Profile: NextPageWithLayout = () => {
                 </Tab>
                 <Tab
                     icon={
-                        <Sparkles className="inline-block size-4 ltr:mr-2 rtl:ml-2" />
+                        <Sparkles className="inline-block size-4 ltr:mr-2 rtl:ml-2"/>
                     }
                     label="Activity"
                     path="/profile/activity"
@@ -74,28 +69,14 @@ const Profile: NextPageWithLayout = () => {
                     <div>Security Content</div>
                 </Tab>
                 <Tab
-                    icon={<FileText className="inline-block size-4 ltr:mr-2 rtl:ml-2" />}
-                    label="Documents"
-                    path="/profile/documents"
-                >
-                    <div>Notification Content</div>
-                </Tab>
-                <Tab
-                    icon={<List className="inline-block size-4 ltr:mr-2 rtl:ml-2" />}
-                    label="Notes"
-                    path="/profile/notes"
-                >
-                    <div>Statements Content</div>
-                </Tab>
-                <Tab
-                    icon={<Monitor className="inline-block size-4 ltr:mr-2 rtl:ml-2" />}
+                    icon={<Monitor className="inline-block size-4 ltr:mr-2 rtl:ml-2"/>}
                     label="Projects"
                     path="/profile/projects"
                 >
                     <div>Logs Content</div>
                 </Tab>
             </Tabs>
-        </React.Fragment>
+        </div>
     );
 };
 export default Profile;

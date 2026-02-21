@@ -63,7 +63,7 @@ import SkillsPage from "@pages/profile/skills/skillsPage.tsx";
 import PersonalInfoPage from "@pages/profile/personalInfo/personalInfoPage.tsx";
 import AccountNotification from "@pages/account/notification";
 import AccountStatements from "@pages/account/statements";
-import AccountSessions from "@pages/account/statements";
+import AccountSessions from "@pages/account/sessions";
 import UserPage from "@pages/profile";
 import UserActivity from "@pages/profile/userActivity";
 import UserDocuments from "@pages/profile/userDocuments";

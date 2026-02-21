@@ -245,7 +245,7 @@ function ResumeBuilder() {
     // --- Render ---
 
     return (
-        <div className="relative w-full h-screen overflow-auto bg-builder-canvas">
+        <div className="relative  overflow-auto bg-builder-canvas">
             <style>{`
                 .bg-builder-canvas {
                     background-color: #eef1f5;
@@ -323,7 +323,7 @@ function ResumeBuilder() {
             />
 
             {/* ── Canvas Area ── */}
-            <div className="flex justify-center pt-20 pb-10">
+            <div className="flex justify-center pt-10 pb-10">
                 <div
                     ref={canvasRef}
                     onDoubleClick={handleCanvasDoubleClick}

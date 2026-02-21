@@ -22,9 +22,9 @@ const CommonAccount = () => {
                         <div
                             className="relative p-1 rounded-full bg-gradient-to-tr from-primary-300 via-red-300 to-green-300 -mt-14">
                             <img
-                                src={user?.avatarUrl || getAvatar(user?.name || "NA")}
+                                src={user?.profilePic || getAvatar(user?.name || "NA")}
                                 alt="userImg"
-                                className="rounded-full size-11 bg-cover"
+                                className="rounded-full size-25 bg-cover"
                             />
                         </div>
                         <div
