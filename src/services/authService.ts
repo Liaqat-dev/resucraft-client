@@ -200,7 +200,7 @@ export const authService = {
 //
 //     // Get Current User
 //     async getProfile() {
-//         const response = await api.get<User>('/auth/profile');
+//         const response = await api.get<User>('/auth/profilePics');
 //         return response.data;
 //     },
 //

@@ -11,9 +11,9 @@ const UserProjects: NextPageWithLayout = () => {
 
   return (
     <React.Fragment>
-      {/* user profile header */}
+      {/* user profilePics header */}
       <UserProfileHeader />
-      {/* user profile overview content */}
+      {/* user profilePics overview content */}
       <UserProjectsContent />
     </React.Fragment>
   );

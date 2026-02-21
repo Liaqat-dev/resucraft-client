@@ -6,7 +6,8 @@ import { Eye , FileText,
     List,
     Monitor,
     Sparkles, GraduationCap,
-    Briefcase } from "lucide-react";
+    Briefcase,User,
+    Lightbulb } from "lucide-react";
 
 const Profile: NextPageWithLayout = () => {
     useEffect(() => {
@@ -25,6 +26,13 @@ const Profile: NextPageWithLayout = () => {
                 otherClass="nav-item text-gray-500 dark:text-dark-500 [&.active]:bg-primary-500 [&.active]:text-primary-50"
                 spanProps="align-middle whitespace-nowrap"
             >
+                <Tab
+                    icon={<User className="inline-block size-4 ltr:mr-2 rtl:ml-2" />}
+                    label="Personal Info"
+                    path="/profile/personal-info"
+                >
+                    <div>Personal Info Content</div>
+                </Tab>
                 <Tab
                     icon={<Eye className="inline-block size-4 ltr:mr-2 rtl:ml-2" />}
                     label="Overview"
@@ -49,7 +57,13 @@ const Profile: NextPageWithLayout = () => {
                 >
                     <div>Experience Content</div>
                 </Tab>
-
+                <Tab
+                    icon={<Lightbulb className="inline-block size-4 ltr:mr-2 rtl:ml-2" />}
+                    label="Skills"
+                    path="/profile/skills"
+                >
+                    <div>Skills Content</div>
+                </Tab>
                 <Tab
                     icon={
                         <Sparkles className="inline-block size-4 ltr:mr-2 rtl:ml-2" />

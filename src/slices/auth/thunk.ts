@@ -17,7 +17,7 @@ export const initializeAuth = createAsyncThunk(
                 accessToken: response.accessToken
             }));
 
-            // Fetch user profile
+            // Fetch user profilePics
             const user = await authService.getProfile();
             dispatch(setUser({ user }));
 
@@ -156,7 +156,7 @@ export const fetchUserProfile = createAsyncThunk(
             return user;
         } catch (error: any) {
             return rejectWithValue({
-                message: error.response?.data?.message || 'Failed to fetch profile'
+                message: error.response?.data?.message || 'Failed to fetch profilePics'
             });
         }
     }

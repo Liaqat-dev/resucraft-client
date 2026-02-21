@@ -13,7 +13,7 @@ const UserDocuments: NextPageWithLayout = () => {
     <React.Fragment>
       {/* Profile Header */}
       <UserProfileHeader />
-      {/* profile documents content */}
+      {/* profilePics documents content */}
       <UserDocumentsContent />
     </React.Fragment>
   );

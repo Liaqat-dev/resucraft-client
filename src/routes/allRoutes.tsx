@@ -59,6 +59,8 @@ import WidgetsData from "@pages/widgets/widgetsData";
 import AccountSettings from "@pages/account/settings";
 import AccountSecurity from "@pages/account/security";
 // import AccountBillingPlan from "@pages/accountBillingPlan";
+import SkillsPage from "@pages/profile/skills/skillsPage.tsx";
+import PersonalInfoPage from "@pages/profile/personalInfo/personalInfoPage.tsx";
 import AccountNotification from "@pages/account/notification";
 import AccountStatements from "@pages/account/statements";
 import AccountSessions from "@pages/account/statements";
@@ -200,6 +202,8 @@ const routes: IRoute[] = [
                 {path: "projects", component: <AccountStatements/>},
                 {path: "education", component: <EducationPage/>},
                 {path: "experience", component: <ExperiencePage/>},
+                {path: "skills", component: <SkillsPage/>},
+                { path: "personal-info", component: <PersonalInfoPage /> },
             ],
         },
 

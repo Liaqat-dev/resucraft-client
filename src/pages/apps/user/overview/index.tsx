@@ -13,10 +13,10 @@ const OverView: NextPageWithLayout = () => {
         <React.Fragment>
             <BreadCrumb title="Overview" subTitle="User"/>
 
-            {/* user profile header */}
+            {/* user profilePics header */}
             <UserProfileHeader/>
 
-            {/* user profile */}
+            {/* user profilePics */}
             <UserProfileOverView/>
         </React.Fragment>
     );

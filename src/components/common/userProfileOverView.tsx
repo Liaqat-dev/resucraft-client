@@ -39,7 +39,7 @@ const UserProfileOverView: React.FC = () => {
 
   return (
     <React.Fragment>
-      {/* profile status */}
+      {/* profilePics status */}
       <div className="grid grid-cols-12 mt-space gap-space">
         <div className="col-span-12 md:col-span-5 lg:col-span-4">
           {/* followers and following */}
@@ -236,7 +236,7 @@ const UserProfileOverView: React.FC = () => {
           </div>
         </div>
 
-        {/* profile data */}
+        {/* profilePics data */}
         <div className="col-span-12 md:col-span-7 lg:col-span-8">
           <h6 className="mb-2">Overview</h6>
           <p className="mb-2 text-gray-500 dark:text-dark-500">

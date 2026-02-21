@@ -1,4 +1,4 @@
-// user profile
+// user profilePics
 
 // activity
 export interface TypeOptionsDataRecord {

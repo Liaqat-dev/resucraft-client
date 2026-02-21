@@ -18,7 +18,7 @@ const UserProfileHeader: React.FC = () => {
     <React.Fragment>
       {/* common Profile info */}
       <CommonAccount />
-      {/* navigation bar for user profile */}
+      {/* navigation bar for user profilePics */}
       <ul className="pb-2 overflow-x-auto tabs-pills lg:pb-0">
         <li>
           <Link

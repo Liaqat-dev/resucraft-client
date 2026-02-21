@@ -56,7 +56,7 @@ const UserVideoCallModal: React.FC<UserVideoCallModalProps> = ({
                     />
                   )}
 
-                  {/* profile image */}
+                  {/* profilePics image */}
                   <Link
                     to="#!"
                     className="absolute inline-block right-5 bottom-5"

@@ -13,7 +13,7 @@ const UserFollowers: NextPageWithLayout = () => {
     <React.Fragment>
       {/* Profile Header */}
       <UserProfileHeader />
-      {/* profile followers content */}
+      {/* profilePics followers content */}
       <UserFollowersContent />
     </React.Fragment>
   );

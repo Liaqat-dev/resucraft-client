@@ -114,7 +114,7 @@ import { CategoryItems } from "./apps/category";
 
 import { InvoiceList, ProductInfo } from "./apps/invoice";
 
-// User profile =======================
+// User profilePics =======================
 import {
   TypeOptionsDataRecord,
   UserFollowerRecord,
@@ -179,7 +179,7 @@ export type {
   // projects
   ProjectList,
 
-  // user profile
+  // user profilePics
   TypeOptionsDataRecord,
   UserFollowerRecord,
   UserDocumnentMediaRecord,

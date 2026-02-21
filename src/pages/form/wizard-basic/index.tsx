@@ -79,7 +79,7 @@ const WizardBasic: NextPageWithLayout = () => {
         if (reader.result === defaultImage) {
           setErrors((prev) => ({
             ...prev,
-            imageForm: "Please upload a profile picture.",
+            imageForm: "Please upload a profilePics picture.",
           }));
         } else {
           setErrors((prev) => ({ ...prev, imageForm: "" }));

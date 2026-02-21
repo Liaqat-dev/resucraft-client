@@ -13,7 +13,7 @@ const UserActivity: NextPageWithLayout = () => {
     <React.Fragment>
       {/* Profile Header */}
       <UserProfileHeader />
-      {/* profile activity content */}
+      {/* profilePics activity content */}
       <UserActivityContent />
     </React.Fragment>
   );
