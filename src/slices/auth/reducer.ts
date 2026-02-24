@@ -1,13 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { User } from '@dtos/auth.ts';
+import { User,AuthState } from '@dtos/index.ts';
 
-interface AuthState {
-    accessToken: string | null;
-    user: User | null;
-    isAuthenticated: boolean;
-    loading: boolean;
-    error: string | null;
-}
 
 const initialState: AuthState = {
     accessToken: null,

@@ -60,7 +60,7 @@ function Profile() {
                 className="rounded-full btn btn-icon btn-active-gray"
             >
                 <img
-                    src={user?.profilePic || getAvatar(user?.username)}
+                    src={user?.profilePic?.url || getAvatar(user?.username)}
                     alt="Profile"
                     className="rounded-full"
                 />
@@ -74,7 +74,7 @@ function Profile() {
                     <div className="p-4">
                         <div className="flex items-center gap-3 mb-4">
                             <img
-                                src={user?.profilePic || getAvatar(user.username)}
+                                src={user?.profilePic?.url || getAvatar(user.username)}
                                 alt="userImg"
                                 className="rounded-md size-11"
                             />

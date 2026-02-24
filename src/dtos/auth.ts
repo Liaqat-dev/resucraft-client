@@ -7,9 +7,20 @@ export interface User {
     isVerified: boolean;
     provider: 'local' | 'google';
     twoFactorEnabled?: boolean;
-    profilePic?: string;
+    profilePic?: {
+        url?: string;
+        deleteUrl?: string;
+    };
     createdAt?: string;
     updatedAt?: string;
+}
+
+export interface AuthState {
+    accessToken: string | null;
+    user: User | null;
+    isAuthenticated: boolean;
+    loading: boolean;
+    error: string | null;
 }
 
 export interface Session {
@@ -98,6 +109,10 @@ export interface VerifyEmailData {
 export interface ChangePasswordData {
     currentPassword: string;
     newPassword: string;
+}
+export interface updateAccountInfoData{
+    username?: string;
+    file:File|null;
 }
 
 export interface ResetPasswordData {

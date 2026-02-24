@@ -1,9 +1,9 @@
 import React, {useEffect, useState} from "react";
-import {Experience} from "@dtos/experience";
-import {experienceService} from "../../../services/experience.service";
+import {Experience} from "@dtos/index.ts";
+import {experienceService} from "@src/services/experience.service.ts";
 import ExperienceModal from "./experienceModal";
 import ExperienceCard from "./experienceCard";
-import DeleteConfirmModal from "../../../components/common/deleteConfirmModal.tsx";
+import DeleteConfirmModal from "@src/components/common/deleteConfirmModal.tsx";
 
 const ExperiencePage: React.FC = () => {
     const [experiences, setExperiences] = useState<Experience[]>([]);

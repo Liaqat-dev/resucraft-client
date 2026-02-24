@@ -1,5 +1,5 @@
 import axiosInstance from "@src/utils/axios_api";
-import { Experience, CreateExperienceData } from "../dtos/experience.ts";
+import { Experience, CreateExperienceData } from "@dtos/userProfile.ts";
 
 const BASE_URL = "/experience";
 

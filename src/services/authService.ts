@@ -1,16 +1,16 @@
-
 import api from '@src/utils/axios_api';
 import {
-    User,
+    ActivityLog,
+    AuthStats,
+    ChangePasswordData,
+    LoginData,
     LoginResponse,
     RegisterData,
-    LoginData,
-    VerifyEmailData,
-    ChangePasswordData,
     ResetPasswordData,
     Session,
-    ActivityLog,
-    AuthStats
+    updateAccountInfoData,
+    User,
+    VerifyEmailData
 } from '@dtos/auth.ts';
 
 export const authService = {
@@ -32,7 +32,7 @@ export const authService = {
 
     // Google Login
     async googleLogin(accessToken: string) {
-        const response = await api.post<LoginResponse>('/auth/google', { accessToken });
+        const response = await api.post<LoginResponse>('/auth/google', {accessToken});
         return response.data;
     },
 
@@ -50,7 +50,7 @@ export const authService = {
         const response = await api.post<{
             message: string;
             expiresIn: string
-        }>('/auth/resend-code', { email });
+        }>('/auth/resend-code', {email});
         return response.data;
     },
 
@@ -72,13 +72,13 @@ export const authService = {
     async forgotPassword(email: string) {
         const response = await api.post<{
             message: string
-        }>('/auth/forgot-password', { email });
+        }>('/auth/forgot-password', {email});
         return response.data;
     },
 
     // Reset Password
     async resetPassword(data: ResetPasswordData) {
-        const { token, password, confirmPassword } = data;
+        const {token, password, confirmPassword} = data;
         const response = await api.post<{
             message: string
         }>(`/auth/reset-password/${token}`, {
@@ -93,7 +93,7 @@ export const authService = {
         const response = await api.post<{
             message: string;
             accessToken: string
-        }>('/auth/refresh', {}, { withCredentials: true });  // ✅ Empty body
+        }>('/auth/refresh', {}, {withCredentials: true});  // ✅ Empty body
         return response.data;
     },
 
@@ -144,6 +144,15 @@ export const authService = {
             activity: ActivityLog[];
             total: number
         }>(`/auth/activity?limit=${limit}`);
+        return response.data;
+    },
+    async updateAccountInfo(data: updateAccountInfoData) {
+        const formData = new FormData();
+        if (data.username) formData.append('username', data.username);
+        if (data.file) formData.append('profilePic', data.file);
+        const response = await api.put('/auth/update-account-info', formData, {
+            headers: {'Content-Type': 'multipart/form-data'},
+        });
         return response.data;
     }
 };

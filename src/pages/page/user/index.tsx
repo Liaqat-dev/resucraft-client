@@ -6,7 +6,7 @@ import React, { useEffect } from "react";
 const UserPage: NextPageWithLayout = () => {
   useEffect(() => {
     document.title =
-      "User Overview | Domiex - React TS Admin & Dashboard Template";
+      "User Overview | ResuCraft";
   }, []);
 
   return (

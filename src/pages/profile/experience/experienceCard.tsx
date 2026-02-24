@@ -1,5 +1,5 @@
 import React from "react";
-import { Experience } from "@dtos/experience";
+import { Experience } from "@dtos/userProfile.ts";
 import { Edit2, Trash2 } from "lucide-react";
 
 interface Props {

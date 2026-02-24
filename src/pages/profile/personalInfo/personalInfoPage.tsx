@@ -1,102 +1,253 @@
 import React, { useEffect, useState } from "react";
-import type { UpdatePersonalInfoData, PersonalInfo } from "@dtos/personalInfo";
-import { personalInfoService } from "@src/services/personalInfo.service.ts";
+import type { PersonalInfo } from "@dtos/index.ts";
 import toast, { Toaster } from "react-hot-toast";
-import { FolderOpen, Loader2, User } from "lucide-react";
+import {
+    BriefcaseBusiness,
+    Calendar,
+    FileText,
+    Github,
+    Linkedin,
+    Loader2,
+    Mail,
+    MapPin,
+    Phone,
+    User,
+} from "lucide-react";
+import { useProfile } from "@src/hooks/useProfile.ts";
 
-// ── Skeleton shown while initial data is being fetched ──────────────────────
+// ── Types ─────────────────────────────────────────────────────────────────────
+
+type FormErrors = Partial<Record<keyof PersonalInfo, string>>;
+type TouchedFields = Partial<Record<keyof PersonalInfo, boolean>>;
+
+// ── Validation ────────────────────────────────────────────────────────────────
+
+const URL_RE = /^(https?:\/\/)?([\w-]+\.)+[\w-]+(\/[\w\-./?%&=]*)?$/i;
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const PHONE_RE = /^[+\d\s().\-]{7,20}$/;
+
+function validate(form: PersonalInfo): FormErrors {
+    const e: FormErrors = {};
+    if (!form.firstName?.trim()) e.firstName = "First name is required.";
+    if (!form.lastName?.trim()) e.lastName = "Last name is required.";
+    if (!form.profession?.trim()) e.profession = "Profession is required.";
+    if (form.email && !EMAIL_RE.test(form.email)) e.email = "Invalid email address.";
+    if (form.phone && !PHONE_RE.test(String(form.phone))) e.phone = "Invalid phone number.";
+    if (form.github && !URL_RE.test(form.github)) e.github = "Enter a valid URL.";
+    if (form.linkedin && !URL_RE.test(form.linkedin)) e.linkedin = "Enter a valid URL.";
+    return e;
+}
+
+// ── Skeleton ──────────────────────────────────────────────────────────────────
+
 const Skeleton: React.FC = () => (
-    <div className="min-h-screen flex justify-center items-start py-12 px-4">
-        <div className=" shadow-xl rounded-3xl p-12 w-full max-w-3xl border border-gray-100">
-            <div className="h-9 w-64 bg-gray-200 rounded-xl mx-auto mb-8 animate-pulse" />
-            <div className="flex justify-center mb-8">
-                <div className="w-32 h-32 rounded-full bg-gray-200 animate-pulse" />
-            </div>
-            <div className="space-y-6">
-                {Array.from({ length: 7 }).map((_, i) => (
-                    <div key={i}>
-                        <div className="h-4 w-28 bg-gray-200 rounded mb-2 animate-pulse" />
-                        <div className="h-12 w-full bg-gray-100 rounded-xl animate-pulse" />
+    <div className="card">
+        <div className="card-header flex items-center gap-3">
+            <div className="size-8 rounded-md bg-gray-100 animate-pulse" />
+            <div className="h-5 w-44 bg-gray-200 rounded animate-pulse" />
+        </div>
+        <div className="card-body space-y-5">
+            {[3, 3, 2, 1].map((cols, si) => (
+                <div key={si} className="space-y-4">
+                    <div className="h-3.5 w-28 bg-gray-200 rounded animate-pulse" />
+                    <div className={`grid grid-cols-1 sm:grid-cols-${cols === 1 ? 1 : 2} gap-4`}>
+                        {Array.from({ length: cols }).map((_, fi) => (
+                            <div key={fi} className="space-y-1.5">
+                                <div className="h-3 w-20 bg-gray-200 rounded animate-pulse" />
+                                <div className="h-10 w-full bg-gray-100 rounded-md animate-pulse" />
+                            </div>
+                        ))}
                     </div>
-                ))}
-                <div className="h-12 w-full bg-gray-200 rounded-xl animate-pulse" />
+                </div>
+            ))}
+            <div className="flex justify-end pt-1">
+                <div className="h-9 w-28 bg-gray-200 rounded-md animate-pulse" />
             </div>
         </div>
     </div>
 );
 
-// ────────────────────────────────────────────────────────────────────────────
+// ── Section Title ─────────────────────────────────────────────────────────────
+
+const SectionHeading: React.FC<{ title: string; description: string }> = ({ title, description }) => (
+    <div className="pt-1">
+        <div className="flex items-baseline gap-2">
+            <span className="text-sm font-semibold text-gray-700 dark:text-dark-200">{title}</span>
+            <span className="text-xs text-gray-400 dark:text-dark-500">{description}</span>
+        </div>
+        <div className="mt-2 h-px bg-gray-100 dark:bg-dark-800" />
+    </div>
+);
+
+// ── Field ─────────────────────────────────────────────────────────────────────
+
+interface FieldProps {
+    label: string;
+    name: keyof PersonalInfo;
+    type?: string;
+    icon: React.ReactNode;
+    placeholder?: string;
+    value: string;
+    error?: string;
+    disabled?: boolean;
+    textarea?: boolean;
+    onChange: React.ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement>;
+    onBlur: React.FocusEventHandler<HTMLInputElement | HTMLTextAreaElement>;
+}
+
+const Field: React.FC<FieldProps> = ({
+    label,
+    name,
+    type = "text",
+    icon,
+    placeholder,
+    value,
+    error,
+    disabled,
+    textarea,
+    onChange,
+    onBlur,
+}) => {
+    const baseInput = [
+        "w-full pl-9 pr-4 py-2.5 text-sm rounded-md border",
+        "bg-white dark:bg-dark-900 dark:text-dark-100",
+        "transition-colors duration-150",
+        "focus:outline-none focus:ring-2",
+        "disabled:opacity-50 disabled:cursor-not-allowed",
+        error
+            ? "border-red-400 dark:border-red-500 focus:ring-red-400/30 focus:border-red-400"
+            : "border-gray-200 dark:border-dark-800 hover:border-gray-300 dark:hover:border-dark-700 focus:ring-primary-500/20 focus:border-primary-500",
+    ].join(" ");
+
+    return (
+        <div className="space-y-1.5">
+            <label className="block text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-dark-400">
+                {label}
+            </label>
+            <div className="relative">
+                <span className="absolute inset-y-0 left-3 flex items-center pointer-events-none text-gray-400 dark:text-dark-500">
+                    {icon}
+                </span>
+                {textarea ? (
+                    <textarea
+                        name={name}
+                        value={value}
+                        onChange={onChange}
+                        onBlur={onBlur}
+                        disabled={disabled}
+                        placeholder={placeholder}
+                        rows={3}
+                        className={`${baseInput} resize-none pt-2.5`}
+                    />
+                ) : (
+                    <input
+                        type={type}
+                        name={name}
+                        value={value}
+                        onChange={onChange}
+                        onBlur={onBlur}
+                        disabled={disabled}
+                        placeholder={placeholder}
+                        className={baseInput}
+                    />
+                )}
+            </div>
+            {error && (
+                <p className="text-xs text-red-500 dark:text-red-400 flex items-center gap-1">
+                    <span className="inline-block size-1 rounded-full bg-red-500 dark:bg-red-400" />
+                    {error}
+                </p>
+            )}
+        </div>
+    );
+};
+
+// ── Page ──────────────────────────────────────────────────────────────────────
+
+const EMPTY_FORM: PersonalInfo = {
+    firstName: "",
+    lastName: "",
+    dob: "",
+    profession:"",
+    bio: "",
+    email: "",
+    address: "",
+    phone: "",
+    github: "",
+    linkedin: "",
+};
 
 const PersonalInfoPage: React.FC = () => {
-    const [profilePreview, setProfilePreview] = useState<string | null>(null);
+    const { fetchPersonalInfo, savePersonalInfo } = useProfile();
     const [isLoading, setIsLoading] = useState(true);
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const [form, setForm] = useState<UpdatePersonalInfoData>({
-        name: "",
-        dob: "",
-        bio: "",
-        phone: "",
-        github: "",
-        linkedin: "",
-        profilePic: null,
-    });
+    const [form, setForm] = useState<PersonalInfo>(EMPTY_FORM);
+    const [errors, setErrors] = useState<FormErrors>({});
+    const [touched, setTouched] = useState<TouchedFields>({});
 
     useEffect(() => {
-        const loadData = async () => {
-            try {
-                const data: PersonalInfo = await personalInfoService.get();
-                const dobFormatted = data.dob ? data.dob.split("T")[0] : "";
+        fetchPersonalInfo()
+            .unwrap()
+            .then((data) => {
                 setForm({
-                    name: data.name || "",
-                    dob: dobFormatted,
+                    firstName: data.firstName || "",
+                    lastName: data.lastName || "",
+                    email: data.email || "",
+                    profession: data.profession || "",
+                    address: data.address || "",
+                    dob: data.dob ? data.dob.split("T")[0] : "",
                     bio: data.bio || "",
-                    phone: data.phone || "",
+                    phone: data.phone ? String(data.phone) : "",
                     github: data.github || "",
                     linkedin: data.linkedin || "",
-                    profilePic: null,
                 });
-                setProfilePreview(data.profilePic || null);
-            } catch (err) {
-                console.error("Error loading personal info:", err);
-                toast.error("Failed to load profile data.");
-            } finally {
-                setIsLoading(false);
-            }
-        };
-        void loadData();
+            })
+            .catch(() => toast.error("Failed to load profile data."))
+            .finally(() => setIsLoading(false));
     }, []);
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleChange: React.ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement> = (e) => {
         if (isSubmitting) return;
-        const { name, value, files } = e.target;
-        if (files && files[0]) {
-            setForm((prev) => ({ ...prev, [name]: files[0] }));
-            setProfilePreview(URL.createObjectURL(files[0]));
-        } else {
-            setForm((prev) => ({ ...prev, [name]: value }));
+        const { name, value } = e.target;
+        const key = name as keyof PersonalInfo;
+        const updated = { ...form, [key]: value };
+        setForm(updated);
+        if (touched[key]) {
+            setErrors((prev) => ({ ...prev, [key]: validate(updated)[key] }));
         }
+    };
+
+    const handleBlur: React.FocusEventHandler<HTMLInputElement | HTMLTextAreaElement> = (e) => {
+        const key = e.target.name as keyof PersonalInfo;
+        setTouched((prev) => ({ ...prev, [key]: true }));
+        setErrors((prev) => ({ ...prev, [key]: validate(form)[key] }));
     };
 
     const handleSubmit: React.FormEventHandler<HTMLFormElement> = async (e) => {
         e.preventDefault();
-        setIsSubmitting(true);
 
-        const toastId = toast.loading(
-            form.profilePic instanceof File
-                ? "Uploading image & saving changes..."
-                : "Saving changes..."
+        const allTouched = Object.keys(form).reduce<TouchedFields>(
+            (acc, k) => ({ ...acc, [k]: true }),
+            {}
         );
+        setTouched(allTouched);
 
+        const validationErrors = validate(form);
+        setErrors(validationErrors);
+
+        if (Object.keys(validationErrors).length > 0) {
+            toast.error("Please fix the highlighted errors.");
+            return;
+        }
+
+        setIsSubmitting(true);
+        const toastId = toast.loading("Saving changes...");
         try {
-            await personalInfoService.update(form);
-            // Clear the pending file from form state after successful save
-            setForm((prev) => ({ ...prev, profilePic: null }));
+            await savePersonalInfo(form).unwrap();
             toast.success("Profile updated successfully!", { id: toastId });
         } catch (err: any) {
-            console.error("Update error:", err);
             toast.error(
-                "Update failed: " +
-                    (err.response?.data?.message || err.message || "Something went wrong"),
+                "Update failed: " + (err?.message || "Something went wrong"),
                 { id: toastId }
             );
         } finally {
@@ -106,128 +257,136 @@ const PersonalInfoPage: React.FC = () => {
 
     if (isLoading) return <Skeleton />;
 
-    const uploadingImage = isSubmitting && form.profilePic instanceof File;
+    /** Returns the string value for a PersonalInfo field. */
+    const val = (key: keyof PersonalInfo): string =>
+        form[key] != null ? String(form[key]) : "";
+
+    /** Common props for every Field. */
+    const fp = (key: keyof PersonalInfo) => ({
+        name: key,
+        value: val(key),
+        error: touched[key] ? errors[key] : undefined,
+        disabled: isSubmitting,
+        onChange: handleChange,
+        onBlur: handleBlur,
+    });
 
     return (
-        <div className="min-h-screen  flex justify-center items-start py-12 px-4">
+        <div className="card">
             <Toaster position="top-right" />
 
-            <div className=" shadow-xl rounded-3xl p-12 w-full max-w-3xl border border-gray-100">
-                <h2 className="text-3xl font-bold text-center text-gray-800 mb-8">
+            <div className="card-header flex items-center gap-3">
+                <div className="size-8 rounded-md bg-primary-50 dark:bg-primary-950 flex items-center justify-center shrink-0">
+                    <User size={15} className="text-primary-600 dark:text-primary-400" />
+                </div>
+                <h2 className="text-base font-semibold text-gray-800 dark:text-dark-100">
                     Personal Information
                 </h2>
+            </div>
 
-                {/* ── Avatar preview ─────────────────────────────────────── */}
-                <div className="flex justify-center mb-8">
-                    <div className="relative">
-                        {profilePreview ? (
-                            <img
-                                src={profilePreview}
-                                alt="Profile"
-                                className={`w-32 h-32 rounded-full object-cover border-4 border-indigo-100 shadow-md transition-opacity duration-200 ${
-                                    isSubmitting ? "opacity-50" : ""
-                                }`}
-                            />
-                        ) : (
-                            <div
-                                className={`w-32 h-32 rounded-full bg-gray-100 flex items-center justify-center border-4 border-gray-200 transition-opacity duration-200 ${
-                                    isSubmitting ? "opacity-50" : ""
-                                }`}
-                            >
-                                <User className="w-12 h-12 text-gray-400" />
-                            </div>
-                        )}
+            <div className="card-body">
+                <form onSubmit={handleSubmit} noValidate className="space-y-5">
 
-                        {/* Spinner overlay on avatar while the image is uploading */}
-                        {uploadingImage && (
-                            <div className="absolute inset-0 flex items-center justify-center rounded-full bg-black/30">
-                                <Loader2 className="w-8 h-8 text-white animate-spin" />
-                            </div>
-                        )}
-                    </div>
-                </div>
-
-                <form onSubmit={handleSubmit} className="space-y-6">
-                    {/* ── File picker ──────────────────────────────────────── */}
-                    <div>
-                        <label className="block text-sm font-semibold text-gray-700 mb-2">
-                            Profile Picture
-                        </label>
-
-                        <input
-                            type="file"
-                            id="profilePic"
-                            name="profilePic"
-                            accept="image/*"
-                            onChange={handleChange}
-                            disabled={isSubmitting}
-                            className="hidden"
+                    {/* ── Basic Details ──────────────────────────────────────── */}
+                    <SectionHeading title="Basic Details" description="Your name and date of birth" />
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <Field
+                            label="First Name"
+                            icon={<User size={14} />}
+                            placeholder="John"
+                            {...fp("firstName")}
                         />
-
-                        <label
-                            htmlFor="profilePic"
-                            className={`flex items-center gap-3 px-4 py-3 bg-white border border-gray-300 rounded-xl shadow-sm transition-all duration-200 ${
-                                isSubmitting
-                                    ? "opacity-50 cursor-not-allowed"
-                                    : "cursor-pointer hover:shadow-md hover:bg-gray-50"
-                            }`}
-                        >
-                            <FolderOpen className="w-6 h-6 text-amber-500" />
-                            <span className="text-sm text-gray-700 font-medium">
-                                {form.profilePic instanceof File
-                                    ? form.profilePic.name
-                                    : "Choose File"}
-                            </span>
-                        </label>
+                        <Field
+                            label="Last Name"
+                            icon={<User size={14} />}
+                            placeholder="Doe"
+                            {...fp("lastName")}
+                        />
+                        <Field
+                            label="Date of Birth"
+                            type="date"
+                            icon={<Calendar size={14} />}
+                            {...fp("dob")}
+                        />
+                        <Field
+                            label="Profession"
+                            type="text"
+                            icon={<BriefcaseBusiness size={14}/>}
+                            {...fp("profession")}
+                        />
                     </div>
 
-                    {/* ── Text fields ──────────────────────────────────────── */}
-                    {[
-                        { key: "name", label: "Full Name", type: "text" },
-                        { key: "dob", label: "Date of Birth", type: "date" },
-                        { key: "phone", label: "Phone Number", type: "tel" },
-                        { key: "github", label: "GitHub URL", type: "text" },
-                        { key: "linkedin", label: "LinkedIn URL", type: "text" },
-                        { key: "bio", label: "Bio", type: "text" },
-                    ].map(({ key, label, type }) => (
-                        <div key={key}>
-                            <label className="block text-sm font-semibold text-gray-700 mb-1">
-                                {label}
-                            </label>
-                            <input
-                                type={type}
-                                name={key}
-                                value={
-                                    typeof form[key as keyof UpdatePersonalInfoData] === "string"
-                                        ? (form[key as keyof UpdatePersonalInfoData] as string)
-                                        : ""
-                                }
-                                onChange={handleChange}
-                                disabled={isSubmitting}
-                                className="w-full px-4 py-3 border border-gray-300 rounded-xl outline-none focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100 transition duration-200 bg-white disabled:opacity-50 disabled:cursor-not-allowed"
+                    {/* ── Contact ────────────────────────────────────────────── */}
+                    <SectionHeading title="Contact Information" description="How people can reach you" />
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <Field
+                            label="Email"
+                            type="email"
+                            icon={<Mail size={14} />}
+                            placeholder="john@example.com"
+                            {...fp("email")}
+                        />
+                        <Field
+                            label="Phone Number"
+                            type="tel"
+                            icon={<Phone size={14} />}
+                            placeholder="+1 234 567 890"
+                            {...fp("phone")}
+                        />
+                        <div className="sm:col-span-2">
+                            <Field
+                                label="Address"
+                                icon={<MapPin size={14} />}
+                                placeholder="City, Country"
+                                {...fp("address")}
                             />
                         </div>
-                    ))}
+                    </div>
 
-                    {/* ── Submit button ─────────────────────────────────────── */}
-                    <button
-                        type="submit"
-                        disabled={isSubmitting}
-                        className="w-full py-3 rounded-xl bg-indigo-600 text-white font-semibold text-lg shadow-md hover:bg-indigo-700 hover:shadow-lg transition-all duration-200 active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed disabled:active:scale-100 flex items-center justify-center gap-2"
-                    >
-                        {isSubmitting ? (
-                            <>
-                                <Loader2 className="w-5 h-5 animate-spin" />
-                                <span>
-                                    {form.profilePic instanceof File
-                                        ? "Uploading..."
-                                        : "Saving..."}
-                                </span>
-                            </>
-                        ) : (
-                            "Save Changes"
-                        )}
-                    </button>
+                    {/* ── Social Links ───────────────────────────────────────── */}
+                    <SectionHeading title="Social Links" description="GitHub and LinkedIn profiles" />
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <Field
+                            label="GitHub URL"
+                            icon={<Github size={14} />}
+                            placeholder="https://github.com/username"
+                            {...fp("github")}
+                        />
+                        <Field
+                            label="LinkedIn URL"
+                            icon={<Linkedin size={14} />}
+                            placeholder="https://linkedin.com/in/username"
+                            {...fp("linkedin")}
+                        />
+                    </div>
+
+                    {/* ── Bio ────────────────────────────────────────────────── */}
+                    <SectionHeading title="About You" description="Short bio for your resume" />
+                    <Field
+                        label="Bio"
+                        textarea
+                        icon={<FileText size={14} />}
+                        placeholder="Write a short professional summary..."
+                        {...fp("bio")}
+                    />
+
+                    {/* ── Submit ─────────────────────────────────────────────── */}
+                    <div className="pt-1 flex justify-end">
+                        <button
+                            type="submit"
+                            disabled={isSubmitting}
+                            className="btn btn-primary flex items-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
+                        >
+                            {isSubmitting ? (
+                                <>
+                                    <Loader2 size={14} className="animate-spin" />
+                                    Saving...
+                                </>
+                            ) : (
+                                "Save Changes"
+                            )}
+                        </button>
+                    </div>
                 </form>
             </div>
         </div>

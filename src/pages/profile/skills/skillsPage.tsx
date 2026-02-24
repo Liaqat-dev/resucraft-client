@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {Skill, skillService} from "../../../services/skills.service.ts";
+import {Skill, skillService} from "@src/services/skills.service.ts";
 import {Plus, X} from "lucide-react";
 import DeleteConfirmModal from "@src/components/common/deleteConfirmModal";
 

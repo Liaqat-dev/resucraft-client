@@ -1,8 +1,15 @@
 
 import {createAsyncThunk} from '@reduxjs/toolkit';
 import {authService} from '../../services/authService';
-import {login, logout, setRefreshAccessToken, setUser} from '@src/slices/auth/reducer.ts';
-import {ChangePasswordData, LoginData, RegisterData, ResetPasswordData, VerifyEmailData} from '@dtos/auth.ts';
+import {login, logout, setRefreshAccessToken, setUser, updateUser} from '@src/slices/auth/reducer.ts';
+import {
+    ChangePasswordData,
+    LoginData,
+    RegisterData,
+    ResetPasswordData,
+    updateAccountInfoData,
+    VerifyEmailData
+} from '@dtos/auth.ts';
 
 
 export const initializeAuth = createAsyncThunk(
@@ -161,6 +168,22 @@ export const fetchUserProfile = createAsyncThunk(
         }
     }
 );
+
+export const updateAccountInfo = createAsyncThunk(
+    'auth/update-account-info',
+    async (data: updateAccountInfoData, {dispatch, rejectWithValue}) => {
+        try {
+            const response = await authService.updateAccountInfo(data);
+            dispatch(updateUser(response));
+            return response;
+        } catch (error: any) {
+            return rejectWithValue({
+                message: error.response?.data?.message || 'Failed to update account info',
+                errors: error.response?.data?.errors
+            });
+        }
+    }
+)
 
 // Change Password
 export const changePassword = createAsyncThunk(

@@ -3,12 +3,14 @@
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import layoutReducer from "./layout/reducer";
 import authReducer from "./auth/reducer";
+import profileReducer from "./profile/reducer";
 
 
 // Combine your reducers
 const rootReducer = combineReducers({
   Layout: layoutReducer,
   auth: authReducer,
+  profile: profileReducer,
 });
 
 // Create a reducer to handle hydration (if needed)

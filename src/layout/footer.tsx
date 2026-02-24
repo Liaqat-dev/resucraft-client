@@ -6,7 +6,7 @@ const Footer = () => {
 
   return (
     <React.Fragment>
-      <div className=" main-footer">
+      <div className="  !mx-auto main-footer !container">
         <div className="w-full">
           <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
             <div className="hidden lg:block">

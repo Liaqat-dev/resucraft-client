@@ -1,9 +1,9 @@
 import React, {useEffect, useState} from "react";
-import {Education} from "@dtos/education";
-import {educationService} from "../../../services/education.service.ts";
+import {Education} from "@dtos/index.ts";
+import {educationService} from "@src/services/education.service.ts";
 import EducationCard from "./educationCard.tsx";
 import EducationModal from "./educationModal";
-import DeleteConfirmModal from "../../../components/common/deleteConfirmModal";
+import DeleteConfirmModal from "@src/components/common/deleteConfirmModal";
 
 const EducationPage: React.FC = () => {
     const [data, setData] = useState<Education[]>([]);
