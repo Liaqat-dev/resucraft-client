@@ -49,7 +49,7 @@ const Account: NextPageWithLayout = () => {
                 <Tab
                     icon={<ListTree className="inline-block size-4 ltr:mr-2 rtl:ml-2"/>}
                     label="Logs"
-                    path="/account/statements"
+                    path="/account/logs"
                 >
                     <div>Statements Content</div>
                 </Tab>

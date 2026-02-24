@@ -60,11 +60,11 @@ import AccountSecurity from "@pages/account/security";
 import SkillsPage from "@pages/profile/skills/skillsPage.tsx";
 import PersonalInfoPage from "@pages/profile/personalInfo/personalInfoPage.tsx";
 import AccountNotification from "@pages/account/notification";
-import AccountStatements from "@pages/account/statements";
+import AccountStatements from "@pages/account/logs";
 import AccountSessions from "@pages/account/sessions";
 import UserPage from "@pages/profile";
-import UserActivity from "@pages/profile/userActivity";
-import UserDocuments from "@pages/profile/userDocuments";
+import Certificates from "@pages/profile/certificates";
+import Projects from "@pages/profile/projects";
 import PricingPage from "@pages/page/pricing";
 import PricingAdmin from "@pages/page/pricingAdmin";
 import Faq from "@pages/page/faq";
@@ -194,14 +194,12 @@ const routes: IRoute[] = [
             children: [
                 {index: true, element: <Navigate to="overview" replace/>},
                 {path: "overview", component: <UserProfileOverView/>},
-                {path: "activity", component: <UserActivity/>},
-                {path: "documents", component: <UserDocuments/>},
-                {path: "notes", component: <UserNotes/>},
-                {path: "projects", component: <AccountStatements/>},
+                {path: "personal-info", component: <PersonalInfoPage/>},
                 {path: "education", component: <EducationPage/>},
                 {path: "experience", component: <ExperiencePage/>},
                 {path: "skills", component: <SkillsPage/>},
-                {path: "personal-info", component: <PersonalInfoPage/>},
+                {path: "projects", component: <Projects/>},
+                {path: "certificates", component: <Certificates/>},
             ],
         },
 
@@ -215,7 +213,7 @@ const routes: IRoute[] = [
                     {path: "security", component: <AccountSecurity/>},
                     {path: "notification", component: <AccountNotification/>},
                     {path: "sessions", component: <AccountSessions/>},
-                    {path: "statements", component: <AccountStatements/>},
+                    {path: "logs", component: <AccountStatements/>},
                 ]
         }
     ]

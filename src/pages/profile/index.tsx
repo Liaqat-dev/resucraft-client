@@ -2,7 +2,7 @@ import {NextPageWithLayout} from "@dtos/layout";
 import React, {useEffect} from "react";
 import {Tab, Tabs} from "@src/components/custom/tabs/tabOutletBased.tsx";
 import CommonAccount from "@src/components/common/commonAccount.tsx";
-import {Briefcase, Eye, GraduationCap, Lightbulb, Monitor, Sparkles, User} from "lucide-react";
+import {Badge, Briefcase, Eye, GraduationCap, Lightbulb, Monitor, Sparkles, User} from "lucide-react";
 
 const Profile: NextPageWithLayout = () => {
     useEffect(() => {
@@ -60,20 +60,20 @@ const Profile: NextPageWithLayout = () => {
                     <div>Skills Content</div>
                 </Tab>
                 <Tab
-                    icon={
-                        <Sparkles className="inline-block size-4 ltr:mr-2 rtl:ml-2"/>
-                    }
-                    label="Activity"
-                    path="/profile/activity"
-                >
-                    <div>Security Content</div>
-                </Tab>
-                <Tab
                     icon={<Monitor className="inline-block size-4 ltr:mr-2 rtl:ml-2"/>}
                     label="Projects"
                     path="/profile/projects"
                 >
-                    <div>Logs Content</div>
+                    <div>Projects</div>
+                </Tab>
+                <Tab
+                    icon={
+                        <Badge className="inline-block size-4 mr-2"/>
+                    }
+                    label="Certificates"
+                    path="/profile/certificates"
+                >
+                    <div>Certificates</div>
                 </Tab>
             </Tabs>
         </div>

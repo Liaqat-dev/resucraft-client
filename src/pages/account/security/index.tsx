@@ -1,7 +1,7 @@
 import React, {ChangeEvent, useEffect, useMemo, useState} from "react";
 import {Eye, EyeOff, KeyRound, Loader2, Lock, Mail, ShieldAlert, Trash2, Upload, User} from "lucide-react";
 import {NextPageWithLayout} from "@dtos/layout";
-import user17 from "@assets/images/avatar/user-17.png";
+import user1 from "@assets/images/avatar/user-18.png";
 import {useSelector} from "react-redux";
 import {RootState} from "@src/slices/store.ts";
 import toast from "react-hot-toast";
@@ -172,7 +172,7 @@ const SectionLabel = ({icon, index, title, description}: {
     <div className="col-span-12 xl:col-span-3">
         <div className="flex items-start gap-3 xl:flex-col">
             <div className="flex items-center gap-2 shrink-0">
-                <span className="flex items-center justify-center rounded-lg w-8 h-8 bg-primary-500/10 text-primary">
+                <span className="flex items-center justify-center rounded-lg w-8 h-8 bg-primary-500/10               text-primary">
                     {icon}
                 </span>
                 <span className="text-xs font-mono text-gray-400 dark:text-dark-500">{index}</span>
@@ -214,7 +214,7 @@ const AccountSettings: NextPageWithLayout = () => {
 
     useEffect(() => {
         if (user?.username) setUserName(user.username);
-        if (user?.profilePic) setPhotoPreview(user.profilePic);
+        if (user?.profilePic?.url) setPhotoPreview(user.profilePic.url);
     }, [user]);
 
     const handleChangeAccountInfo = async (e: React.FormEvent) => {
@@ -271,7 +271,7 @@ const AccountSettings: NextPageWithLayout = () => {
         }
     };
 
-    const avatarSrc = photoPreview ?? user?.profilePic?.url ?? user17;
+    const avatarSrc = photoPreview ?? user1;
 
     return (
         <div className="space-y-5 mt-5">
