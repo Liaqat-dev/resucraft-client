@@ -1,16 +1,13 @@
-import React, {useEffect} from "react";
-import {NextPageWithLayout} from "@dtos/layout";
+import { useEffect } from "react";
+import { NextPageWithLayout } from "@dtos/layout";
+import CertificatesPage from "./certificatesPage.tsx";
 
 const Certificates: NextPageWithLayout = () => {
     useEffect(() => {
-        document.title =
-            "Certificates | ResuCraft";
+        document.title = "Certificates | ResuCraft";
     }, []);
 
-    return (
-        <React.Fragment>
-
-        </React.Fragment>
-    );
+    return <CertificatesPage />;
 };
+
 export default Certificates;

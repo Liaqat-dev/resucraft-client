@@ -1,7 +1,11 @@
-export interface ProfileState{
-  personalInfo : PersonalInfo;
-  loading:boolean;
-  error:string|null;
+export interface ProfileState {
+  personalInfo: PersonalInfo;
+  projects: Project[];
+  certificates: Certificate[];
+  loading: boolean;
+  projectsLoading: boolean;
+  certificatesLoading: boolean;
+  error: string | null;
 }
 
 //Personal Information
@@ -87,6 +91,54 @@ export interface CreateEducationData {
   fieldOfStudy?: string;
   startDate: string;
   endDate?: string;
+  description?: string;
+}
+
+// Project
+export interface Project {
+  _id: string;
+  user: string;
+  title: string;
+  description?: string;
+  liveUrl?: string;
+  repoUrl?: string;
+  startDate?: string;
+  endDate?: string;
+  technologies: string[];
+  status: 'planned' | 'in-progress' | 'completed';
+}
+
+export interface CreateProjectData {
+  title: string;
+  description?: string;
+  liveUrl?: string;
+  repoUrl?: string;
+  startDate?: string;
+  endDate?: string;
+  technologies?: string[];
+  status?: 'planned' | 'in-progress' | 'completed';
+}
+
+// Certificate
+export interface Certificate {
+  _id: string;
+  user: string;
+  name: string;
+  issuer: string;
+  issueDate: string;
+  expiryDate?: string;
+  credentialId?: string;
+  credentialUrl?: string;
+  description?: string;
+}
+
+export interface CreateCertificateData {
+  name: string;
+  issuer: string;
+  issueDate: string;
+  expiryDate?: string;
+  credentialId?: string;
+  credentialUrl?: string;
   description?: string;
 }
 

@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from "react";
-import {Experience, CreateExperienceData} from "@dtos/experience";
-import {experienceService} from "../../../services/experience.service.ts";
+import {Experience, CreateExperienceData} from "@dtos/index.ts";
+import {experienceService} from "@src/services/experience.service.ts";
 import {Briefcase, Building2, Calendar, FileText, Loader2, X} from "lucide-react";
 import toast from "react-hot-toast";
 

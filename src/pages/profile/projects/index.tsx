@@ -1,16 +1,13 @@
-import React, {useEffect} from "react";
-import {NextPageWithLayout} from "@dtos/layout";
+import { useEffect } from "react";
+import { NextPageWithLayout } from "@dtos/layout";
+import ProjectsPage from "./projectsPage.tsx";
 
 const Projects: NextPageWithLayout = () => {
     useEffect(() => {
-        document.title =
-            "Projects | ResuCraft";
+        document.title = "Projects | ResuCraft";
     }, []);
 
-    return (
-        <React.Fragment>
-
-        </React.Fragment>
-    );
+    return <ProjectsPage />;
 };
+
 export default Projects;
