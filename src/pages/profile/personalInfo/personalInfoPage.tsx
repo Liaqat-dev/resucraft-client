@@ -177,30 +177,33 @@ const EMPTY_FORM: PersonalInfo = {
     linkedin: "",
 };
 
+const toForm = (data: PersonalInfo): PersonalInfo => ({
+    firstName: data.firstName || "",
+    lastName: data.lastName || "",
+    email: data.email || "",
+    profession: data.profession || "",
+    address: data.address || "",
+    dob: data.dob ? data.dob.split("T")[0] : "",
+    bio: data.bio || "",
+    phone: data.phone ? String(data.phone) : "",
+    github: data.github || "",
+    linkedin: data.linkedin || "",
+});
+
 const PersonalInfoPage: React.FC = () => {
-    const { fetchPersonalInfo, savePersonalInfo } = useProfile();
-    const [isLoading, setIsLoading] = useState(true);
+    const { personalInfo, personalInfoLoaded, fetchPersonalInfo, savePersonalInfo } = useProfile();
+    const [isLoading, setIsLoading] = useState(!personalInfoLoaded);
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const [form, setForm] = useState<PersonalInfo>(EMPTY_FORM);
+    const [form, setForm] = useState<PersonalInfo>(personalInfoLoaded ? toForm(personalInfo) : EMPTY_FORM);
     const [errors, setErrors] = useState<FormErrors>({});
     const [touched, setTouched] = useState<TouchedFields>({});
 
     useEffect(() => {
+        if (personalInfoLoaded) return; // already in Redux, skip fetch
         fetchPersonalInfo()
             .unwrap()
-            .then((data) => {
-                setForm({
-                    firstName: data.firstName || "",
-                    lastName: data.lastName || "",
-                    email: data.email || "",
-                    profession: data.profession || "",
-                    address: data.address || "",
-                    dob: data.dob ? data.dob.split("T")[0] : "",
-                    bio: data.bio || "",
-                    phone: data.phone ? String(data.phone) : "",
-                    github: data.github || "",
-                    linkedin: data.linkedin || "",
-                });
+            .then((data: PersonalInfo) => {
+                setForm(toForm(data));
             })
             .catch(() => toast.error("Failed to load profile data."))
             .finally(() => setIsLoading(false));

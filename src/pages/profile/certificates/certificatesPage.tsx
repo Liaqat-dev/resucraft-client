@@ -105,7 +105,7 @@ const CertificatesPage: React.FC = () => {
                     <EmptyState onAdd={handleAdd} />
                 ) : (
                     <div className="space-y-px">
-                        {certificates.map((cert) => (
+                        {certificates.map((cert:Certificate) => (
                             <div
                                 key={cert._id}
                                 className="px-4 py-3.5 rounded-lg hover:bg-gray-50 dark:hover:bg-dark-800/50 transition-colors"

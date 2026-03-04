@@ -91,6 +91,11 @@ import ResumeBuilder from '@pages/builder/ResumeBuilder.tsx'
 
 
 import TemplateGallery from '@pages/Template/TemplatesGallery.tsx'
+import WelcomePage from '@pages/landing/WelcomePage.tsx'
+import FeaturesPage from '@pages/landing/FeaturesPage.tsx'
+import FAQPage from '@pages/landing/FAQPage.tsx'
+import ContactPage from '@pages/landing/ContactPage.tsx'
+import AboutPage from '@pages/landing/AboutPage.tsx'
 
 interface IRoute {
     path: string;
@@ -224,6 +229,13 @@ const nonAuthRoutes: IRoute[] = [
     {path: "/page/maintenance", component: <Maintenance/>},
     {path: "/page/404", component: <PageNotFoundError/>},
     {path: "/page/500", component: <FiveZeroZero/>},
+
+    // landing / marketing pages
+    {path: "/welcome", component: <WelcomePage/>},
+    {path: "/features", component: <FeaturesPage/>},
+    {path: "/faq", component: <FAQPage/>},
+    {path: "/contact", component: <ContactPage/>},
+    {path: "/about", component: <AboutPage/>},
 
     //  authentication
     {path: "/auth/sign-in", component: <Login/>},

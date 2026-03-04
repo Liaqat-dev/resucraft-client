@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {Skill, skillService} from "@src/services/skills.service.ts";
+import {useProfile} from "@hooks/useProfile.ts";
 import {Loader2, Plus, Tag, X} from "lucide-react";
 import DeleteConfirmModal from "@src/components/common/deleteConfirmModal";
 import toast from "react-hot-toast";
@@ -42,7 +42,7 @@ const categoryMeta: Record<string, {
 // ── Page ──────────────────────────────────────────────────────────────────────
 
 const SkillsPage: React.FC = () => {
-    const [data, setData] = useState<Skill[]>([]);
+    const { skills, fetchSkills, createSkills, deleteSkill } = useProfile();
     const [deleteId, setDeleteId] = useState<string | null>(null);
     const [saving, setSaving] = useState<Record<string, boolean>>({});
     const [newSkills, setNewSkills] = useState<Record<string, string[]>>({
@@ -51,13 +51,8 @@ const SkillsPage: React.FC = () => {
         Other: [],
     });
 
-    const load = async () => {
-        const res = await skillService.getAll();
-        setData(res.skills || []);
-    };
-
     useEffect(() => {
-        load();
+        fetchSkills(); // no-op if already loaded
     }, []);
 
     const addField = (category: string) => {
@@ -85,9 +80,8 @@ const SkillsPage: React.FC = () => {
         if (skillsToSave.length === 0) return;
         setSaving((prev) => ({...prev, [category]: true}));
         try {
-            await skillService.createBulk(skillsToSave);
+            await (createSkills(skillsToSave) as any);
             setNewSkills((prev) => ({...prev, [category]: []}));
-            load();
         } catch {
             toast.error(`Failed to save ${category} skills`);
         } finally {
@@ -97,9 +91,8 @@ const SkillsPage: React.FC = () => {
 
     const handleDelete = async () => {
         if (!deleteId) return;
-        await skillService.delete(deleteId);
         setDeleteId(null);
-        load();
+        await deleteSkill(deleteId);
     };
 
     return (
@@ -113,7 +106,7 @@ const SkillsPage: React.FC = () => {
 
             <div className="card-body space-y-px">
                 {categories.map((category) => {
-                    const skills = data.filter((s) => s.category === category);
+                    const categorySkills = skills.filter((s) => s.category === category);
                     const meta = categoryMeta[category];
                     const isSaving = saving[category] ?? false;
                     const hasNew = newSkills[category].length > 0;
@@ -131,7 +124,7 @@ const SkillsPage: React.FC = () => {
                                         {category} Skills
                                     </span>
                                     <span className="text-xs text-gray-400 dark:text-dark-500">
-                                        ({skills.length})
+                                        ({categorySkills.length})
                                     </span>
                                 </div>
                                 <button
@@ -144,9 +137,9 @@ const SkillsPage: React.FC = () => {
                             </div>
 
                             {/* Existing skill chips */}
-                            {skills.length > 0 && (
+                            {categorySkills.length > 0 && (
                                 <div className="flex flex-wrap gap-1.5 mt-2.5">
-                                    {skills.map((skill) => (
+                                    {categorySkills.map((skill) => (
                                         <span
                                             key={skill._id}
                                             className={`inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium rounded-md border ${meta.chip}`}
@@ -164,7 +157,7 @@ const SkillsPage: React.FC = () => {
                             )}
 
                             {/* Empty hint */}
-                            {skills.length === 0 && !hasNew && (
+                            {categorySkills.length === 0 && !hasNew && (
                                 <p className="mt-1.5 text-xs text-gray-400 dark:text-dark-500">
                                     No {category.toLowerCase()} skills yet.
                                 </p>

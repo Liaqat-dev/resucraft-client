@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useState} from "react";
-import Footer from "./footer";
+import Footer from "@src/components/landing/LandingFooter.tsx";
 import {useDispatch, useSelector} from "react-redux";
 import {AppDispatch, RootState} from "@src/slices/store.ts";
 import {changeSidebarSize} from "@src/slices/thunk";

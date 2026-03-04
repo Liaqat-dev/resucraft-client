@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import {Experience} from "@dtos/index.ts";
-import {experienceService} from "@src/services/experience.service.ts";
+import {useProfile} from "@hooks/useProfile.ts";
 import ExperienceModal from "./experienceModal";
 import ExperienceCard from "./experienceCard";
 import DeleteConfirmModal from "@src/components/common/deleteConfirmModal.tsx";
@@ -42,26 +42,13 @@ const EmptyState: React.FC<{onAdd: () => void}> = ({onAdd}) => (
 // ── Page ──────────────────────────────────────────────────────────────────────
 
 const ExperiencePage: React.FC = () => {
-    const [experiences, setExperiences] = useState<Experience[]>([]);
-    const [loading, setLoading] = useState(true);
+    const { experience, experienceLoading, fetchExperience, deleteExperience } = useProfile();
     const [showModal, setShowModal] = useState(false);
     const [editExperience, setEditExperience] = useState<Experience | undefined>(undefined);
     const [deleteId, setDeleteId] = useState<string | null>(null);
 
-    const fetchExperiences = async () => {
-        setLoading(true);
-        try {
-            const data = await experienceService.getExperiences();
-            setExperiences(data.experiences);
-        } catch (err) {
-            console.error(err);
-        } finally {
-            setLoading(false);
-        }
-    };
-
     useEffect(() => {
-        fetchExperiences();
+        fetchExperience(); // no-op if already loaded
     }, []);
 
     const handleAdd = () => {
@@ -76,17 +63,12 @@ const ExperiencePage: React.FC = () => {
 
     const handleDeleteConfirm = async () => {
         if (!deleteId) return;
-        try {
-            await experienceService.deleteExperience(deleteId);
-            setDeleteId(null);
-            fetchExperiences();
-        } catch (err) {
-            console.error(err);
-        }
+        setDeleteId(null);
+        await deleteExperience(deleteId);
     };
 
     const handleSaved = () => {
-        fetchExperiences();
+        fetchExperience(true);
         setShowModal(false);
     };
 
@@ -99,14 +81,14 @@ const ExperiencePage: React.FC = () => {
                     </div>
                     <h2 className="text-base font-semibold text-gray-800 dark:text-dark-100">
                         Work Experience
-                        {!loading && experiences.length > 0 && (
+                        {!experienceLoading && experience.length > 0 && (
                             <span className="ml-2 text-xs font-normal text-gray-400 dark:text-dark-500">
-                                ({experiences.length})
+                                ({experience.length})
                             </span>
                         )}
                     </h2>
                 </div>
-                {!loading && experiences.length > 0 && (
+                {!experienceLoading && experience.length > 0 && (
                     <button onClick={handleAdd} className="btn btn-primary flex items-center gap-1.5">
                         <Plus size={14}/>
                         Add
@@ -115,13 +97,13 @@ const ExperiencePage: React.FC = () => {
             </div>
 
             <div className="card-body">
-                {loading ? (
+                {experienceLoading ? (
                     <Skeleton/>
-                ) : experiences.length === 0 ? (
+                ) : experience.length === 0 ? (
                     <EmptyState onAdd={handleAdd}/>
                 ) : (
                     <div className="space-y-px">
-                        {experiences.map((exp) => (
+                        {experience.map((exp) => (
                             <div key={exp._id} className="px-4 py-3.5 rounded-lg hover:bg-gray-50 dark:hover:bg-dark-800/50 transition-colors">
                                 <ExperienceCard
                                     exp={exp}

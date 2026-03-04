@@ -1,10 +1,28 @@
+export interface Skill {
+  _id: string;
+  name: string;
+  category: "Technical" | "Soft" | "Other";
+}
+
 export interface ProfileState {
   personalInfo: PersonalInfo;
   projects: Project[];
   certificates: Certificate[];
+  education: Education[];
+  experience: Experience[];
+  skills: Skill[];
   loading: boolean;
+  personalInfoLoaded: boolean;
   projectsLoading: boolean;
   certificatesLoading: boolean;
+  educationLoading: boolean;
+  experienceLoading: boolean;
+  skillsLoading: boolean;
+  projectsLoaded: boolean;
+  certificatesLoaded: boolean;
+  educationLoaded: boolean;
+  experienceLoaded: boolean;
+  skillsLoaded: boolean;
   error: string | null;
 }
 

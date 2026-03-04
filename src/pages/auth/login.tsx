@@ -1,6 +1,6 @@
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '@hooks/useAuth';
-import { useForm, GlobalErrorAlert } from '@hooks/useForm';
+import { useForm, GlobalErrorAlert, } from '@hooks/useForm';
 import { FormInputFloatingWithIcon } from '@hooks/useForm';
 import * as Yup from 'yup';
 import { Mail, Lock, Eye, EyeOff, LogIn } from 'lucide-react';
@@ -50,6 +50,7 @@ export default function Login() {
         },
         onError: (error: any) => {
             console.error('Login error:', error);
+
         }
     });
 

@@ -6,6 +6,7 @@ File: tailwind scss files
 */
 
 @import "tailwindcss";
+@import "aos/dist/aos.css";
 @import "./fonts/fonts.css";
 
 @import "./components/theme.css";

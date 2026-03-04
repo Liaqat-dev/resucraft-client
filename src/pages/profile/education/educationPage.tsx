@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import {Education} from "@dtos/index.ts";
-import {educationService} from "@src/services/education.service.ts";
+import {useProfile} from "@hooks/useProfile.ts";
 import EducationCard from "./educationCard.tsx";
 import EducationModal from "./educationModal";
 import DeleteConfirmModal from "@src/components/common/deleteConfirmModal";
@@ -42,35 +42,19 @@ const EmptyState: React.FC<{onAdd: () => void}> = ({onAdd}) => (
 // ── Page ──────────────────────────────────────────────────────────────────────
 
 const EducationPage: React.FC = () => {
-    const [data, setData] = useState<Education[]>([]);
-    const [loading, setLoading] = useState(true);
+    const { education, educationLoading, fetchEducation, deleteEducation } = useProfile();
     const [open, setOpen] = useState(false);
     const [editingEducation, setEditingEducation] = useState<Education | null>(null);
     const [deleteId, setDeleteId] = useState<string | null>(null);
 
-    const load = async () => {
-        setLoading(true);
-        try {
-            const res = await educationService.getAll();
-            const educations: Education[] = res.educations || [];
-            educations.sort((a, b) => (a.startDate < b.startDate ? 1 : -1));
-            setData(educations);
-        } catch (err) {
-            console.error("Failed to load education:", err);
-        } finally {
-            setLoading(false);
-        }
-    };
-
     useEffect(() => {
-        load();
+        fetchEducation(); // no-op if already loaded
     }, []);
 
     const handleDelete = async () => {
         if (!deleteId) return;
-        await educationService.delete(deleteId);
         setDeleteId(null);
-        load();
+        await deleteEducation(deleteId);
     };
 
     const handleAdd = () => {
@@ -87,14 +71,14 @@ const EducationPage: React.FC = () => {
                     </div>
                     <h2 className="text-base font-semibold text-gray-800 dark:text-dark-100">
                         Education
-                        {!loading && data.length > 0 && (
+                        {!educationLoading && education.length > 0 && (
                             <span className="ml-2 text-xs font-normal text-gray-400 dark:text-dark-500">
-                                ({data.length})
+                                ({education.length})
                             </span>
                         )}
                     </h2>
                 </div>
-                {!loading && data.length > 0 && (
+                {!educationLoading && education.length > 0 && (
                     <button onClick={handleAdd} className="btn btn-primary flex items-center gap-1.5">
                         <Plus size={14}/>
                         Add
@@ -103,13 +87,13 @@ const EducationPage: React.FC = () => {
             </div>
 
             <div className="card-body">
-                {loading ? (
+                {educationLoading ? (
                     <Skeleton/>
-                ) : data.length === 0 ? (
+                ) : education.length === 0 ? (
                     <EmptyState onAdd={handleAdd}/>
                 ) : (
                     <div className="space-y-px">
-                        {data.map((edu) => (
+                        {education.map((edu) => (
                             <div key={edu._id} className="px-4 py-3.5 rounded-lg hover:bg-gray-50 dark:hover:bg-dark-800/50 transition-colors">
                                 <EducationCard
                                     edu={edu}
@@ -131,7 +115,7 @@ const EducationPage: React.FC = () => {
                         setEditingEducation(null);
                         setOpen(false);
                     }}
-                    onSaved={load}
+                    onSaved={() => fetchEducation(true)}
                     educationToEdit={editingEducation ?? undefined}
                 />
             )}

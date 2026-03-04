@@ -38,7 +38,7 @@ export const handleApiErrors=(error:any,formik:any)=>{
     formik.setErrors(formikErrors);
   } else {
     formik.setStatus({
-      error: serverError?.response?.data?.message||"Unknown error",
+      error: serverError?.message||"Unknown error",
     });
   }
 

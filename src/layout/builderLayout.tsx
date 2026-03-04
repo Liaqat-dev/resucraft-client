@@ -1,5 +1,4 @@
 import React, {useCallback, useEffect, useState} from "react";
-import Footer from "./footer";
 import {useDispatch, useSelector} from "react-redux";
 import {AppDispatch, RootState} from "@src/slices/store.ts";
 import {changeSidebarSize} from "@src/slices/thunk";
@@ -141,13 +140,6 @@ const BuilderLayout = ({children, breadcrumbTitle}: LayoutProps) => {
                 toggleSidebar={toggleSidebar}
             />
 
-            {/* sidebar */}
-
-            {/*<Sidebar*/}
-            {/*    searchSidebar={searchSidebar}*/}
-            {/*    isSidebarOpen={isSidebarOpen}*/}
-            {/*    toggleSidebar={toggleSidebar}*/}
-            {/*/>*/}
 
             <div
                 className="relative min-h-screen group-data-[layout=boxed]:bg-white group-data-[layout=boxed]:rounded-md">
@@ -156,7 +148,6 @@ const BuilderLayout = ({children, breadcrumbTitle}: LayoutProps) => {
                     {" "}
                     {children}
                 </div>
-                <Footer/>
             </div>
         </React.Fragment>
     );
