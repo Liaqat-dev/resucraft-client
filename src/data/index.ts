@@ -11,8 +11,6 @@ import {addOns, plans, pricingAdmin} from "./pricing/pricing";
 import {faqData} from "./faq/faq";
 import {colors} from "./color";
 import {ticketsData} from "./helpCenter/tickets";
-import {countryCode} from "./countryCode/country-code";
-import {defaultInvoice} from "./invoice/default-Invoice";
 import {menu} from "./sidebar/menu";
 
 export {
@@ -29,7 +27,5 @@ export {
     faqData,
     colors,
     ticketsData,
-    countryCode,
-    defaultInvoice,
     menu,
 };

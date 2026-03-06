@@ -7,7 +7,6 @@ import "./assets/css/plugins.css";
 
 import React, {useEffect} from "react";
 import {getPreviousStorageData} from "./slices/layout/utils"; // Adjust the path if needed
-import {withTranslation} from "react-i18next";
 import store, {AppDispatch} from "./slices/store.ts";
 
 import {
@@ -16,7 +15,6 @@ import {
     changeDirection,
     changeLayout,
     changeLayoutContentWidth,
-    changeLayoutLanguage,
     changeLayoutMode,
     changeModernNavigation,
     changeSidebarColor,
@@ -24,7 +22,6 @@ import {
 } from "./slices/thunk";
 
 import Routing from "./routes";
-import {LAYOUT_LANGUAGES} from "@constants/layout.tsx";
 import {initialState} from "./slices/layout/reducer";
 
 function App() {
@@ -74,12 +71,6 @@ function App() {
             ),
         );
         dispatch(
-            changeLayoutLanguage(
-                getPreviousStorageData("data-layout-language") ??
-                LAYOUT_LANGUAGES.ENGLISH,
-            ),
-        );
-        dispatch(
             changeDataColor(
                 getPreviousStorageData("data-theme-color") ??
                 initialState.layoutDataColor,
@@ -106,4 +97,4 @@ function App() {
     );
 }
 
-export default withTranslation()(App);
+export default App;
