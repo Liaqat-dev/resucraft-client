@@ -22,15 +22,11 @@ File: tailwind scss files
 @import "./components/helper.css";
 @import "components/buttons.css";
 @import "./components/form.css";
-@import "components/animation";
 @import "./components/landing.css";
 @import "./react/react.css";
 
 /* plugins css */
-@import "plugins/apexchart.css";
-@import "plugins/calender.css";
 @import "plugins/simplebar.css";
-@import "plugins/flatpicker.css";
 @import "plugins/highlight-code.css";
 @import "plugins/jsvectormap.css";
 @import "plugins/quill.css";
@@ -71,5 +67,3 @@ File: tailwind scss files
 @plugin "../../../plugins/pixeleyezui/table.js";
 @plugin "../../../plugins/pixeleyezui/timeline.js";
 @plugin "../../../plugins/navbar.js";
-@plugin "../../../plugins/invoice-landing.js";
-@plugin "../../../plugins/custom-calendar.js";

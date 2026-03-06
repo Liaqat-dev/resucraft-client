@@ -11,51 +11,12 @@ import SelectPage from "@pages/form/select";
 import Switches from "@pages/form/switches";
 import WizardBasic from "@pages/form/wizard-basic";
 import {ReactNode} from "react";
-import Accodion from "@pages/ui/accordion";
-import Alerts from "@pages/ui/alerts";
-import AdvancedEffect from "@pages/ui/advanced3dEffect";
-import AdvancedAnimation from "@pages/ui/advancedAnimation";
-import Boat from "@pages/ui/advancedBot";
-import Highlight from "@pages/ui/advancedHighlight";
 import BaseTables from "@pages/table/base";
 import BasicTables from "@pages/table/datatables/basic";
 import Bordered from "@pages/table/datatables/bordered";
 import Stripe from "@pages/table/datatables/stripe";
 import Hover from "@pages/table/datatables/hover";
 import RowGrouPing from "@pages/table/datatables/rowGrouping";
-import Mask from "@pages/ui/advancedMask";
-import Simplebar from "@pages/ui/advancedSimplebar";
-import SwiperElement from "@pages/ui/advancedSwiper";
-import Tree from "@pages/ui/advancedTree";
-import WordCounters from "@pages/ui/advancedWordCounter";
-import ImageAnnotation from "@pages/ui/advancedImageAnnotation";
-import Badge from "@pages/ui/badge";
-import BreadCrumbs from "@pages/ui/breadCrumb";
-import ButtonsGroup from "@pages/ui/buttonsGroup";
-import Button from "@pages/ui/buttons";
-import ButtonNavigation from "@pages/ui/buttonNavigation";
-import Cards from "@pages/ui/cards";
-import Colors from "@pages/ui/colors";
-import Cookies from "@pages/ui/cookie";
-import Drawer from "@pages/ui/drawer";
-import Dropdowns from "@pages/ui/dropdown";
-import Gallerys from "@pages/ui/gallery";
-import Links from "@pages/ui/links";
-import ListGroups from "@pages/ui/listGroup";
-import Loader from "@pages/ui/loader";
-import Modals from "@pages/ui/modal";
-import Notifications from "@pages/ui/notification";
-import Paginations from "@pages/ui/pagination";
-import ProgressBars from "@pages/ui/progressBar";
-import Tabs from "@pages/ui/tabs";
-import TimeLine from "@pages/ui/timeLine";
-import Tooltips from "@pages/ui/toolTips";
-import Typographys from "@pages/ui/typography";
-import Videos from "@pages/ui/video";
-import WidgetsBanners from "@pages/widgets/banners";
-import WidgetsCard from "@pages/widgets/cards";
-import WidgetsCharts from "@pages/widgets/charts";
-import WidgetsData from "@pages/widgets/widgetsData";
 import AccountSecurity from "@pages/account/security";
 import SkillsPage from "@pages/profile/skills/skillsPage.tsx";
 import PersonalInfoPage from "@pages/profile/personalInfo/personalInfoPage.tsx";
@@ -75,7 +36,6 @@ import HelpCenter from "@pages/page/helpCenter";
 import PageNotFoundError from "@pages/page/404";
 import FiveZeroZero from "@pages/page/500";
 import EnableDisable from "@pages/table/datatables/enableDisable";
-import UserNotes from "@src/pages/page/userNotes";
 import Login from "@pages/auth/login.tsx";
 import Register from "@pages/auth/register.tsx";
 import ResetPassword from "@pages/auth/resetPassword.tsx";
@@ -133,55 +93,7 @@ const routes: IRoute[] = [
         {path: "/table/datatables/hover", component: <Hover/>},
         {path: "/table/datatables/row-grouping", component: <RowGrouPing/>},
         {path: "/table/datatables/enable-disable", component: <EnableDisable/>},
-
-        // ui elements
-        {path: "/ui/accordion", component: <Accodion/>},
-        {path: "/ui/alerts", component: <Alerts/>},
-
-
-        {path: "/ui/badge", component: <Badge/>},
-        {path: "/ui/breadcrumb", component: <BreadCrumbs/>},
-        {path: "/ui/buttons-group", component: <ButtonsGroup/>},
-        {path: "/ui/buttons", component: <Button/>},
-        {path: "/ui/button-navigation", component: <ButtonNavigation/>},
-        {path: "/ui/cards", component: <Cards/>},
-        {path: "/ui/colors", component: <Colors/>},
-        {path: "/ui/cookie", component: <Cookies/>},
-        {path: "/ui/drawer", component: <Drawer/>},
-        {path: "/ui/dropdown", component: <Dropdowns/>},
-        {path: "/ui/gallery", component: <Gallerys/>},
-        {path: "/ui/links", component: <Links/>},
-        {path: "/ui/list-group", component: <ListGroups/>},
-        {path: "/ui/loader", component: <Loader/>},
-        {path: "/ui/modal", component: <Modals/>},
-        {path: "/ui/notification", component: <Notifications/>},
-        {path: "/ui/pagination", component: <Paginations/>},
-        {path: "/ui/progress-bar", component: <ProgressBars/>},
-        {path: "/ui/tabs", component: <Tabs/>},
-        {path: "/ui/timeline", component: <TimeLine/>},
-        {path: "/ui/tooltips", component: <Tooltips/>},
-        {path: "/ui/typography", component: <Typographys/>},
-        {path: "/ui/video", component: <Videos/>},
-
-        // advanced ui
-        {path: "/ui/advanced-3d-effect", component: <AdvancedEffect/>},
-        {path: "/ui/advanced-animation", component: <AdvancedAnimation/>},
-        {path: "/ui/advanced-bot", component: <Boat/>},
-        {path: "/ui/advanced-highlight", component: <Highlight/>},
-        {path: "/ui/advanced-mask", component: <Mask/>},
-        {path: "/ui/advanced-simplebar", component: <Simplebar/>},
-        {path: "/ui/advanced-swiper", component: <SwiperElement/>},
-        {path: "/ui/advanced-tree", component: <Tree/>},
-        {path: "/ui/advanced-word-counter", component: <WordCounters/>},
-        {path: "/ui/advanced-image-annotation", component: <ImageAnnotation/>},
-
-
-        // widgets
-        {path: "/widgets/banners", component: <WidgetsBanners/>},
-        {path: "/widgets/cards", component: <WidgetsCard/>},
-        {path: "/widgets/charts", component: <WidgetsCharts/>},
-        {path: "/widgets/data", component: <WidgetsData/>},
-
+    
         //page
 
         {path: "/page/pricing", component: <PricingPage/>},

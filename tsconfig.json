@@ -30,7 +30,6 @@
       "@custom/*": ["./src/components/custom/*"],
       "@layoutComponent/*": ["./src/components/LayoutComponent/*"],
       "@dtos/*": ["./src/dtos/*"],
-      "@apidata/*": ["./src/apidata/*"],
       "@hooks/*": ["./src/hooks/*"],
       "@routing/*": ["./src/routes/*"],
       "@layout/*": ["./src/layout/*"],
