@@ -1,9 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowRight, ChevronDown, MessageSquare, Search } from "lucide-react";
+import { ChevronDown, MessageSquare, Search } from "lucide-react";
 import AOS from "aos";
 import LandingNav from "@src/components/landing/LandingNav.tsx";
 import LandingFooter from "@src/components/landing/LandingFooter.tsx";
+
+const GOLD = '#C09A3A';
+const GOLD_T = '#D4B06A';
+const DARK = '#0F172A';
+const DARK2 = '#1e293b';
+const DARK3 = '#334155';
 
 interface FAQItem {
     q: string;
@@ -48,22 +54,36 @@ const categories = Array.from(new Set(faqs.map(f => f.category)));
 const AccordionItem: React.FC<{ item: FAQItem; isOpen: boolean; onToggle: () => void }> = ({
     item, isOpen, onToggle,
 }) => (
-    <div className={`border border-gray-100 dark:border-slate-800 rounded-xl overflow-hidden transition-shadow duration-200 ${isOpen ? "shadow-sm" : ""}`}>
+    <div
+        className="rc-accordion-item"
+        data-open={isOpen ? "true" : undefined}
+    >
         <button
             onClick={onToggle}
-            className="w-full flex items-center justify-between gap-4 px-5 py-4 text-left bg-white dark:bg-slate-900 hover:bg-gray-50 dark:hover:bg-slate-800/50 transition-colors"
+            className="rc-accordion-btn"
+            style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem', textAlign: 'left' }}
         >
-            <span className="text-sm font-semibold text-gray-800 dark:text-white">{item.q}</span>
+            <span style={{ fontSize: '0.9rem', fontWeight: 600, color: '#f8fafc', fontFamily: "'DM Sans', sans-serif" }}>{item.q}</span>
             <ChevronDown
                 size={16}
-                className={`shrink-0 text-gray-400 dark:text-slate-500 transition-transform duration-300 ${isOpen ? "rotate-180" : ""}`}
+                style={{
+                    flexShrink: 0,
+                    color: '#64748b',
+                    transition: 'transform 0.3s ease',
+                    transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
+                }}
             />
         </button>
         <div
-            className={`overflow-hidden transition-all duration-300 ease-in-out ${isOpen ? "max-h-96" : "max-h-0"}`}
+            className="rc-accordion-body"
+            style={{
+                overflow: 'hidden',
+                transition: 'max-height 0.3s ease-in-out',
+                maxHeight: isOpen ? '24rem' : '0',
+            }}
         >
-            <div className="px-5 pb-5 bg-white dark:bg-slate-900 border-t border-gray-50 dark:border-slate-800">
-                <p className="text-sm text-gray-500 dark:text-slate-400 leading-relaxed pt-4">
+            <div style={{ padding: '0 1.25rem 1.25rem' }}>
+                <p style={{ fontSize: '0.85rem', color: '#94a3b8', lineHeight: 1.75, fontFamily: "'DM Sans', sans-serif" }}>
                     {item.a}
                 </p>
             </div>
@@ -89,61 +109,90 @@ const FAQPage: React.FC = () => {
     });
 
     return (
-        <div className="min-h-screen bg-white dark:bg-slate-950">
+        <div style={{ minHeight: '100vh', background: DARK, fontFamily: "'DM Sans', sans-serif" }}>
             <LandingNav />
 
             {/* Hero */}
-            <section className="pt-28 pb-14 md:pt-36 md:pb-16 bg-gradient-to-b from-slate-950 to-slate-900 text-center">
-                <div className="max-w-2xl mx-auto px-4 sm:px-6">
-                    <div className="inline-flex size-14 rounded-2xl bg-primary-500/15 text-primary-400 items-center justify-center mb-5 animate-scale-in">
+            <section
+                style={{ background: DARK, paddingTop: '8rem', paddingBottom: '4rem', position: 'relative', overflow: 'hidden', textAlign: 'center' }}
+                className="rc-dot-bg"
+            >
+                <div className="rc-glow-gold rc-pulse" style={{ width: '28rem', height: '28rem', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }} />
+                <div style={{ maxWidth: '40rem', margin: '0 auto', padding: '0 1.5rem', position: 'relative', zIndex: 1 }}>
+                    <div className="rc-icon-box" style={{ width: 56, height: 56, margin: '0 auto 1.5rem' }}>
                         <MessageSquare size={24} />
                     </div>
                     <h1
-                        className="text-3xl md:text-4xl font-extrabold text-white mb-4 animate-fade-in-up"
-                        style={{ animationDelay: "80ms" }}
+                        className="rc-serif"
+                        style={{ fontSize: 'clamp(2rem, 4vw, 3rem)', fontWeight: 600, color: '#f8fafc', lineHeight: 1.1, marginBottom: '1rem' }}
                     >
-                        Frequently Asked Questions
+                        Frequently Asked <em style={{ color: GOLD_T, fontStyle: 'italic' }}>Questions</em>
                     </h1>
-                    <p
-                        className="text-slate-400 text-sm leading-relaxed mb-8 animate-fade-in-up"
-                        style={{ animationDelay: "160ms" }}
-                    >
-                        Everything you need to know about ResuCraft. Can't find an answer?{" "}
-                        <Link to="/contact" className="text-primary-400 hover:underline">Contact us</Link>.
+                    <p style={{ color: '#64748b', fontSize: '0.88rem', lineHeight: 1.75, marginBottom: '2rem', fontFamily: "'DM Sans', sans-serif" }}>
+                        Everything you need to know about ResuCraft. Can't find an answer?{' '}
+                        <Link to="/contact" style={{ color: GOLD_T, textDecoration: 'none' }}>Contact us</Link>.
                     </p>
                     {/* Search */}
-                    <div
-                        className="relative max-w-md mx-auto animate-fade-in-up"
-                        style={{ animationDelay: "240ms" }}
-                    >
-                        <Search size={15} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none" />
+                    <div style={{ position: 'relative', maxWidth: '28rem', margin: '0 auto' }}>
+                        <Search size={15} style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: '#64748b', pointerEvents: 'none' }} />
                         <input
                             type="text"
                             value={search}
                             onChange={(e) => { setSearch(e.target.value); setOpenIdx(null); }}
                             placeholder="Search questions..."
-                            className="w-full pl-10 pr-4 py-3 rounded-xl bg-slate-800 border border-slate-700 text-slate-200 placeholder-slate-500 text-sm focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500/30 transition-colors"
+                            style={{
+                                width: '100%',
+                                paddingLeft: '2.75rem',
+                                paddingRight: '1rem',
+                                paddingTop: '0.75rem',
+                                paddingBottom: '0.75rem',
+                                borderRadius: '0.75rem',
+                                background: DARK2,
+                                border: `1px solid ${DARK3}`,
+                                color: '#f8fafc',
+                                fontSize: '0.875rem',
+                                outline: 'none',
+                                boxSizing: 'border-box',
+                                fontFamily: "'DM Sans', sans-serif",
+                                transition: 'border-color 0.2s, box-shadow 0.2s',
+                            }}
+                            onFocus={(e) => {
+                                e.currentTarget.style.borderColor = GOLD;
+                                e.currentTarget.style.boxShadow = `0 0 0 3px rgba(192,154,58,0.15)`;
+                            }}
+                            onBlur={(e) => {
+                                e.currentTarget.style.borderColor = DARK3;
+                                e.currentTarget.style.boxShadow = 'none';
+                            }}
                         />
                     </div>
                 </div>
             </section>
 
             {/* FAQ Body */}
-            <section className="py-14 md:py-20">
-                <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <section style={{ padding: '3.5rem 0 5rem' }}>
+                <div style={{ maxWidth: '52rem', margin: '0 auto', padding: '0 1.5rem' }}>
                     {/* Category filter */}
                     {!search && (
-                        <div className="flex flex-wrap gap-2 mb-10 justify-center" data-aos="fade-down">
+                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', marginBottom: '2.5rem', justifyContent: 'center' }} data-aos="fade-down">
                             {["All", ...categories].map((cat, i) => (
                                 <button
                                     key={cat}
                                     onClick={() => { setActiveCategory(cat); setOpenIdx(null); }}
-                                    style={{ animationDelay: `${i * 40}ms` }}
-                                    className={`px-4 py-1.5 rounded-full text-xs font-semibold border transition-all duration-200 hover:-translate-y-0.5 ${
-                                        activeCategory === cat
-                                            ? "bg-primary-600 border-primary-600 text-white shadow-sm shadow-primary-600/20"
-                                            : "bg-white dark:bg-slate-900 border-gray-200 dark:border-slate-700 text-gray-500 dark:text-slate-400 hover:border-primary-300 dark:hover:border-primary-500/50"
-                                    }`}
+                                    style={{
+                                        padding: '0.375rem 1rem',
+                                        borderRadius: '9999px',
+                                        fontSize: '0.75rem',
+                                        fontWeight: 600,
+                                        border: `1px solid ${DARK3}`,
+                                        cursor: 'pointer',
+                                        transition: 'all 0.2s',
+                                        fontFamily: "'DM Sans', sans-serif",
+                                        animationDelay: `${i * 40}ms`,
+                                        ...(activeCategory === cat
+                                            ? { background: `linear-gradient(135deg, ${GOLD}, #8B6914)`, color: '#fff', borderColor: 'transparent' }
+                                            : { background: DARK3, color: '#94a3b8' }),
+                                    }}
                                 >
                                     {cat}
                                 </button>
@@ -153,16 +202,16 @@ const FAQPage: React.FC = () => {
 
                     {/* Accordions */}
                     {filteredFAQs.length === 0 ? (
-                        <div className="text-center py-16" data-aos="fade-up">
-                            <p className="text-gray-400 dark:text-slate-500 text-sm">
-                                No questions found matching "{search}".{" "}
-                                <Link to="/contact" className="text-primary-600 dark:text-primary-400 hover:underline">
+                        <div style={{ textAlign: 'center', padding: '4rem 0' }} data-aos="fade-up">
+                            <p style={{ color: '#64748b', fontSize: '0.88rem', fontFamily: "'DM Sans', sans-serif" }}>
+                                No questions found matching "{search}".{' '}
+                                <Link to="/contact" style={{ color: GOLD_T, textDecoration: 'none', fontWeight: 600 }}>
                                     Ask us directly →
                                 </Link>
                             </p>
                         </div>
                     ) : (
-                        <div className="space-y-2">
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
                             {filteredFAQs.map((item, i) => (
                                 <div key={i} data-aos="fade-up" data-aos-delay={Math.min(i * 40, 300)}>
                                     <AccordionItem
@@ -178,21 +227,18 @@ const FAQPage: React.FC = () => {
             </section>
 
             {/* Still have questions */}
-            <section className="pb-16 md:pb-20">
-                <div className="max-w-xl mx-auto px-4 text-center" data-aos="zoom-in">
-                    <div className="p-8 rounded-2xl bg-gray-50 dark:bg-slate-900 border border-gray-100 dark:border-slate-800">
-                        <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">
+            <section style={{ paddingBottom: '5rem' }}>
+                <div style={{ maxWidth: '36rem', margin: '0 auto', padding: '0 1.5rem', textAlign: 'center' }} data-aos="zoom-in">
+                    <div style={{ padding: '2.5rem', borderRadius: '1rem', background: DARK2, border: `1px solid ${DARK3}` }}>
+                        <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#f8fafc', marginBottom: '0.5rem', fontFamily: "'DM Sans', sans-serif" }}>
                             Still have questions?
                         </h3>
-                        <p className="text-sm text-gray-500 dark:text-slate-400 mb-5">
+                        <p style={{ fontSize: '0.85rem', color: '#94a3b8', marginBottom: '1.5rem', lineHeight: 1.7, fontFamily: "'DM Sans', sans-serif" }}>
                             Our team is happy to help. Send us a message and we'll get back to you
                             within 24 hours.
                         </p>
-                        <Link
-                            to="/contact"
-                            className="inline-flex items-center gap-2 px-6 py-2.5 rounded-lg bg-primary-600 hover:bg-primary-700 text-white text-sm font-semibold transition-colors"
-                        >
-                            Contact Support <ArrowRight size={14} />
+                        <Link to="/contact" className="rc-btn">
+                            Contact Support <span style={{ color: GOLD_T, position: 'relative', zIndex: 1 }}>↗</span>
                         </Link>
                     </div>
                 </div>

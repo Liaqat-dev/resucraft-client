@@ -146,6 +146,26 @@ export const authService = {
         }>(`/auth/activity?limit=${limit}`);
         return response.data;
     },
+    // Get profile completion score from backend (useful for mobile / other clients)
+    async getProfileCompletion() {
+        const response = await api.get<{
+            percentage: number;
+            isReady: boolean;
+            completedCount: number;
+            totalCount: number;
+            sections: Array<{
+                id: string;
+                label: string;
+                weight: number;
+                earned: number;
+                isComplete: boolean;
+                isOptional: boolean;
+                hint: string;
+            }>;
+        }>('/auth/profile-completion');
+        return response.data;
+    },
+
     async updateAccountInfo(data: updateAccountInfoData) {
         const formData = new FormData();
         if (data.username) formData.append('username', data.username);

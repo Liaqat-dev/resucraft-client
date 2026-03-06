@@ -23,6 +23,7 @@ File: tailwind scss files
 @import "components/buttons.css";
 @import "./components/form.css";
 @import "components/animation";
+@import "./components/landing.css";
 @import "./react/react.css";
 
 /* plugins css */

@@ -1,59 +1,89 @@
 import React from "react";
-import {Link} from "react-router-dom";
-import {Github, Linkedin, Mail, Twitter} from "lucide-react";
-import logo from '@src/assets/images/logo.png'
+import { Link } from "react-router-dom";
+import { Github, Linkedin, Mail, Twitter } from "lucide-react";
+
+const GOLD = "#C09A3A";
+const DARK = "#0F172A";
 
 const productLinks = [
-    {label: "Features", href: "/features"},
-    {label: "How It Works", href: "/welcome#how-it-works"},
-    {label: "Templates", href: "/"},
-    {label: "Resume Builder", href: "/builder"},
-    {label: "Pricing", href: "/page/pricing"},
+    { label: "Features", href: "/features" },
+    { label: "How It Works", href: "/welcome#how-it-works" },
+    { label: "Templates", href: "/" },
+    { label: "Resume Builder", href: "/builder" },
+    { label: "Pricing", href: "/page/pricing" },
 ];
 
 const resourceLinks = [
-    {label: "FAQ", href: "/faq"},
-    {label: "Contact Us", href: "/contact"},
-    {label: "Help Center", href: "/help-center"},
-    {label: "About Us", href: "/about"},
-    {label: "Privacy Policy", href: "/page/privacy-policy"},
+    { label: "FAQ", href: "/faq" },
+    { label: "Contact Us", href: "/contact" },
+    { label: "Help Center", href: "/help-center" },
+    { label: "About Us", href: "/about" },
+    { label: "Privacy Policy", href: "/page/privacy-policy" },
 ];
 
 const socialLinks = [
-    {icon: <Twitter size={16}/>, href: "#", label: "Twitter"},
-    {icon: <Linkedin size={16}/>, href: "#", label: "LinkedIn"},
-    {icon: <Github size={16}/>, href: "#", label: "GitHub"},
-    {icon: <Mail size={16}/>, href: "/contact", label: "Email"},
+    { icon: <Twitter size={15} />, href: "#", label: "Twitter" },
+    { icon: <Linkedin size={15} />, href: "#", label: "LinkedIn" },
+    { icon: <Github size={15} />, href: "#", label: "GitHub" },
+    { icon: <Mail size={15} />, href: "/contact", label: "Email" },
 ];
 
 const Footer: React.FC = () => (
-    <footer className="bg-primary  dark:bg-slate-950 text-slate-400 ">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 border-t border-slate-800">
-            {/* Top section */}
-            <div className="py-14 pt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
-                {/* Brand */}
-                <div className="lg:col-span-1">
-                    <Link to="/" className="flex items-center gap-2.5 mb-4">
-                        {/*<div className="size-8 rounded-lg bg-primary-600 flex items-center justify-center shrink-0">*/}
-                        {/*  <FileText size={16} className="text-white" />*/}
-                        {/*</div>*/}
-                        {/*<span className="text-base font-bold text-white">*/}
-                        {/*              Resu<span className="text-primary-400">Craft</span>*/}
-                        {/*          </span>*/}
-                        <img className={'h-12'} src={logo} height={18} alt={'logo'}/>
+    <footer style={{ background: DARK, borderTop: "1px solid #1e293b" }}>
+        <div style={{ maxWidth: "80rem", margin: "0 auto", padding: "0 1.5rem" }}>
+            {/* Top */}
+            <div style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
+                gap: "2.5rem",
+                padding: "3.5rem 0 2.5rem",
+            }}>
+                {/* Brand col */}
+                <div style={{ gridColumn: "span 1" }}>
+                    <Link to="/" style={{ display: "flex", alignItems: "center", gap: "0.65rem", textDecoration: "none", marginBottom: "1rem" }}>
+                        <div style={{
+                            width: 32, height: 32, borderRadius: 8, flexShrink: 0,
+                            background: `linear-gradient(135deg, ${GOLD}, #8B6914)`,
+                            display: "flex", alignItems: "center", justifyContent: "center",
+                        }}>
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round">
+                                <rect x="4" y="3" width="16" height="18" rx="2" />
+                                <line x1="8" y1="8" x2="16" y2="8" />
+                                <line x1="8" y1="12" x2="13" y2="12" />
+                                <line x1="8" y1="16" x2="11" y2="16" />
+                            </svg>
+                        </div>
+                        <span className="rc-serif" style={{ fontSize: "1.25rem", fontWeight: 600, color: "#f8fafc", letterSpacing: "0.04em" }}>
+                            ResuCraft
+                        </span>
                     </Link>
-                    <p className="text-sm leading-relaxed text-slate-400 mb-5">
-                        AI-powered resume builder designed to get you through ATS filters and
-                        land interviews faster.
+                    <p style={{ fontSize: "0.8rem", color: "#64748b", lineHeight: 1.7, marginBottom: "1.25rem", maxWidth: 220 }}>
+                        AI-powered resume builder designed to get you through ATS filters and land interviews faster.
                     </p>
-                    {/* Social links */}
-                    <div className="flex items-center gap-2">
+                    <div style={{ display: "flex", gap: "0.5rem" }}>
                         {socialLinks.map((s) => (
                             <a
                                 key={s.label}
                                 href={s.href}
                                 aria-label={s.label}
-                                className="size-8 rounded-lg bg-slate-800 hover:bg-primary-600 flex items-center justify-center text-slate-400 hover:text-white transition-colors"
+                                style={{
+                                    width: 32, height: 32, borderRadius: 8, display: "flex",
+                                    alignItems: "center", justifyContent: "center",
+                                    background: "#1e293b", color: "#64748b",
+                                    border: "1px solid #334155",
+                                    transition: "background 0.2s, color 0.2s, border-color 0.2s",
+                                    textDecoration: "none",
+                                }}
+                                onMouseEnter={(e) => {
+                                    e.currentTarget.style.background = `${GOLD}20`;
+                                    e.currentTarget.style.color = GOLD;
+                                    e.currentTarget.style.borderColor = `${GOLD}50`;
+                                }}
+                                onMouseLeave={(e) => {
+                                    e.currentTarget.style.background = "#1e293b";
+                                    e.currentTarget.style.color = "#64748b";
+                                    e.currentTarget.style.borderColor = "#334155";
+                                }}
                             >
                                 {s.icon}
                             </a>
@@ -63,15 +93,18 @@ const Footer: React.FC = () => (
 
                 {/* Product */}
                 <div>
-                    <h3 className="text-xs font-semibold uppercase tracking-widest text-slate-300 mb-4">
+                    <h3 style={{ fontSize: "0.7rem", fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase", color: "#94a3b8", marginBottom: "1rem", fontFamily: "'DM Sans', sans-serif" }}>
                         Product
                     </h3>
-                    <ul className="space-y-2.5">
+                    <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: "0.6rem" }}>
                         {productLinks.map((link) => (
                             <li key={link.label}>
-                                <Link
-                                    to={link.href}
-                                    className="text-sm text-slate-400 hover:text-primary-400 transition-colors"
+                                <Link to={link.href} style={{
+                                    fontSize: "0.82rem", color: "#64748b", textDecoration: "none",
+                                    transition: "color 0.15s", fontFamily: "'DM Sans', sans-serif",
+                                }}
+                                    onMouseEnter={(e) => (e.currentTarget.style.color = "#D4B06A")}
+                                    onMouseLeave={(e) => (e.currentTarget.style.color = "#64748b")}
                                 >
                                     {link.label}
                                 </Link>
@@ -82,15 +115,18 @@ const Footer: React.FC = () => (
 
                 {/* Resources */}
                 <div>
-                    <h3 className="text-xs font-semibold uppercase tracking-widest text-slate-300 mb-4">
+                    <h3 style={{ fontSize: "0.7rem", fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase", color: "#94a3b8", marginBottom: "1rem", fontFamily: "'DM Sans', sans-serif" }}>
                         Resources
                     </h3>
-                    <ul className="space-y-2.5">
+                    <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: "0.6rem" }}>
                         {resourceLinks.map((link) => (
                             <li key={link.label}>
-                                <Link
-                                    to={link.href}
-                                    className="text-sm text-slate-400 hover:text-primary-400 transition-colors"
+                                <Link to={link.href} style={{
+                                    fontSize: "0.82rem", color: "#64748b", textDecoration: "none",
+                                    transition: "color 0.15s", fontFamily: "'DM Sans', sans-serif",
+                                }}
+                                    onMouseEnter={(e) => (e.currentTarget.style.color = "#D4B06A")}
+                                    onMouseLeave={(e) => (e.currentTarget.style.color = "#64748b")}
                                 >
                                     {link.label}
                                 </Link>
@@ -99,22 +135,35 @@ const Footer: React.FC = () => (
                     </ul>
                 </div>
 
-                {/* Newsletter CTA */}
+                {/* Newsletter */}
                 <div>
-                    <h3 className="text-xs font-semibold uppercase tracking-widest text-slate-300 mb-4">
+                    <h3 style={{ fontSize: "0.7rem", fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase", color: "#94a3b8", marginBottom: "1rem", fontFamily: "'DM Sans', sans-serif" }}>
                         Stay Updated
                     </h3>
-                    <p className="text-sm text-slate-400 mb-4 leading-relaxed">
-                        Get tips on resume writing, interview prep, and career growth.
+                    <p style={{ fontSize: "0.8rem", color: "#64748b", marginBottom: "0.875rem", lineHeight: 1.65, fontFamily: "'DM Sans', sans-serif" }}>
+                        Tips on resume writing, interview prep, and career growth.
                     </p>
-                    <div className="flex gap-2">
+                    <div style={{ display: "flex", gap: "0.5rem" }}>
                         <input
                             type="email"
                             placeholder="your@email.com"
-                            className="flex-1 px-3 py-2 text-sm rounded-lg bg-primary dark:bg-slate-800 border border-slate-700 text-slate-200 placeholder-slate-500 focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500/30"
+                            style={{
+                                flex: 1, padding: "0.5rem 0.75rem", borderRadius: 8,
+                                background: "#1e293b", border: "1px solid #334155",
+                                color: "#f8fafc", fontSize: "0.8rem", outline: "none",
+                                fontFamily: "'DM Sans', sans-serif",
+                            }}
                         />
-                        <button
-                            className="shrink-0 px-3 py-2 text-sm font-semibold rounded-lg bg-primary-600 hover:bg-primary-700 text-white transition-colors">
+                        <button style={{
+                            padding: "0.5rem 0.875rem", borderRadius: 8, flexShrink: 0,
+                            background: `linear-gradient(135deg, ${GOLD}, #8B6914)`,
+                            border: "none", color: "#fff", fontSize: "0.8rem", fontWeight: 600,
+                            cursor: "pointer", fontFamily: "'DM Sans', sans-serif",
+                            transition: "opacity 0.15s",
+                        }}
+                            onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.85")}
+                            onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
+                        >
                             Join
                         </button>
                     </div>
@@ -122,26 +171,36 @@ const Footer: React.FC = () => (
             </div>
 
             {/* Divider */}
-            <div className="border-t border-slate-800"/>
+            <div style={{ height: 1, background: "#1e293b" }} />
 
-            {/* Bottom section */}
-            <div className="py-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-                <p className="text-xs text-slate-500">
-                    © {new Date().getFullYear()} ResuCraft. Built by Alishba Ramzan & Liaqat Ali —
-                    Lahore Garrison University.
+            {/* Bottom */}
+            <div style={{
+                padding: "1.5rem 0",
+                display: "flex", flexWrap: "wrap", alignItems: "center",
+                justifyContent: "space-between", gap: "0.75rem",
+            }}>
+                <p style={{ fontSize: "0.72rem", color: "#475569", fontFamily: "'DM Sans', sans-serif" }}>
+                    © {new Date().getFullYear()} ResuCraft. Built by Alishba Ramzan &amp; Liaqat Ali — Lahore Garrison University.
                 </p>
-                <div className="flex items-center gap-5 text-xs text-slate-500">
-                    <Link to="/page/privacy-policy" className="hover:text-slate-300 transition-colors">
-                        Privacy Policy
-                    </Link>
-                    <span className="text-slate-700">·</span>
-                    <Link to="/faq" className="hover:text-slate-300 transition-colors">
-                        FAQ
-                    </Link>
-                    <span className="text-slate-700">·</span>
-                    <Link to="/contact" className="hover:text-slate-300 transition-colors">
-                        Contact
-                    </Link>
+                <div style={{ display: "flex", alignItems: "center", gap: "1.25rem" }}>
+                    {[
+                        { label: "Privacy Policy", href: "/page/privacy-policy" },
+                        { label: "FAQ", href: "/faq" },
+                        { label: "Contact", href: "/contact" },
+                    ].map((link, i) => (
+                        <React.Fragment key={link.label}>
+                            {i > 0 && <span style={{ color: "#334155", fontSize: "0.7rem" }}>·</span>}
+                            <Link to={link.href} style={{
+                                fontSize: "0.72rem", color: "#475569", textDecoration: "none",
+                                transition: "color 0.15s", fontFamily: "'DM Sans', sans-serif",
+                            }}
+                                onMouseEnter={(e) => (e.currentTarget.style.color = "#94a3b8")}
+                                onMouseLeave={(e) => (e.currentTarget.style.color = "#475569")}
+                            >
+                                {link.label}
+                            </Link>
+                        </React.Fragment>
+                    ))}
                 </div>
             </div>
         </div>
@@ -149,4 +208,3 @@ const Footer: React.FC = () => (
 );
 
 export default Footer;
-

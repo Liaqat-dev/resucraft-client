@@ -1,0 +1,163 @@
+/* ── ResuCraft Landing Design System ─────────────────────────── */
+
+/* Shared button styles */
+.rc-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.72rem 1.5rem;
+    background: linear-gradient(135deg, #0F172A 0%, #1e293b 100%);
+    color: #f8fafc !important;
+    border-radius: 999px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-decoration: none !important;
+    border: 1px solid #334155;
+    position: relative;
+    overflow: hidden;
+    transition: box-shadow 0.22s, transform 0.16s;
+    font-family: 'DM Sans', sans-serif;
+    letter-spacing: 0.02em;
+    cursor: pointer;
+    white-space: nowrap;
+}
+.rc-btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(105deg, transparent 35%, rgba(192,154,58,0.22) 50%, transparent 65%);
+    background-size: 250% 100%;
+    background-position: 250% 0;
+    transition: background-position 0.55s ease;
+}
+.rc-btn:hover::before { background-position: -250% 0; }
+.rc-btn:hover {
+    box-shadow: 0 6px 24px rgba(15,23,42,0.45), 0 0 0 1px rgba(192,154,58,0.32);
+    transform: translateY(-2px);
+}
+.rc-btn:active { transform: translateY(0); }
+
+/* Ghost button */
+.rc-btn-ghost {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.72rem 1.5rem;
+    border: 1px solid #334155;
+    color: #94a3b8 !important;
+    border-radius: 999px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-decoration: none !important;
+    transition: border-color 0.2s, color 0.2s, transform 0.16s;
+    font-family: 'DM Sans', sans-serif;
+    white-space: nowrap;
+}
+.rc-btn-ghost:hover { border-color: #C09A3A; color: #D4B06A !important; transform: translateY(-1px); }
+
+/* Dot grid texture */
+.rc-dot-bg {
+    background-image: radial-gradient(circle, rgba(148,163,184,0.08) 1px, transparent 1px);
+    background-size: 28px 28px;
+}
+
+/* Serif heading */
+.rc-serif {
+    font-family: 'Cormorant Garamond', serif;
+}
+
+/* Gold text */
+.rc-gold { color: #D4B06A; }
+.rc-gold-em { color: #C09A3A; }
+
+/* Section label pill */
+.rc-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.28rem 0.85rem;
+    border-radius: 999px;
+    border: 1px solid rgba(192,154,58,0.25);
+    background: rgba(192,154,58,0.08);
+    color: #D4B06A;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-family: 'DM Sans', sans-serif;
+}
+
+/* Card */
+.rc-card {
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 1rem;
+    transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+}
+.rc-card:hover {
+    border-color: rgba(192,154,58,0.35);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+    transform: translateY(-2px);
+}
+
+/* Icon box with gold tint */
+.rc-icon-box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.75rem;
+    background: rgba(192,154,58,0.1);
+    color: #D4B06A;
+    border: 1px solid rgba(192,154,58,0.2);
+    flex-shrink: 0;
+}
+
+/* Ambient glow */
+.rc-glow-gold {
+    position: absolute;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(192,154,58,0.18) 0%, transparent 70%);
+    pointer-events: none;
+}
+
+/* Animations */
+@keyframes rc-float-slow {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+.rc-float { animation: rc-float-slow 6s ease-in-out infinite; }
+
+@keyframes rc-pulse-glow {
+    0%, 100% { opacity: 0.12; }
+    50% { opacity: 0.24; }
+}
+.rc-pulse { animation: rc-pulse-glow 4s ease-in-out infinite; }
+
+/* Accordion */
+.rc-accordion-item {
+    border: 1px solid #334155;
+    border-radius: 0.75rem;
+    overflow: hidden;
+    transition: border-color 0.2s;
+}
+.rc-accordion-item[data-open="true"] { border-color: rgba(192,154,58,0.4); }
+.rc-accordion-btn {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1.1rem 1.25rem;
+    text-align: left;
+    background: #1e293b;
+    transition: background 0.15s;
+    border: none;
+    cursor: pointer;
+}
+.rc-accordion-btn:hover { background: #263347; }
+.rc-accordion-body {
+    overflow: hidden;
+    transition: max-height 0.32s ease, opacity 0.32s ease;
+    background: #1e293b;
+    border-top: 1px solid #334155;
+}

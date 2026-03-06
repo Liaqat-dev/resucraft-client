@@ -3,6 +3,7 @@ import React from "react";
 import {useAuth} from "@hooks/useAuth.ts";
 import {getAvatar} from "@src/utils/url_helper.ts";
 import Skeleton from "react-loading-skeleton";
+import ProfileCompletionWidget from "@src/components/common/ProfileCompletion/ProfileCompletionWidget.tsx";
 
 const CommonAccount = () => {
     const {user} = useAuth();
@@ -40,6 +41,11 @@ const CommonAccount = () => {
                             <span className="align-middle">Engineer</span>
                         </li>
                     </ul>
+                </div>
+
+                {/* Profile completion widget */}
+                <div className="mt-4 px-4 max-w-xs mx-auto w-full">
+                    <ProfileCompletionWidget />
                 </div>
             </div>
         </React.Fragment>

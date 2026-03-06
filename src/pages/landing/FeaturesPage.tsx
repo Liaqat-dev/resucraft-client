@@ -1,11 +1,9 @@
 import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import {
-    ArrowRight,
     Award,
     Bot,
     BrainCircuit,
-    CheckCircle2,
     FileDown,
     GraduationCap,
     LayoutTemplate,
@@ -21,6 +19,12 @@ import AOS from "aos";
 import LandingNav from "@src/components/landing/LandingNav.tsx";
 import LandingFooter from "@src/components/landing/LandingFooter.tsx";
 
+const GOLD = '#C09A3A';
+const GOLD_T = '#D4B06A';
+const DARK = '#0F172A';
+const DARK2 = '#1e293b';
+const DARK3 = '#334155';
+
 interface FeatureDetailProps {
     icon: React.ReactNode;
     badge: string;
@@ -33,42 +37,50 @@ interface FeatureDetailProps {
 }
 
 const FeatureDetail: React.FC<FeatureDetailProps> = ({
-    icon, badge, title, description, bullets, accent, badgeCls, reverse,
+    icon, badge, title, description, bullets, reverse,
 }) => (
-    <div className={`grid grid-cols-1 lg:grid-cols-2 gap-12 items-center ${reverse ? "lg:[direction:rtl]" : ""}`}>
-        <div
-            className={reverse ? "lg:[direction:ltr]" : ""}
-            data-aos={reverse ? "fade-left" : "fade-right"}
-        >
-            <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold mb-4 ${badgeCls}`}>
-                {badge}
-            </span>
-            <h2 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-4">
+    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '3rem', alignItems: 'center', direction: reverse ? 'rtl' : 'ltr' }}>
+        <div style={{ direction: 'ltr' }} data-aos={reverse ? "fade-left" : "fade-right"}>
+            <span className="rc-label" style={{ marginBottom: '1rem', display: 'inline-block' }}>{badge}</span>
+            <h2
+                className="rc-serif"
+                style={{ fontSize: '2rem', fontWeight: 600, color: '#f8fafc', lineHeight: 1.15, marginBottom: '1rem' }}
+            >
                 {title}
             </h2>
-            <p className="text-gray-500 dark:text-slate-400 leading-relaxed mb-6 text-sm">
+            <p style={{ color: '#64748b', lineHeight: 1.75, marginBottom: '1.5rem', fontSize: '0.88rem', fontFamily: "'DM Sans', sans-serif" }}>
                 {description}
             </p>
-            <ul className="space-y-2.5">
+            <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
                 {bullets.map((b, i) => (
                     <li
                         key={b}
-                        className="flex items-start gap-3 text-sm text-gray-600 dark:text-slate-300"
+                        style={{ display: 'flex', alignItems: 'flex-start', gap: '0.625rem', fontSize: '0.85rem', color: '#94a3b8', fontFamily: "'DM Sans', sans-serif" }}
                         data-aos="fade-up"
                         data-aos-delay={i * 60}
                     >
-                        <CheckCircle2 size={16} className="text-emerald-500 shrink-0 mt-0.5" />
+                        <span style={{ color: GOLD, flexShrink: 0, marginTop: '0.1rem', fontSize: '0.7rem' }}>●</span>
                         {b}
                     </li>
                 ))}
             </ul>
         </div>
         <div
-            className={`rounded-2xl p-10 flex items-center justify-center ${accent} ${reverse ? "lg:[direction:ltr]" : ""}`}
+            style={{
+                borderRadius: '1rem',
+                padding: '3rem',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                background: DARK2,
+                border: `1px solid ${DARK3}`,
+                direction: 'ltr',
+                minHeight: '14rem',
+            }}
             data-aos={reverse ? "fade-right" : "fade-left"}
         >
-            <div className="size-20 rounded-3xl bg-white/20 flex items-center justify-center text-white animate-float">
-                {React.cloneElement(icon as React.ReactElement, { size: 40 })}
+            <div className="rc-icon-box rc-float" style={{ width: 80, height: 80 }}>
+                {React.cloneElement(icon as React.ReactElement, { size: 36 })}
             </div>
         </div>
     </div>
@@ -171,80 +183,73 @@ const FeaturesPage: React.FC = () => {
     }, []);
 
     return (
-        <div className="min-h-screen bg-white dark:bg-slate-950 text-gray-900 dark:text-white">
+        <div style={{ minHeight: '100vh', background: DARK, fontFamily: "'DM Sans', sans-serif" }}>
             <LandingNav />
 
             {/* Hero */}
-            <section className="pt-28 pb-16 md:pt-36 md:pb-20 bg-gradient-to-b from-slate-950 to-slate-900 text-center">
-                <div className="max-w-4xl mx-auto px-4 sm:px-6">
-                    <div
-                        className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-primary-500/30 bg-primary-500/10 text-primary-400 text-xs font-semibold mb-5 animate-fade-in-up"
-                    >
-                        <Sparkles size={12} />
+            <section
+                style={{ background: DARK, paddingTop: '8rem', paddingBottom: '5rem', position: 'relative', overflow: 'hidden', textAlign: 'center' }}
+                className="rc-dot-bg"
+            >
+                <div className="rc-glow-gold rc-pulse" style={{ width: '30rem', height: '30rem', top: '40%', left: '50%', transform: 'translate(-50%, -50%)' }} />
+                <div style={{ maxWidth: '56rem', margin: '0 auto', padding: '0 1.5rem', position: 'relative', zIndex: 1 }}>
+                    <span className="rc-label" style={{ marginBottom: '1.25rem', display: 'inline-block' }}>
+                        <Sparkles size={11} style={{ display: 'inline', marginRight: 6, verticalAlign: 'middle' }} />
                         Built for Modern Job Seekers
-                    </div>
+                    </span>
                     <h1
-                        className="text-4xl md:text-5xl font-extrabold text-white mb-5 leading-tight animate-fade-in-up"
-                        style={{ animationDelay: "100ms" }}
+                        className="rc-serif"
+                        style={{ fontSize: 'clamp(2.4rem, 5vw, 3.8rem)', fontWeight: 600, color: '#f8fafc', lineHeight: 1.1, marginBottom: '1.25rem' }}
                     >
-                        Every Feature You Need to{" "}
-                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-400 to-emerald-400">
-                            Get Hired Faster
-                        </span>
+                        Every Feature You Need to{' '}
+                        <em style={{ color: GOLD_T, fontStyle: 'italic' }}>Get Hired Faster</em>
                     </h1>
-                    <p
-                        className="text-slate-400 text-base leading-relaxed max-w-xl mx-auto mb-8 animate-fade-in-up"
-                        style={{ animationDelay: "200ms" }}
-                    >
+                    <p style={{ color: '#94a3b8', fontSize: '1rem', lineHeight: 1.75, maxWidth: '36rem', margin: '0 auto 2.25rem', fontFamily: "'DM Sans', sans-serif" }}>
                         ResuCraft packs AI, ATS optimization, drag-and-drop design, and interview
                         prep into one streamlined platform.
                     </p>
-                    <div className="animate-fade-in-up" style={{ animationDelay: "300ms" }}>
-                        <Link
-                            to="/auth/sign-up"
-                            className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl bg-primary-600 hover:bg-primary-700 text-white font-semibold text-sm transition-colors shadow-lg shadow-primary-600/20"
-                        >
-                            Start Free — No Card Needed
-                            <ArrowRight size={16} />
-                        </Link>
-                    </div>
+                    <Link to="/auth/sign-up" className="rc-btn">
+                        Start Free — No Card Needed <span style={{ color: GOLD_T, position: 'relative', zIndex: 1 }}>↗</span>
+                    </Link>
                 </div>
             </section>
 
             {/* Feature details */}
-            <section className="py-16 md:py-24">
-                <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-24">
+            <section style={{ padding: '4rem 0 2rem' }}>
+                <div style={{ maxWidth: '72rem', margin: '0 auto', padding: '0 1.5rem', display: 'flex', flexDirection: 'column', gap: '5rem' }}>
                     {features.map((f) => (
                         <FeatureDetail key={f.title} {...f} />
                     ))}
                 </div>
             </section>
 
-            {/* Quick features grid */}
-            <section className="py-16 md:py-20 bg-gray-50 dark:bg-slate-900/50">
-                <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="text-center mb-12" data-aos="fade-up">
-                        <h2 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-3">
-                            Plus Everything Else You Need
+            {/* Highlights grid */}
+            <section style={{ background: '#0c1520', padding: '5rem 0' }}>
+                <div style={{ maxWidth: '72rem', margin: '0 auto', padding: '0 1.5rem' }}>
+                    <div style={{ textAlign: 'center', marginBottom: '3rem' }} data-aos="fade-up">
+                        <span className="rc-label">More Capabilities</span>
+                        <h2 className="rc-serif" style={{ fontSize: '2.2rem', fontWeight: 600, color: '#f8fafc', lineHeight: 1.1, margin: '0.75rem 0 0.75rem' }}>
+                            Plus Everything Else <em style={{ color: GOLD_T, fontStyle: 'italic' }}>You Need</em>
                         </h2>
-                        <p className="text-gray-500 dark:text-slate-400 text-sm max-w-md mx-auto">
+                        <p style={{ color: '#64748b', fontSize: '0.88rem', maxWidth: '28rem', margin: '0 auto', fontFamily: "'DM Sans', sans-serif" }}>
                             Small details that make a big difference.
                         </p>
                     </div>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: '1rem' }}>
                         {highlights.map((h, i) => (
                             <div
                                 key={h.label}
-                                className="flex items-start gap-3 p-4 rounded-xl bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 hover:border-primary-200 dark:hover:border-primary-500/30 transition-all duration-200 hover:-translate-y-0.5"
+                                className="rc-card"
+                                style={{ padding: '1.25rem', display: 'flex', alignItems: 'flex-start', gap: '0.875rem' }}
                                 data-aos="fade-up"
                                 data-aos-delay={i * 60}
                             >
-                                <div className="size-8 rounded-lg bg-primary-50 dark:bg-primary-500/10 text-primary-600 dark:text-primary-400 flex items-center justify-center shrink-0">
+                                <div className="rc-icon-box" style={{ width: 36, height: 36, flexShrink: 0 }}>
                                     {h.icon}
                                 </div>
                                 <div>
-                                    <p className="text-sm font-semibold text-gray-900 dark:text-white">{h.label}</p>
-                                    <p className="text-xs text-gray-400 dark:text-slate-500 mt-0.5 leading-relaxed">{h.desc}</p>
+                                    <p style={{ fontSize: '0.875rem', fontWeight: 700, color: '#f8fafc', fontFamily: "'DM Sans', sans-serif" }}>{h.label}</p>
+                                    <p style={{ fontSize: '0.775rem', color: '#64748b', marginTop: '0.25rem', lineHeight: 1.6, fontFamily: "'DM Sans', sans-serif" }}>{h.desc}</p>
                                 </div>
                             </div>
                         ))}
@@ -253,20 +258,18 @@ const FeaturesPage: React.FC = () => {
             </section>
 
             {/* CTA */}
-            <section className="py-16 bg-primary-600 text-center">
-                <div className="max-w-2xl mx-auto px-4">
-                    <h2 className="text-2xl md:text-3xl font-extrabold text-white mb-4" data-aos="fade-up">
-                        Explore It All For Free
+            <section style={{ background: DARK, padding: '5rem 0', textAlign: 'center' }}>
+                <div style={{ maxWidth: '40rem', margin: '0 auto', padding: '0 1.5rem' }}>
+                    <h2 className="rc-serif" data-aos="fade-up"
+                        style={{ fontSize: '2.2rem', fontWeight: 600, color: '#f8fafc', lineHeight: 1.1, marginBottom: '1rem' }}>
+                        Explore It All <em style={{ color: GOLD_T, fontStyle: 'italic' }}>For Free</em>
                     </h2>
-                    <p className="text-primary-100 text-sm mb-7 leading-relaxed" data-aos="fade-up" data-aos-delay="60">
+                    <p style={{ color: '#64748b', fontSize: '0.88rem', marginBottom: '2rem', lineHeight: 1.75, fontFamily: "'DM Sans', sans-serif" }} data-aos="fade-up" data-aos-delay="60">
                         Create your profile, generate your first resume, and see the difference AI makes.
                     </p>
                     <div data-aos="fade-up" data-aos-delay="120">
-                        <Link
-                            to="/auth/sign-up"
-                            className="inline-flex items-center gap-2 px-8 py-3.5 rounded-xl bg-white text-primary-700 hover:bg-primary-50 font-bold text-sm transition-colors shadow-lg"
-                        >
-                            Create Free Account <ArrowRight size={16} />
+                        <Link to="/auth/sign-up" className="rc-btn">
+                            Create Free Account <span style={{ color: GOLD_T, position: 'relative', zIndex: 1 }}>↗</span>
                         </Link>
                     </div>
                 </div>

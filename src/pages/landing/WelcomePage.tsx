@@ -1,12 +1,9 @@
 import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import {
-    ArrowRight,
     Award,
     Bot,
     BrainCircuit,
-    CheckCircle2,
-    ChevronRight,
     FileText,
     GraduationCap,
     LayoutTemplate,
@@ -22,6 +19,12 @@ import {
 import AOS from "aos";
 import LandingNav from "@src/components/landing/LandingNav.tsx";
 import LandingFooter from "@src/components/landing/LandingFooter.tsx";
+
+const GOLD = '#C09A3A';
+const GOLD_T = '#D4B06A';
+const DARK = '#0F172A';
+const DARK2 = '#1e293b';
+const DARK3 = '#334155';
 
 // ── Stats ─────────────────────────────────────────────────────────────────────
 
@@ -130,77 +133,54 @@ const WelcomePage: React.FC = () => {
     }, []);
 
     return (
-        <div className="min-h-screen bg-white dark:bg-slate-950 text-gray-900 dark:text-white">
+        <div style={{ minHeight: '100vh', background: DARK, fontFamily: "'DM Sans', sans-serif" }}>
             <LandingNav />
 
             {/* ── Hero ── */}
-            <section className="relative pt-28 pb-20 md:pt-36 md:pb-28 overflow-hidden bg-gradient-to-b from-slate-950 via-slate-900 to-slate-800">
-                {/* Grid pattern */}
+            <section
+                style={{ background: DARK, paddingTop: '8rem', paddingBottom: '5rem', position: 'relative', overflow: 'hidden' }}
+                className="rc-dot-bg"
+            >
+                {/* Ambient glow */}
                 <div
-                    className="absolute inset-0 opacity-[0.04]"
-                    style={{
-                        backgroundImage: `linear-gradient(rgba(255,255,255,.3) 1px, transparent 1px),
-                            linear-gradient(90deg, rgba(255,255,255,.3) 1px, transparent 1px)`,
-                        backgroundSize: "40px 40px",
-                    }}
+                    className="rc-glow-gold rc-pulse"
+                    style={{ width: '36rem', height: '36rem', top: '30%', left: '50%', transform: 'translate(-50%, -50%)' }}
                 />
-                {/* Glow */}
-                <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary-600/20 rounded-full blur-3xl pointer-events-none animate-pulse-glow" />
-
-                <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-                    <div
-                        className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-primary-500/30 bg-primary-500/10 text-primary-400 text-xs font-semibold mb-6 animate-fade-in-up"
-                    >
-                        <Bot size={12} />
+                <div style={{ maxWidth: '80rem', margin: '0 auto', padding: '0 1.5rem', position: 'relative', zIndex: 1, textAlign: 'center' }}>
+                    <span className="rc-label" style={{ marginBottom: '1.5rem', display: 'inline-block' }}>
+                        <Bot size={11} style={{ display: 'inline', marginRight: 6, verticalAlign: 'middle' }} />
                         AI-Powered · ATS-Optimized · Free to Start
-                    </div>
+                    </span>
 
                     <h1
-                        className="text-4xl sm:text-5xl md:text-6xl font-extrabold text-white leading-tight tracking-tight mb-6 max-w-4xl mx-auto animate-fade-in-up"
-                        style={{ animationDelay: "100ms" }}
+                        className="rc-serif"
+                        style={{ fontSize: 'clamp(2.8rem, 6vw, 4.5rem)', fontWeight: 600, color: '#f8fafc', lineHeight: 1.08, marginBottom: '1.5rem', maxWidth: '52rem', marginLeft: 'auto', marginRight: 'auto' }}
                     >
-                        Build a Resume That
-                        <span className="block text-transparent bg-clip-text bg-gradient-to-r from-primary-400 to-emerald-400">
-                            Gets You Hired
-                        </span>
+                        Build a Resume That{' '}
+                        <em style={{ color: GOLD_T, fontStyle: 'italic', display: 'block' }}>Gets You Hired</em>
                     </h1>
 
                     <p
-                        className="text-base sm:text-lg text-slate-400 leading-relaxed max-w-2xl mx-auto mb-10 animate-fade-in-up"
-                        style={{ animationDelay: "200ms" }}
+                        style={{ fontSize: '1rem', color: '#94a3b8', lineHeight: 1.75, maxWidth: '36rem', margin: '0 auto 2.5rem', fontFamily: "'DM Sans', sans-serif" }}
                     >
                         ResuCraft uses AI and NLP to transform your profile into a perfectly
                         tailored, ATS-optimized resume for every job — in under 60 seconds.
                     </p>
 
-                    <div
-                        className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-fade-in-up"
-                        style={{ animationDelay: "300ms" }}
-                    >
-                        <Link
-                            to="/auth/sign-up"
-                            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-xl bg-primary-600 hover:bg-primary-700 text-white font-semibold text-sm transition-colors shadow-lg shadow-primary-600/20"
-                        >
-                            Get Started Free
-                            <ArrowRight size={16} />
+                    <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'center', gap: '1rem', marginBottom: '3rem' }}>
+                        <Link to="/auth/sign-up" className="rc-btn">
+                            Start Building Free <span style={{ color: GOLD_T, position: 'relative', zIndex: 1 }}>↗</span>
                         </Link>
-                        <Link
-                            to="/features"
-                            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-xl border border-slate-700 hover:border-slate-500 text-slate-300 hover:text-white font-semibold text-sm transition-colors"
-                        >
-                            See All Features
-                            <ChevronRight size={16} />
+                        <Link to="/features" className="rc-btn-ghost">
+                            See Features
                         </Link>
                     </div>
 
                     {/* Trust signals */}
-                    <div
-                        className="mt-12 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-xs text-slate-500 animate-fade-in"
-                        style={{ animationDelay: "500ms" }}
-                    >
+                    <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'center', gap: '1.5rem 2rem' }}>
                         {["No credit card required", "Free forever plan", "PDF export included", "GDPR compliant"].map((t) => (
-                            <span key={t} className="flex items-center gap-1.5">
-                                <CheckCircle2 size={12} className="text-emerald-500" />
+                            <span key={t} style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.78rem', color: '#64748b', fontFamily: "'DM Sans', sans-serif" }}>
+                                <span style={{ color: GOLD, fontSize: '0.7rem' }}>✓</span>
                                 {t}
                             </span>
                         ))}
@@ -209,22 +189,22 @@ const WelcomePage: React.FC = () => {
             </section>
 
             {/* ── Stats ── */}
-            <section className="py-14 bg-slate-900 dark:bg-slate-900 border-y border-slate-800">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            <section style={{ background: '#111827', borderTop: '1px solid #1e293b', borderBottom: '1px solid #1e293b', padding: '3.5rem 0' }}>
+                <div style={{ maxWidth: '80rem', margin: '0 auto', padding: '0 1.5rem' }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: '2rem' }}>
                         {stats.map((s, i) => (
                             <div
                                 key={s.value}
-                                className="text-center"
+                                style={{ textAlign: 'center' }}
                                 data-aos="fade-up"
                                 data-aos-delay={i * 80}
                             >
-                                <div className="inline-flex size-10 rounded-xl bg-primary-500/10 text-primary-400 items-center justify-center mb-3">
+                                <div className="rc-icon-box" style={{ width: 40, height: 40, margin: '0 auto 0.75rem' }}>
                                     {s.icon}
                                 </div>
-                                <p className="text-2xl md:text-3xl font-extrabold text-white">{s.value}</p>
-                                <p className="text-sm font-semibold text-slate-300 mt-0.5">{s.label}</p>
-                                <p className="text-xs text-slate-500">{s.sub}</p>
+                                <p className="rc-serif" style={{ fontSize: '2.5rem', fontWeight: 600, color: GOLD_T, lineHeight: 1 }}>{s.value}</p>
+                                <p style={{ fontSize: '0.85rem', fontWeight: 600, color: '#94a3b8', marginTop: '0.25rem', fontFamily: "'DM Sans', sans-serif" }}>{s.label}</p>
+                                <p style={{ fontSize: '0.75rem', color: '#64748b', fontFamily: "'DM Sans', sans-serif" }}>{s.sub}</p>
                             </div>
                         ))}
                     </div>
@@ -232,90 +212,119 @@ const WelcomePage: React.FC = () => {
             </section>
 
             {/* ── Features ── */}
-            <section className="py-20 md:py-28 bg-white dark:bg-slate-950">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="text-center mb-14" data-aos="fade-up">
-                        <p className="text-xs font-semibold uppercase tracking-widest text-primary-600 dark:text-primary-400 mb-2">
-                            Everything You Need
-                        </p>
-                        <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
-                            The Complete Resume Toolkit
+            <section style={{ background: DARK, padding: '5rem 0' }}>
+                <div style={{ maxWidth: '80rem', margin: '0 auto', padding: '0 1.5rem' }}>
+                    <div style={{ textAlign: 'center', marginBottom: '3.5rem' }} data-aos="fade-up">
+                        <span className="rc-label">Everything You Need</span>
+                        <h2 className="rc-serif" style={{ fontSize: '2.5rem', fontWeight: 600, color: '#f8fafc', lineHeight: 1.1, margin: '0.75rem 0 1rem' }}>
+                            The Complete <em style={{ color: GOLD_T, fontStyle: 'italic' }}>Resume Toolkit</em>
                         </h2>
-                        <p className="text-gray-500 dark:text-slate-400 max-w-xl mx-auto text-sm leading-relaxed">
+                        <p style={{ color: '#64748b', fontSize: '0.9rem', lineHeight: 1.7, maxWidth: '36rem', margin: '0 auto', fontFamily: "'DM Sans', sans-serif" }}>
                             From AI generation to interview prep — ResuCraft covers every step of
                             your job application journey.
                         </p>
                     </div>
 
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '1.25rem' }}>
                         {features.map((f, i) => (
                             <div
                                 key={f.title}
-                                className="group p-6 rounded-2xl border border-gray-100 dark:border-slate-800 hover:border-primary-200 dark:hover:border-primary-500/30 hover:shadow-md transition-all duration-200 bg-white dark:bg-slate-900"
+                                className="rc-card"
+                                style={{ padding: '1.5rem' }}
                                 data-aos="fade-up"
                                 data-aos-delay={i * 70}
                             >
-                                <div className={`size-11 rounded-xl flex items-center justify-center mb-4 transition-transform duration-200 group-hover:scale-110 ${f.accent}`}>
+                                <div className="rc-icon-box" style={{ width: 44, height: 44, marginBottom: '1rem' }}>
                                     {f.icon}
                                 </div>
-                                <h3 className="text-sm font-bold text-gray-900 dark:text-white mb-2">
-                                    {f.title}
-                                </h3>
-                                <p className="text-xs text-gray-500 dark:text-slate-400 leading-relaxed">
-                                    {f.desc}
-                                </p>
+                                <h3 style={{ fontSize: '0.95rem', fontWeight: 700, color: '#f8fafc', marginBottom: '0.5rem', fontFamily: "'DM Sans', sans-serif" }}>{f.title}</h3>
+                                <p style={{ fontSize: '0.8rem', color: '#64748b', lineHeight: 1.65, fontFamily: "'DM Sans', sans-serif" }}>{f.desc}</p>
                             </div>
                         ))}
                     </div>
 
-                    <div className="mt-10 text-center" data-aos="fade-up">
-                        <Link
-                            to="/features"
-                            className="inline-flex items-center gap-2 text-sm font-semibold text-primary-600 dark:text-primary-400 hover:gap-3 transition-all"
-                        >
-                            Explore all features <ArrowRight size={14} />
+                    <div style={{ marginTop: '2.5rem', textAlign: 'center' }} data-aos="fade-up">
+                        <Link to="/features" style={{ fontSize: '0.85rem', fontWeight: 600, color: GOLD_T, textDecoration: 'none', fontFamily: "'DM Sans', sans-serif" }}>
+                            Explore all features →
                         </Link>
                     </div>
                 </div>
             </section>
 
             {/* ── How it works ── */}
-            <section id="how-it-works" className="py-20 md:py-28 bg-gray-50 dark:bg-slate-900/50">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="text-center mb-14" data-aos="fade-up">
-                        <p className="text-xs font-semibold uppercase tracking-widest text-primary-600 dark:text-primary-400 mb-2">
-                            Simple Process
-                        </p>
-                        <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
-                            How ResuCraft Works
+            <section id="how-it-works" style={{ background: '#0c1520', padding: '5rem 0' }}>
+                <div style={{ maxWidth: '80rem', margin: '0 auto', padding: '0 1.5rem' }}>
+                    <div style={{ textAlign: 'center', marginBottom: '3.5rem' }} data-aos="fade-up">
+                        <span className="rc-label">Simple Process</span>
+                        <h2 className="rc-serif" style={{ fontSize: '2.5rem', fontWeight: 600, color: '#f8fafc', lineHeight: 1.1, margin: '0.75rem 0 1rem' }}>
+                            How <em style={{ color: GOLD_T, fontStyle: 'italic' }}>ResuCraft</em> Works
                         </h2>
-                        <p className="text-gray-500 dark:text-slate-400 max-w-lg mx-auto text-sm leading-relaxed">
+                        <p style={{ color: '#64748b', fontSize: '0.9rem', lineHeight: 1.7, fontFamily: "'DM Sans', sans-serif" }}>
                             Three simple steps from blank page to hired.
                         </p>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '2rem' }}>
                         {steps.map((step, i) => (
                             <div
                                 key={step.n}
-                                className="relative flex flex-col items-center text-center"
+                                style={{ position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}
                                 data-aos="fade-up"
                                 data-aos-delay={i * 150}
                             >
                                 {/* Connector line */}
                                 {i < steps.length - 1 && (
-                                    <div className="hidden md:block absolute top-8 left-[calc(50%+2.5rem)] w-[calc(100%-5rem)] h-px bg-gradient-to-r from-primary-200 dark:from-primary-500/30 to-transparent" />
+                                    <div style={{
+                                        display: 'none',
+                                        position: 'absolute',
+                                        top: '2.5rem',
+                                        left: 'calc(50% + 2.5rem)',
+                                        width: 'calc(100% - 5rem)',
+                                        height: '1px',
+                                        background: `${GOLD}30`,
+                                    }} className="step-connector" />
                                 )}
-                                <div className="relative size-16 rounded-2xl bg-primary-600 flex items-center justify-center text-white mb-5 shadow-lg shadow-primary-600/20 animate-float" style={{ animationDelay: `${i * 0.4}s` }}>
+                                <div
+                                    style={{
+                                        position: 'relative',
+                                        width: '5rem',
+                                        height: '5rem',
+                                        borderRadius: '1.25rem',
+                                        background: `linear-gradient(135deg, ${GOLD}, #8B6914)`,
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        color: '#fff',
+                                        marginBottom: '1.25rem',
+                                        boxShadow: `0 8px 24px ${GOLD}30`,
+                                    }}
+                                    className="rc-float"
+                                >
                                     {step.icon}
-                                    <span className="absolute -top-2 -right-2 size-5 rounded-full bg-white dark:bg-slate-800 border-2 border-primary-600 text-primary-600 text-[10px] font-black flex items-center justify-center">
+                                    <span style={{
+                                        position: 'absolute',
+                                        top: '-0.5rem',
+                                        right: '-0.5rem',
+                                        width: '1.4rem',
+                                        height: '1.4rem',
+                                        borderRadius: '50%',
+                                        background: DARK2,
+                                        border: `2px solid ${GOLD}`,
+                                        color: GOLD_T,
+                                        fontSize: '0.6rem',
+                                        fontWeight: 900,
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        fontFamily: "'DM Sans', sans-serif",
+                                    }}>
                                         {i + 1}
                                     </span>
                                 </div>
-                                <h3 className="text-base font-bold text-gray-900 dark:text-white mb-2">
+                                <h3 style={{ fontSize: '1rem', fontWeight: 700, color: '#f8fafc', marginBottom: '0.5rem', fontFamily: "'DM Sans', sans-serif" }}>
                                     {step.title}
                                 </h3>
-                                <p className="text-sm text-gray-500 dark:text-slate-400 leading-relaxed max-w-xs">
+                                <p style={{ fontSize: '0.82rem', color: '#64748b', lineHeight: 1.7, maxWidth: '18rem', fontFamily: "'DM Sans', sans-serif" }}>
                                     {step.desc}
                                 </p>
                             </div>
@@ -325,41 +334,56 @@ const WelcomePage: React.FC = () => {
             </section>
 
             {/* ── Testimonials ── */}
-            <section className="py-20 md:py-28 bg-white dark:bg-slate-950">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="text-center mb-14" data-aos="fade-up">
-                        <div className="flex items-center justify-center gap-1 mb-3">
-                            {[1,2,3,4,5].map(i => <Star key={i} size={16} className="text-amber-400 fill-amber-400" />)}
+            <section style={{ background: DARK, padding: '5rem 0' }}>
+                <div style={{ maxWidth: '80rem', margin: '0 auto', padding: '0 1.5rem' }}>
+                    <div style={{ textAlign: 'center', marginBottom: '3.5rem' }} data-aos="fade-up">
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.25rem', marginBottom: '0.75rem' }}>
+                            {[1,2,3,4,5].map(i => <Star key={i} size={16} style={{ color: GOLD_T, fill: GOLD_T }} />)}
                         </div>
-                        <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
-                            Loved by Job Seekers
+                        <span className="rc-label">Testimonials</span>
+                        <h2 className="rc-serif" style={{ fontSize: '2.5rem', fontWeight: 600, color: '#f8fafc', lineHeight: 1.1, margin: '0.75rem 0 1rem' }}>
+                            Loved by <em style={{ color: GOLD_T, fontStyle: 'italic' }}>Job Seekers</em>
                         </h2>
-                        <p className="text-gray-500 dark:text-slate-400 max-w-md mx-auto text-sm">
+                        <p style={{ color: '#64748b', fontSize: '0.9rem', lineHeight: 1.7, fontFamily: "'DM Sans', sans-serif" }}>
                             Real people, real results.
                         </p>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '1.25rem' }}>
                         {testimonials.map((t, i) => (
                             <div
                                 key={t.name}
-                                className="p-6 rounded-2xl border border-gray-100 dark:border-slate-800 bg-gray-50 dark:bg-slate-900 hover:shadow-md transition-shadow duration-200"
+                                style={{ background: DARK2, border: `1px solid ${DARK3}`, borderRadius: '1rem', padding: '1.75rem', position: 'relative' }}
                                 data-aos="fade-up"
                                 data-aos-delay={i * 100}
                             >
-                                <div className="flex items-center gap-1 mb-4">
-                                    {[1,2,3,4,5].map(i => <Star key={i} size={12} className="text-amber-400 fill-amber-400" />)}
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.2rem', marginBottom: '1rem' }}>
+                                    {[1,2,3,4,5].map(j => <Star key={j} size={12} style={{ color: GOLD_T, fill: GOLD_T }} />)}
                                 </div>
-                                <p className="text-sm text-gray-600 dark:text-slate-300 leading-relaxed mb-5 italic">
-                                    "{t.quote}"
+                                <p style={{ fontSize: '2.5rem', color: GOLD, lineHeight: 1, marginBottom: '0.5rem', fontFamily: 'Georgia, serif', opacity: 0.6 }}>"</p>
+                                <p style={{ fontSize: '0.85rem', color: '#cbd5e1', lineHeight: 1.7, marginBottom: '1.5rem', fontStyle: 'italic', fontFamily: "'DM Sans', sans-serif" }}>
+                                    {t.quote}
                                 </p>
-                                <div className="flex items-center gap-3">
-                                    <div className={`size-9 rounded-full ${t.color} flex items-center justify-center text-white text-xs font-bold shrink-0`}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                                    <div style={{
+                                        width: '2.25rem',
+                                        height: '2.25rem',
+                                        borderRadius: '50%',
+                                        background: `linear-gradient(135deg, ${GOLD}, #8B6914)`,
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        color: '#fff',
+                                        fontSize: '0.7rem',
+                                        fontWeight: 700,
+                                        flexShrink: 0,
+                                        fontFamily: "'DM Sans', sans-serif",
+                                    }}>
                                         {t.initials}
                                     </div>
                                     <div>
-                                        <p className="text-sm font-semibold text-gray-900 dark:text-white">{t.name}</p>
-                                        <p className="text-xs text-gray-400 dark:text-slate-500">{t.role}</p>
+                                        <p style={{ fontSize: '0.85rem', fontWeight: 700, color: '#f8fafc', fontFamily: "'DM Sans', sans-serif" }}>{t.name}</p>
+                                        <p style={{ fontSize: '0.75rem', color: '#64748b', fontFamily: "'DM Sans', sans-serif" }}>{t.role}</p>
                                     </div>
                                 </div>
                             </div>
@@ -369,35 +393,27 @@ const WelcomePage: React.FC = () => {
             </section>
 
             {/* ── CTA ── */}
-            <section className="py-20 bg-gradient-to-br from-primary-600 to-primary-800 relative overflow-hidden">
-                <div className="absolute inset-0 opacity-10"
-                    style={{
-                        backgroundImage: `radial-gradient(circle, rgba(255,255,255,0.3) 1px, transparent 1px)`,
-                        backgroundSize: "24px 24px",
-                    }} />
-                <div className="relative max-w-3xl mx-auto px-4 sm:px-6 text-center">
-                    <div className="inline-flex size-14 rounded-2xl bg-white/10 items-center justify-center mb-5 animate-float" data-aos="zoom-in">
-                        <Users size={24} className="text-white" />
+            <section style={{ background: '#0c1520', padding: '5rem 0', position: 'relative', overflow: 'hidden' }} className="rc-dot-bg">
+                <div className="rc-glow-gold" style={{ width: '28rem', height: '28rem', bottom: '-8rem', right: '-4rem', opacity: 0.4 }} />
+                <div style={{ maxWidth: '48rem', margin: '0 auto', padding: '0 1.5rem', textAlign: 'center', position: 'relative', zIndex: 1 }}>
+                    <div data-aos="zoom-in" style={{ marginBottom: '1.5rem' }}>
+                        <div className="rc-icon-box" style={{ width: 56, height: 56, margin: '0 auto' }}>
+                            <Users size={24} />
+                        </div>
                     </div>
-                    <h2 className="text-3xl md:text-4xl font-extrabold text-white mb-4" data-aos="fade-up" data-aos-delay="50">
-                        Ready to Land Your Dream Job?
+                    <h2 className="rc-serif" data-aos="fade-up" data-aos-delay="50"
+                        style={{ fontSize: '2.5rem', fontWeight: 600, color: '#f8fafc', lineHeight: 1.1, marginBottom: '1rem' }}>
+                        Ready to Land Your <em style={{ color: GOLD_T, fontStyle: 'italic' }}>Dream Job?</em>
                     </h2>
-                    <p className="text-primary-100 text-base mb-8 leading-relaxed" data-aos="fade-up" data-aos-delay="100">
+                    <p style={{ color: '#64748b', fontSize: '0.9rem', lineHeight: 1.75, marginBottom: '2.5rem', fontFamily: "'DM Sans', sans-serif" }} data-aos="fade-up" data-aos-delay="100">
                         Join thousands of professionals who use ResuCraft to get more interviews,
                         faster. It's free to start — no credit card needed.
                     </p>
-                    <div className="flex flex-col sm:flex-row items-center justify-center gap-4" data-aos="fade-up" data-aos-delay="150">
-                        <Link
-                            to="/auth/sign-up"
-                            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-xl bg-white text-primary-700 hover:bg-primary-50 font-bold text-sm transition-colors shadow-lg"
-                        >
-                            Start Building for Free
-                            <ArrowRight size={16} />
+                    <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'center', gap: '1rem' }} data-aos="fade-up" data-aos-delay="150">
+                        <Link to="/auth/sign-up" className="rc-btn">
+                            Start Building for Free <span style={{ color: GOLD_T, position: 'relative', zIndex: 1 }}>↗</span>
                         </Link>
-                        <Link
-                            to="/features"
-                            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-xl border-2 border-white/30 text-white hover:border-white/60 font-semibold text-sm transition-colors"
-                        >
+                        <Link to="/features" className="rc-btn-ghost">
                             See All Features
                         </Link>
                     </div>
