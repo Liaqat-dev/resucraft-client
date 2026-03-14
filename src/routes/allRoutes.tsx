@@ -51,6 +51,7 @@ import ResumeBuilder from '@pages/builder/ResumeBuilder.tsx'
 
 
 import TemplateGallery from '@pages/Template/TemplatesGallery.tsx'
+import TemplatePreview from '@pages/Template/TemplatePreview.tsx'
 import WelcomePage from '@pages/landing/WelcomePage.tsx'
 import FeaturesPage from '@pages/landing/FeaturesPage.tsx'
 import FAQPage from '@pages/landing/FAQPage.tsx'
@@ -69,6 +70,7 @@ const routes: IRoute[] = [
         //dashboards
         {path: "/loading", component: <SpinLoader/>},
         {path: "/", component: <TemplateGallery/>},
+        {path: "/templates/:id/preview", component: <TemplatePreview/>},
 
 
         // forms

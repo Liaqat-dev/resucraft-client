@@ -18,12 +18,7 @@ import {
 import AOS from "aos";
 import LandingNav from "@src/components/landing/LandingNav.tsx";
 import LandingFooter from "@src/components/landing/LandingFooter.tsx";
-
-const GOLD = '#C09A3A';
-const GOLD_T = '#D4B06A';
-const DARK = '#0F172A';
-const DARK2 = '#1e293b';
-const DARK3 = '#334155';
+import { useLandingTheme } from "@hooks/useLandingTheme";
 
 interface FeatureDetailProps {
     icon: React.ReactNode;
@@ -36,30 +31,30 @@ interface FeatureDetailProps {
     reverse?: boolean;
 }
 
-const FeatureDetail: React.FC<FeatureDetailProps> = ({
-    icon, badge, title, description, bullets, reverse,
+const FeatureDetail: React.FC<FeatureDetailProps & { accentColor: string; cardBg: string; cardBorder: string; textColor: string; textSub: string; textMuted: string }> = ({
+    icon, badge, title, description, bullets, reverse, accentColor, cardBg, cardBorder, textColor, textSub, textMuted,
 }) => (
     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '3rem', alignItems: 'center', direction: reverse ? 'rtl' : 'ltr' }}>
         <div style={{ direction: 'ltr' }} data-aos={reverse ? "fade-left" : "fade-right"}>
             <span className="rc-label" style={{ marginBottom: '1rem', display: 'inline-block' }}>{badge}</span>
             <h2
                 className="rc-serif"
-                style={{ fontSize: '2rem', fontWeight: 600, color: '#f8fafc', lineHeight: 1.15, marginBottom: '1rem' }}
+                style={{ fontSize: '2rem', fontWeight: 600, color: textColor, lineHeight: 1.15, marginBottom: '1rem' }}
             >
                 {title}
             </h2>
-            <p style={{ color: '#64748b', lineHeight: 1.75, marginBottom: '1.5rem', fontSize: '0.88rem', fontFamily: "'DM Sans', sans-serif" }}>
+            <p style={{ color: textMuted, lineHeight: 1.75, marginBottom: '1.5rem', fontSize: '0.88rem', fontFamily: "'DM Sans', sans-serif" }}>
                 {description}
             </p>
             <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
                 {bullets.map((b, i) => (
                     <li
                         key={b}
-                        style={{ display: 'flex', alignItems: 'flex-start', gap: '0.625rem', fontSize: '0.85rem', color: '#94a3b8', fontFamily: "'DM Sans', sans-serif" }}
+                        style={{ display: 'flex', alignItems: 'flex-start', gap: '0.625rem', fontSize: '0.85rem', color: textSub, fontFamily: "'DM Sans', sans-serif" }}
                         data-aos="fade-up"
                         data-aos-delay={i * 60}
                     >
-                        <span style={{ color: GOLD, flexShrink: 0, marginTop: '0.1rem', fontSize: '0.7rem' }}>●</span>
+                        <span style={{ color: accentColor, flexShrink: 0, marginTop: '0.1rem', fontSize: '0.7rem' }}>●</span>
                         {b}
                     </li>
                 ))}
@@ -72,8 +67,8 @@ const FeatureDetail: React.FC<FeatureDetailProps> = ({
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                background: DARK2,
-                border: `1px solid ${DARK3}`,
+                background: cardBg,
+                border: `1px solid ${cardBorder}`,
                 direction: 'ltr',
                 minHeight: '14rem',
             }}
@@ -86,7 +81,7 @@ const FeatureDetail: React.FC<FeatureDetailProps> = ({
     </div>
 );
 
-const features: FeatureDetailProps[] = [
+const featuresData: FeatureDetailProps[] = [
     {
         icon: <BrainCircuit />,
         badge: "Core Feature",
@@ -178,17 +173,19 @@ const highlights = [
 ];
 
 const FeaturesPage: React.FC = () => {
+    const theme = useLandingTheme();
+
     useEffect(() => {
         AOS.init({ once: true, duration: 650, easing: "ease-out-cubic", offset: 60 });
     }, []);
 
     return (
-        <div style={{ minHeight: '100vh', background: DARK, fontFamily: "'DM Sans', sans-serif" }}>
+        <div style={{ minHeight: '100vh', background: theme.bg, fontFamily: "'DM Sans', sans-serif" }}>
             <LandingNav />
 
             {/* Hero */}
             <section
-                style={{ background: DARK, paddingTop: '8rem', paddingBottom: '5rem', position: 'relative', overflow: 'hidden', textAlign: 'center' }}
+                style={{ background: theme.bg, paddingTop: '8rem', paddingBottom: '5rem', position: 'relative', overflow: 'hidden', textAlign: 'center' }}
                 className="rc-dot-bg"
             >
                 <div className="rc-glow-gold rc-pulse" style={{ width: '30rem', height: '30rem', top: '40%', left: '50%', transform: 'translate(-50%, -50%)' }} />
@@ -199,17 +196,17 @@ const FeaturesPage: React.FC = () => {
                     </span>
                     <h1
                         className="rc-serif"
-                        style={{ fontSize: 'clamp(2.4rem, 5vw, 3.8rem)', fontWeight: 600, color: '#f8fafc', lineHeight: 1.1, marginBottom: '1.25rem' }}
+                        style={{ fontSize: 'clamp(2.4rem, 5vw, 3.8rem)', fontWeight: 600, color: theme.text, lineHeight: 1.1, marginBottom: '1.25rem' }}
                     >
                         Every Feature You Need to{' '}
-                        <em style={{ color: GOLD_T, fontStyle: 'italic' }}>Get Hired Faster</em>
+                        <em style={{ color: theme.accentLight, fontStyle: 'italic' }}>Get Hired Faster</em>
                     </h1>
-                    <p style={{ color: '#94a3b8', fontSize: '1rem', lineHeight: 1.75, maxWidth: '36rem', margin: '0 auto 2.25rem', fontFamily: "'DM Sans', sans-serif" }}>
+                    <p style={{ color: theme.textSub, fontSize: '1rem', lineHeight: 1.75, maxWidth: '36rem', margin: '0 auto 2.25rem', fontFamily: "'DM Sans', sans-serif" }}>
                         ResuCraft packs AI, ATS optimization, drag-and-drop design, and interview
                         prep into one streamlined platform.
                     </p>
                     <Link to="/auth/sign-up" className="rc-btn">
-                        Start Free — No Card Needed <span style={{ color: GOLD_T, position: 'relative', zIndex: 1 }}>↗</span>
+                        Start Free — No Card Needed <span style={{ color: theme.accentLight, position: 'relative', zIndex: 1 }}>↗</span>
                     </Link>
                 </div>
             </section>
@@ -217,21 +214,30 @@ const FeaturesPage: React.FC = () => {
             {/* Feature details */}
             <section style={{ padding: '4rem 0 2rem' }}>
                 <div style={{ maxWidth: '72rem', margin: '0 auto', padding: '0 1.5rem', display: 'flex', flexDirection: 'column', gap: '5rem' }}>
-                    {features.map((f) => (
-                        <FeatureDetail key={f.title} {...f} />
+                    {featuresData.map((f) => (
+                        <FeatureDetail
+                            key={f.title}
+                            {...f}
+                            accentColor={theme.accent}
+                            cardBg={theme.card}
+                            cardBorder={theme.border}
+                            textColor={theme.text}
+                            textSub={theme.textSub}
+                            textMuted={theme.textMuted}
+                        />
                     ))}
                 </div>
             </section>
 
             {/* Highlights grid */}
-            <section style={{ background: '#0c1520', padding: '5rem 0' }}>
+            <section style={{ background: theme.bgDeep, padding: '5rem 0' }}>
                 <div style={{ maxWidth: '72rem', margin: '0 auto', padding: '0 1.5rem' }}>
                     <div style={{ textAlign: 'center', marginBottom: '3rem' }} data-aos="fade-up">
                         <span className="rc-label">More Capabilities</span>
-                        <h2 className="rc-serif" style={{ fontSize: '2.2rem', fontWeight: 600, color: '#f8fafc', lineHeight: 1.1, margin: '0.75rem 0 0.75rem' }}>
-                            Plus Everything Else <em style={{ color: GOLD_T, fontStyle: 'italic' }}>You Need</em>
+                        <h2 className="rc-serif" style={{ fontSize: '2.2rem', fontWeight: 600, color: theme.text, lineHeight: 1.1, margin: '0.75rem 0 0.75rem' }}>
+                            Plus Everything Else <em style={{ color: theme.accentLight, fontStyle: 'italic' }}>You Need</em>
                         </h2>
-                        <p style={{ color: '#64748b', fontSize: '0.88rem', maxWidth: '28rem', margin: '0 auto', fontFamily: "'DM Sans', sans-serif" }}>
+                        <p style={{ color: theme.textMuted, fontSize: '0.88rem', maxWidth: '28rem', margin: '0 auto', fontFamily: "'DM Sans', sans-serif" }}>
                             Small details that make a big difference.
                         </p>
                     </div>
@@ -248,8 +254,8 @@ const FeaturesPage: React.FC = () => {
                                     {h.icon}
                                 </div>
                                 <div>
-                                    <p style={{ fontSize: '0.875rem', fontWeight: 700, color: '#f8fafc', fontFamily: "'DM Sans', sans-serif" }}>{h.label}</p>
-                                    <p style={{ fontSize: '0.775rem', color: '#64748b', marginTop: '0.25rem', lineHeight: 1.6, fontFamily: "'DM Sans', sans-serif" }}>{h.desc}</p>
+                                    <p style={{ fontSize: '0.875rem', fontWeight: 700, color: theme.text, fontFamily: "'DM Sans', sans-serif" }}>{h.label}</p>
+                                    <p style={{ fontSize: '0.775rem', color: theme.textMuted, marginTop: '0.25rem', lineHeight: 1.6, fontFamily: "'DM Sans', sans-serif" }}>{h.desc}</p>
                                 </div>
                             </div>
                         ))}
@@ -258,18 +264,18 @@ const FeaturesPage: React.FC = () => {
             </section>
 
             {/* CTA */}
-            <section style={{ background: DARK, padding: '5rem 0', textAlign: 'center' }}>
+            <section style={{ background: theme.bg, padding: '5rem 0', textAlign: 'center' }}>
                 <div style={{ maxWidth: '40rem', margin: '0 auto', padding: '0 1.5rem' }}>
                     <h2 className="rc-serif" data-aos="fade-up"
-                        style={{ fontSize: '2.2rem', fontWeight: 600, color: '#f8fafc', lineHeight: 1.1, marginBottom: '1rem' }}>
-                        Explore It All <em style={{ color: GOLD_T, fontStyle: 'italic' }}>For Free</em>
+                        style={{ fontSize: '2.2rem', fontWeight: 600, color: theme.text, lineHeight: 1.1, marginBottom: '1rem' }}>
+                        Explore It All <em style={{ color: theme.accentLight, fontStyle: 'italic' }}>For Free</em>
                     </h2>
-                    <p style={{ color: '#64748b', fontSize: '0.88rem', marginBottom: '2rem', lineHeight: 1.75, fontFamily: "'DM Sans', sans-serif" }} data-aos="fade-up" data-aos-delay="60">
+                    <p style={{ color: theme.textMuted, fontSize: '0.88rem', marginBottom: '2rem', lineHeight: 1.75, fontFamily: "'DM Sans', sans-serif" }} data-aos="fade-up" data-aos-delay="60">
                         Create your profile, generate your first resume, and see the difference AI makes.
                     </p>
                     <div data-aos="fade-up" data-aos-delay="120">
                         <Link to="/auth/sign-up" className="rc-btn">
-                            Create Free Account <span style={{ color: GOLD_T, position: 'relative', zIndex: 1 }}>↗</span>
+                            Create Free Account <span style={{ color: theme.accentLight, position: 'relative', zIndex: 1 }}>↗</span>
                         </Link>
                     </div>
                 </div>

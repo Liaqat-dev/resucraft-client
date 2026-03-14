@@ -4,12 +4,8 @@ import { ChevronDown, MessageSquare, Search } from "lucide-react";
 import AOS from "aos";
 import LandingNav from "@src/components/landing/LandingNav.tsx";
 import LandingFooter from "@src/components/landing/LandingFooter.tsx";
-
-const GOLD = '#C09A3A';
-const GOLD_T = '#D4B06A';
-const DARK = '#0F172A';
-const DARK2 = '#1e293b';
-const DARK3 = '#334155';
+import { useLandingTheme } from "@hooks/useLandingTheme";
+import { LandingTheme } from "@hooks/useLandingTheme";
 
 interface FAQItem {
     q: string;
@@ -51,8 +47,8 @@ const faqs: FAQItem[] = [
 
 const categories = Array.from(new Set(faqs.map(f => f.category)));
 
-const AccordionItem: React.FC<{ item: FAQItem; isOpen: boolean; onToggle: () => void }> = ({
-    item, isOpen, onToggle,
+const AccordionItem: React.FC<{ item: FAQItem; isOpen: boolean; onToggle: () => void; theme: LandingTheme }> = ({
+    item, isOpen, onToggle, theme,
 }) => (
     <div
         className="rc-accordion-item"
@@ -63,12 +59,12 @@ const AccordionItem: React.FC<{ item: FAQItem; isOpen: boolean; onToggle: () => 
             className="rc-accordion-btn"
             style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem', textAlign: 'left' }}
         >
-            <span style={{ fontSize: '0.9rem', fontWeight: 600, color: '#f8fafc', fontFamily: "'DM Sans', sans-serif" }}>{item.q}</span>
+            <span style={{ fontSize: '0.9rem', fontWeight: 600, color: theme.text, fontFamily: "'DM Sans', sans-serif" }}>{item.q}</span>
             <ChevronDown
                 size={16}
                 style={{
                     flexShrink: 0,
-                    color: '#64748b',
+                    color: theme.textMuted,
                     transition: 'transform 0.3s ease',
                     transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
                 }}
@@ -83,7 +79,7 @@ const AccordionItem: React.FC<{ item: FAQItem; isOpen: boolean; onToggle: () => 
             }}
         >
             <div style={{ padding: '0 1.25rem 1.25rem' }}>
-                <p style={{ fontSize: '0.85rem', color: '#94a3b8', lineHeight: 1.75, fontFamily: "'DM Sans', sans-serif" }}>
+                <p style={{ fontSize: '0.85rem', color: theme.textSub, lineHeight: 1.75, fontFamily: "'DM Sans', sans-serif" }}>
                     {item.a}
                 </p>
             </div>
@@ -92,6 +88,7 @@ const AccordionItem: React.FC<{ item: FAQItem; isOpen: boolean; onToggle: () => 
 );
 
 const FAQPage: React.FC = () => {
+    const theme = useLandingTheme();
     const [openIdx, setOpenIdx] = useState<number | null>(0);
     const [activeCategory, setActiveCategory] = useState<string>("All");
     const [search, setSearch] = useState("");
@@ -109,12 +106,12 @@ const FAQPage: React.FC = () => {
     });
 
     return (
-        <div style={{ minHeight: '100vh', background: DARK, fontFamily: "'DM Sans', sans-serif" }}>
+        <div style={{ minHeight: '100vh', background: theme.bg, fontFamily: "'DM Sans', sans-serif" }}>
             <LandingNav />
 
             {/* Hero */}
             <section
-                style={{ background: DARK, paddingTop: '8rem', paddingBottom: '4rem', position: 'relative', overflow: 'hidden', textAlign: 'center' }}
+                style={{ background: theme.bg, paddingTop: '8rem', paddingBottom: '4rem', position: 'relative', overflow: 'hidden', textAlign: 'center' }}
                 className="rc-dot-bg"
             >
                 <div className="rc-glow-gold rc-pulse" style={{ width: '28rem', height: '28rem', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }} />
@@ -124,17 +121,17 @@ const FAQPage: React.FC = () => {
                     </div>
                     <h1
                         className="rc-serif"
-                        style={{ fontSize: 'clamp(2rem, 4vw, 3rem)', fontWeight: 600, color: '#f8fafc', lineHeight: 1.1, marginBottom: '1rem' }}
+                        style={{ fontSize: 'clamp(2rem, 4vw, 3rem)', fontWeight: 600, color: theme.text, lineHeight: 1.1, marginBottom: '1rem' }}
                     >
-                        Frequently Asked <em style={{ color: GOLD_T, fontStyle: 'italic' }}>Questions</em>
+                        Frequently Asked <em style={{ color: theme.accentLight, fontStyle: 'italic' }}>Questions</em>
                     </h1>
-                    <p style={{ color: '#64748b', fontSize: '0.88rem', lineHeight: 1.75, marginBottom: '2rem', fontFamily: "'DM Sans', sans-serif" }}>
+                    <p style={{ color: theme.textMuted, fontSize: '0.88rem', lineHeight: 1.75, marginBottom: '2rem', fontFamily: "'DM Sans', sans-serif" }}>
                         Everything you need to know about ResuCraft. Can't find an answer?{' '}
-                        <Link to="/contact" style={{ color: GOLD_T, textDecoration: 'none' }}>Contact us</Link>.
+                        <Link to="/contact" style={{ color: theme.accentLight, textDecoration: 'none' }}>Contact us</Link>.
                     </p>
                     {/* Search */}
                     <div style={{ position: 'relative', maxWidth: '28rem', margin: '0 auto' }}>
-                        <Search size={15} style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: '#64748b', pointerEvents: 'none' }} />
+                        <Search size={15} style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: theme.textMuted, pointerEvents: 'none' }} />
                         <input
                             type="text"
                             value={search}
@@ -147,9 +144,9 @@ const FAQPage: React.FC = () => {
                                 paddingTop: '0.75rem',
                                 paddingBottom: '0.75rem',
                                 borderRadius: '0.75rem',
-                                background: DARK2,
-                                border: `1px solid ${DARK3}`,
-                                color: '#f8fafc',
+                                background: theme.card,
+                                border: `1px solid ${theme.border}`,
+                                color: theme.text,
                                 fontSize: '0.875rem',
                                 outline: 'none',
                                 boxSizing: 'border-box',
@@ -157,11 +154,11 @@ const FAQPage: React.FC = () => {
                                 transition: 'border-color 0.2s, box-shadow 0.2s',
                             }}
                             onFocus={(e) => {
-                                e.currentTarget.style.borderColor = GOLD;
-                                e.currentTarget.style.boxShadow = `0 0 0 3px rgba(192,154,58,0.15)`;
+                                e.currentTarget.style.borderColor = theme.accent;
+                                e.currentTarget.style.boxShadow = `0 0 0 3px ${theme.accent}25`;
                             }}
                             onBlur={(e) => {
-                                e.currentTarget.style.borderColor = DARK3;
+                                e.currentTarget.style.borderColor = theme.border;
                                 e.currentTarget.style.boxShadow = 'none';
                             }}
                         />
@@ -184,14 +181,14 @@ const FAQPage: React.FC = () => {
                                         borderRadius: '9999px',
                                         fontSize: '0.75rem',
                                         fontWeight: 600,
-                                        border: `1px solid ${DARK3}`,
+                                        border: `1px solid ${theme.border}`,
                                         cursor: 'pointer',
                                         transition: 'all 0.2s',
                                         fontFamily: "'DM Sans', sans-serif",
                                         animationDelay: `${i * 40}ms`,
                                         ...(activeCategory === cat
-                                            ? { background: `linear-gradient(135deg, ${GOLD}, #8B6914)`, color: '#fff', borderColor: 'transparent' }
-                                            : { background: DARK3, color: '#94a3b8' }),
+                                            ? { background: `linear-gradient(135deg, ${theme.accent}, ${theme.accentDark})`, color: '#fff', borderColor: 'transparent' }
+                                            : { background: theme.border, color: theme.textSub }),
                                     }}
                                 >
                                     {cat}
@@ -203,9 +200,9 @@ const FAQPage: React.FC = () => {
                     {/* Accordions */}
                     {filteredFAQs.length === 0 ? (
                         <div style={{ textAlign: 'center', padding: '4rem 0' }} data-aos="fade-up">
-                            <p style={{ color: '#64748b', fontSize: '0.88rem', fontFamily: "'DM Sans', sans-serif" }}>
+                            <p style={{ color: theme.textMuted, fontSize: '0.88rem', fontFamily: "'DM Sans', sans-serif" }}>
                                 No questions found matching "{search}".{' '}
-                                <Link to="/contact" style={{ color: GOLD_T, textDecoration: 'none', fontWeight: 600 }}>
+                                <Link to="/contact" style={{ color: theme.accentLight, textDecoration: 'none', fontWeight: 600 }}>
                                     Ask us directly →
                                 </Link>
                             </p>
@@ -218,6 +215,7 @@ const FAQPage: React.FC = () => {
                                         item={item}
                                         isOpen={openIdx === i}
                                         onToggle={() => setOpenIdx(openIdx === i ? null : i)}
+                                        theme={theme}
                                     />
                                 </div>
                             ))}
@@ -229,16 +227,16 @@ const FAQPage: React.FC = () => {
             {/* Still have questions */}
             <section style={{ paddingBottom: '5rem' }}>
                 <div style={{ maxWidth: '36rem', margin: '0 auto', padding: '0 1.5rem', textAlign: 'center' }} data-aos="zoom-in">
-                    <div style={{ padding: '2.5rem', borderRadius: '1rem', background: DARK2, border: `1px solid ${DARK3}` }}>
-                        <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#f8fafc', marginBottom: '0.5rem', fontFamily: "'DM Sans', sans-serif" }}>
+                    <div style={{ padding: '2.5rem', borderRadius: '1rem', background: theme.card, border: `1px solid ${theme.border}` }}>
+                        <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: theme.text, marginBottom: '0.5rem', fontFamily: "'DM Sans', sans-serif" }}>
                             Still have questions?
                         </h3>
-                        <p style={{ fontSize: '0.85rem', color: '#94a3b8', marginBottom: '1.5rem', lineHeight: 1.7, fontFamily: "'DM Sans', sans-serif" }}>
+                        <p style={{ fontSize: '0.85rem', color: theme.textSub, marginBottom: '1.5rem', lineHeight: 1.7, fontFamily: "'DM Sans', sans-serif" }}>
                             Our team is happy to help. Send us a message and we'll get back to you
                             within 24 hours.
                         </p>
                         <Link to="/contact" className="rc-btn">
-                            Contact Support <span style={{ color: GOLD_T, position: 'relative', zIndex: 1 }}>↗</span>
+                            Contact Support <span style={{ color: theme.accentLight, position: 'relative', zIndex: 1 }}>↗</span>
                         </Link>
                     </div>
                 </div>

@@ -1,4 +1,19 @@
 /* ── ResuCraft Landing Design System ─────────────────────────── */
+/* Colors driven by CSS custom properties — set by useLandingTheme hook */
+
+:root {
+    --rc-bg:           #0F172A;
+    --rc-bg-alt:       #111827;
+    --rc-bg-deep:      #0c1520;
+    --rc-card:         #1e293b;
+    --rc-border:       #334155;
+    --rc-text:         #f8fafc;
+    --rc-text-sub:     #94a3b8;
+    --rc-text-muted:   #64748b;
+    --rc-accent:       #C09A3A;
+    --rc-accent-light: #D4B06A;
+    --rc-accent-dark:  #8B6914;
+}
 
 /* Shared button styles */
 .rc-btn {
@@ -6,13 +21,13 @@
     align-items: center;
     gap: 0.45rem;
     padding: 0.72rem 1.5rem;
-    background: linear-gradient(135deg, #0F172A 0%, #1e293b 100%);
-    color: #f8fafc !important;
+    background: linear-gradient(135deg, var(--rc-bg) 0%, var(--rc-card) 100%);
+    color: var(--rc-text) !important;
     border-radius: 999px;
     font-size: 0.875rem;
     font-weight: 500;
     text-decoration: none !important;
-    border: 1px solid #334155;
+    border: 1px solid var(--rc-border);
     position: relative;
     overflow: hidden;
     transition: box-shadow 0.22s, transform 0.16s;
@@ -32,7 +47,7 @@
 }
 .rc-btn:hover::before { background-position: -250% 0; }
 .rc-btn:hover {
-    box-shadow: 0 6px 24px rgba(15,23,42,0.45), 0 0 0 1px rgba(192,154,58,0.32);
+    box-shadow: 0 6px 24px rgba(0,0,0,0.35), 0 0 0 1px rgba(192,154,58,0.32);
     transform: translateY(-2px);
 }
 .rc-btn:active { transform: translateY(0); }
@@ -43,8 +58,8 @@
     align-items: center;
     gap: 0.45rem;
     padding: 0.72rem 1.5rem;
-    border: 1px solid #334155;
-    color: #94a3b8 !important;
+    border: 1px solid var(--rc-border);
+    color: var(--rc-text-sub) !important;
     border-radius: 999px;
     font-size: 0.875rem;
     font-weight: 500;
@@ -53,7 +68,7 @@
     font-family: 'DM Sans', sans-serif;
     white-space: nowrap;
 }
-.rc-btn-ghost:hover { border-color: #C09A3A; color: #D4B06A !important; transform: translateY(-1px); }
+.rc-btn-ghost:hover { border-color: var(--rc-accent); color: var(--rc-accent-light) !important; transform: translateY(-1px); }
 
 /* Dot grid texture */
 .rc-dot-bg {
@@ -67,8 +82,8 @@
 }
 
 /* Gold text */
-.rc-gold { color: #D4B06A; }
-.rc-gold-em { color: #C09A3A; }
+.rc-gold { color: var(--rc-accent-light); }
+.rc-gold-em { color: var(--rc-accent); }
 
 /* Section label pill */
 .rc-label {
@@ -77,9 +92,9 @@
     gap: 0.35rem;
     padding: 0.28rem 0.85rem;
     border-radius: 999px;
-    border: 1px solid rgba(192,154,58,0.25);
-    background: rgba(192,154,58,0.08);
-    color: #D4B06A;
+    border: 1px solid color-mix(in srgb, var(--rc-accent) 25%, transparent);
+    background: color-mix(in srgb, var(--rc-accent) 10%, transparent);
+    color: var(--rc-accent-light);
     font-size: 0.7rem;
     font-weight: 600;
     letter-spacing: 0.1em;
@@ -89,26 +104,26 @@
 
 /* Card */
 .rc-card {
-    background: #1e293b;
-    border: 1px solid #334155;
+    background: var(--rc-card);
+    border: 1px solid var(--rc-border);
     border-radius: 1rem;
     transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
 }
 .rc-card:hover {
-    border-color: rgba(192,154,58,0.35);
-    box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+    border-color: color-mix(in srgb, var(--rc-accent) 35%, transparent);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.18);
     transform: translateY(-2px);
 }
 
-/* Icon box with gold tint */
+/* Icon box with accent tint */
 .rc-icon-box {
     display: flex;
     align-items: center;
     justify-content: center;
     border-radius: 0.75rem;
-    background: rgba(192,154,58,0.1);
-    color: #D4B06A;
-    border: 1px solid rgba(192,154,58,0.2);
+    background: color-mix(in srgb, var(--rc-accent) 12%, transparent);
+    color: var(--rc-accent-light);
+    border: 1px solid color-mix(in srgb, var(--rc-accent) 22%, transparent);
     flex-shrink: 0;
 }
 
@@ -116,7 +131,7 @@
 .rc-glow-gold {
     position: absolute;
     border-radius: 50%;
-    background: radial-gradient(circle, rgba(192,154,58,0.18) 0%, transparent 70%);
+    background: radial-gradient(circle, color-mix(in srgb, var(--rc-accent) 18%, transparent) 0%, transparent 70%);
     pointer-events: none;
 }
 
@@ -135,12 +150,14 @@
 
 /* Accordion */
 .rc-accordion-item {
-    border: 1px solid #334155;
+    border: 1px solid var(--rc-border);
     border-radius: 0.75rem;
     overflow: hidden;
     transition: border-color 0.2s;
 }
-.rc-accordion-item[data-open="true"] { border-color: rgba(192,154,58,0.4); }
+.rc-accordion-item[data-open="true"] {
+    border-color: color-mix(in srgb, var(--rc-accent) 40%, transparent);
+}
 .rc-accordion-btn {
     width: 100%;
     display: flex;
@@ -149,15 +166,17 @@
     gap: 1rem;
     padding: 1.1rem 1.25rem;
     text-align: left;
-    background: #1e293b;
+    background: var(--rc-card);
     transition: background 0.15s;
     border: none;
     cursor: pointer;
 }
-.rc-accordion-btn:hover { background: #263347; }
+.rc-accordion-btn:hover {
+    background: color-mix(in srgb, var(--rc-card) 80%, var(--rc-border));
+}
 .rc-accordion-body {
     overflow: hidden;
     transition: max-height 0.32s ease, opacity 0.32s ease;
-    background: #1e293b;
-    border-top: 1px solid #334155;
+    background: var(--rc-card);
+    border-top: 1px solid var(--rc-border);
 }

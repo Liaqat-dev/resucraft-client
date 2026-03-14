@@ -19,12 +19,7 @@ import {
 import AOS from "aos";
 import LandingNav from "@src/components/landing/LandingNav.tsx";
 import LandingFooter from "@src/components/landing/LandingFooter.tsx";
-
-const GOLD = '#C09A3A';
-const GOLD_T = '#D4B06A';
-const DARK = '#0F172A';
-const DARK2 = '#1e293b';
-const DARK3 = '#334155';
+import { useLandingTheme } from "@hooks/useLandingTheme";
 
 // ── Stats ─────────────────────────────────────────────────────────────────────
 
@@ -128,17 +123,19 @@ const testimonials = [
 // ── Page ──────────────────────────────────────────────────────────────────────
 
 const WelcomePage: React.FC = () => {
+    const theme = useLandingTheme();
+
     useEffect(() => {
         AOS.init({ once: true, duration: 650, easing: "ease-out-cubic", offset: 60 });
     }, []);
 
     return (
-        <div style={{ minHeight: '100vh', background: DARK, fontFamily: "'DM Sans', sans-serif" }}>
+        <div style={{ minHeight: '100vh', background: theme.bg, fontFamily: "'DM Sans', sans-serif" }}>
             <LandingNav />
 
             {/* ── Hero ── */}
             <section
-                style={{ background: DARK, paddingTop: '8rem', paddingBottom: '5rem', position: 'relative', overflow: 'hidden' }}
+                style={{ background: theme.bg, paddingTop: '8rem', paddingBottom: '5rem', position: 'relative', overflow: 'hidden' }}
                 className="rc-dot-bg"
             >
                 {/* Ambient glow */}
@@ -154,14 +151,14 @@ const WelcomePage: React.FC = () => {
 
                     <h1
                         className="rc-serif"
-                        style={{ fontSize: 'clamp(2.8rem, 6vw, 4.5rem)', fontWeight: 600, color: '#f8fafc', lineHeight: 1.08, marginBottom: '1.5rem', maxWidth: '52rem', marginLeft: 'auto', marginRight: 'auto' }}
+                        style={{ fontSize: 'clamp(2.8rem, 6vw, 4.5rem)', fontWeight: 600, color: theme.text, lineHeight: 1.08, marginBottom: '1.5rem', maxWidth: '52rem', marginLeft: 'auto', marginRight: 'auto' }}
                     >
                         Build a Resume That{' '}
-                        <em style={{ color: GOLD_T, fontStyle: 'italic', display: 'block' }}>Gets You Hired</em>
+                        <em style={{ color: theme.accentLight, fontStyle: 'italic', display: 'block' }}>Gets You Hired</em>
                     </h1>
 
                     <p
-                        style={{ fontSize: '1rem', color: '#94a3b8', lineHeight: 1.75, maxWidth: '36rem', margin: '0 auto 2.5rem', fontFamily: "'DM Sans', sans-serif" }}
+                        style={{ fontSize: '1rem', color: theme.textSub, lineHeight: 1.75, maxWidth: '36rem', margin: '0 auto 2.5rem', fontFamily: "'DM Sans', sans-serif" }}
                     >
                         ResuCraft uses AI and NLP to transform your profile into a perfectly
                         tailored, ATS-optimized resume for every job — in under 60 seconds.
@@ -169,7 +166,7 @@ const WelcomePage: React.FC = () => {
 
                     <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'center', gap: '1rem', marginBottom: '3rem' }}>
                         <Link to="/auth/sign-up" className="rc-btn">
-                            Start Building Free <span style={{ color: GOLD_T, position: 'relative', zIndex: 1 }}>↗</span>
+                            Start Building Free <span style={{ color: theme.accentLight, position: 'relative', zIndex: 1 }}>↗</span>
                         </Link>
                         <Link to="/features" className="rc-btn-ghost">
                             See Features
@@ -179,8 +176,8 @@ const WelcomePage: React.FC = () => {
                     {/* Trust signals */}
                     <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'center', gap: '1.5rem 2rem' }}>
                         {["No credit card required", "Free forever plan", "PDF export included", "GDPR compliant"].map((t) => (
-                            <span key={t} style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.78rem', color: '#64748b', fontFamily: "'DM Sans', sans-serif" }}>
-                                <span style={{ color: GOLD, fontSize: '0.7rem' }}>✓</span>
+                            <span key={t} style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.78rem', color: theme.textMuted, fontFamily: "'DM Sans', sans-serif" }}>
+                                <span style={{ color: theme.accent, fontSize: '0.7rem' }}>✓</span>
                                 {t}
                             </span>
                         ))}
@@ -189,7 +186,7 @@ const WelcomePage: React.FC = () => {
             </section>
 
             {/* ── Stats ── */}
-            <section style={{ background: '#111827', borderTop: '1px solid #1e293b', borderBottom: '1px solid #1e293b', padding: '3.5rem 0' }}>
+            <section style={{ background: theme.bgAlt, borderTop: `1px solid ${theme.border}`, borderBottom: `1px solid ${theme.border}`, padding: '3.5rem 0' }}>
                 <div style={{ maxWidth: '80rem', margin: '0 auto', padding: '0 1.5rem' }}>
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: '2rem' }}>
                         {stats.map((s, i) => (
@@ -202,9 +199,9 @@ const WelcomePage: React.FC = () => {
                                 <div className="rc-icon-box" style={{ width: 40, height: 40, margin: '0 auto 0.75rem' }}>
                                     {s.icon}
                                 </div>
-                                <p className="rc-serif" style={{ fontSize: '2.5rem', fontWeight: 600, color: GOLD_T, lineHeight: 1 }}>{s.value}</p>
-                                <p style={{ fontSize: '0.85rem', fontWeight: 600, color: '#94a3b8', marginTop: '0.25rem', fontFamily: "'DM Sans', sans-serif" }}>{s.label}</p>
-                                <p style={{ fontSize: '0.75rem', color: '#64748b', fontFamily: "'DM Sans', sans-serif" }}>{s.sub}</p>
+                                <p className="rc-serif" style={{ fontSize: '2.5rem', fontWeight: 600, color: theme.accentLight, lineHeight: 1 }}>{s.value}</p>
+                                <p style={{ fontSize: '0.85rem', fontWeight: 600, color: theme.textSub, marginTop: '0.25rem', fontFamily: "'DM Sans', sans-serif" }}>{s.label}</p>
+                                <p style={{ fontSize: '0.75rem', color: theme.textMuted, fontFamily: "'DM Sans', sans-serif" }}>{s.sub}</p>
                             </div>
                         ))}
                     </div>
@@ -212,14 +209,14 @@ const WelcomePage: React.FC = () => {
             </section>
 
             {/* ── Features ── */}
-            <section style={{ background: DARK, padding: '5rem 0' }}>
+            <section style={{ background: theme.bg, padding: '5rem 0' }}>
                 <div style={{ maxWidth: '80rem', margin: '0 auto', padding: '0 1.5rem' }}>
                     <div style={{ textAlign: 'center', marginBottom: '3.5rem' }} data-aos="fade-up">
                         <span className="rc-label">Everything You Need</span>
-                        <h2 className="rc-serif" style={{ fontSize: '2.5rem', fontWeight: 600, color: '#f8fafc', lineHeight: 1.1, margin: '0.75rem 0 1rem' }}>
-                            The Complete <em style={{ color: GOLD_T, fontStyle: 'italic' }}>Resume Toolkit</em>
+                        <h2 className="rc-serif" style={{ fontSize: '2.5rem', fontWeight: 600, color: theme.text, lineHeight: 1.1, margin: '0.75rem 0 1rem' }}>
+                            The Complete <em style={{ color: theme.accentLight, fontStyle: 'italic' }}>Resume Toolkit</em>
                         </h2>
-                        <p style={{ color: '#64748b', fontSize: '0.9rem', lineHeight: 1.7, maxWidth: '36rem', margin: '0 auto', fontFamily: "'DM Sans', sans-serif" }}>
+                        <p style={{ color: theme.textMuted, fontSize: '0.9rem', lineHeight: 1.7, maxWidth: '36rem', margin: '0 auto', fontFamily: "'DM Sans', sans-serif" }}>
                             From AI generation to interview prep — ResuCraft covers every step of
                             your job application journey.
                         </p>
@@ -237,14 +234,14 @@ const WelcomePage: React.FC = () => {
                                 <div className="rc-icon-box" style={{ width: 44, height: 44, marginBottom: '1rem' }}>
                                     {f.icon}
                                 </div>
-                                <h3 style={{ fontSize: '0.95rem', fontWeight: 700, color: '#f8fafc', marginBottom: '0.5rem', fontFamily: "'DM Sans', sans-serif" }}>{f.title}</h3>
-                                <p style={{ fontSize: '0.8rem', color: '#64748b', lineHeight: 1.65, fontFamily: "'DM Sans', sans-serif" }}>{f.desc}</p>
+                                <h3 style={{ fontSize: '0.95rem', fontWeight: 700, color: theme.text, marginBottom: '0.5rem', fontFamily: "'DM Sans', sans-serif" }}>{f.title}</h3>
+                                <p style={{ fontSize: '0.8rem', color: theme.textMuted, lineHeight: 1.65, fontFamily: "'DM Sans', sans-serif" }}>{f.desc}</p>
                             </div>
                         ))}
                     </div>
 
                     <div style={{ marginTop: '2.5rem', textAlign: 'center' }} data-aos="fade-up">
-                        <Link to="/features" style={{ fontSize: '0.85rem', fontWeight: 600, color: GOLD_T, textDecoration: 'none', fontFamily: "'DM Sans', sans-serif" }}>
+                        <Link to="/features" style={{ fontSize: '0.85rem', fontWeight: 600, color: theme.accentLight, textDecoration: 'none', fontFamily: "'DM Sans', sans-serif" }}>
                             Explore all features →
                         </Link>
                     </div>
@@ -252,14 +249,14 @@ const WelcomePage: React.FC = () => {
             </section>
 
             {/* ── How it works ── */}
-            <section id="how-it-works" style={{ background: '#0c1520', padding: '5rem 0' }}>
+            <section id="how-it-works" style={{ background: theme.bgDeep, padding: '5rem 0' }}>
                 <div style={{ maxWidth: '80rem', margin: '0 auto', padding: '0 1.5rem' }}>
                     <div style={{ textAlign: 'center', marginBottom: '3.5rem' }} data-aos="fade-up">
                         <span className="rc-label">Simple Process</span>
-                        <h2 className="rc-serif" style={{ fontSize: '2.5rem', fontWeight: 600, color: '#f8fafc', lineHeight: 1.1, margin: '0.75rem 0 1rem' }}>
-                            How <em style={{ color: GOLD_T, fontStyle: 'italic' }}>ResuCraft</em> Works
+                        <h2 className="rc-serif" style={{ fontSize: '2.5rem', fontWeight: 600, color: theme.text, lineHeight: 1.1, margin: '0.75rem 0 1rem' }}>
+                            How <em style={{ color: theme.accentLight, fontStyle: 'italic' }}>ResuCraft</em> Works
                         </h2>
-                        <p style={{ color: '#64748b', fontSize: '0.9rem', lineHeight: 1.7, fontFamily: "'DM Sans', sans-serif" }}>
+                        <p style={{ color: theme.textMuted, fontSize: '0.9rem', lineHeight: 1.7, fontFamily: "'DM Sans', sans-serif" }}>
                             Three simple steps from blank page to hired.
                         </p>
                     </div>
@@ -275,13 +272,13 @@ const WelcomePage: React.FC = () => {
                                 {/* Connector line */}
                                 {i < steps.length - 1 && (
                                     <div style={{
-                                        display: 'none',
+                                        // display: 'none',
                                         position: 'absolute',
                                         top: '2.5rem',
-                                        left: 'calc(50% + 2.5rem)',
-                                        width: 'calc(100% - 5rem)',
+                                        left: 'calc(50% + 4rem)',
+                                        width: 'calc(100% - 6rem)',
                                         height: '1px',
-                                        background: `${GOLD}30`,
+                                        background: `${theme.accent}30 `,
                                     }} className="step-connector" />
                                 )}
                                 <div
@@ -290,13 +287,13 @@ const WelcomePage: React.FC = () => {
                                         width: '5rem',
                                         height: '5rem',
                                         borderRadius: '1.25rem',
-                                        background: `linear-gradient(135deg, ${GOLD}, #8B6914)`,
+                                        background: `linear-gradient(135deg, ${theme.accent}, ${theme.accentDark})`,
                                         display: 'flex',
                                         alignItems: 'center',
                                         justifyContent: 'center',
                                         color: '#fff',
                                         marginBottom: '1.25rem',
-                                        boxShadow: `0 8px 24px ${GOLD}30`,
+                                        boxShadow: `0 8px 24px ${theme.accent}30`,
                                     }}
                                     className="rc-float"
                                 >
@@ -308,9 +305,9 @@ const WelcomePage: React.FC = () => {
                                         width: '1.4rem',
                                         height: '1.4rem',
                                         borderRadius: '50%',
-                                        background: DARK2,
-                                        border: `2px solid ${GOLD}`,
-                                        color: GOLD_T,
+                                        background: theme.card,
+                                        border: `2px solid ${theme.accent}`,
+                                        color: theme.accentLight,
                                         fontSize: '0.6rem',
                                         fontWeight: 900,
                                         display: 'flex',
@@ -321,10 +318,10 @@ const WelcomePage: React.FC = () => {
                                         {i + 1}
                                     </span>
                                 </div>
-                                <h3 style={{ fontSize: '1rem', fontWeight: 700, color: '#f8fafc', marginBottom: '0.5rem', fontFamily: "'DM Sans', sans-serif" }}>
+                                <h3 style={{ fontSize: '1rem', fontWeight: 700, color: theme.text, marginBottom: '0.5rem', fontFamily: "'DM Sans', sans-serif" }}>
                                     {step.title}
                                 </h3>
-                                <p style={{ fontSize: '0.82rem', color: '#64748b', lineHeight: 1.7, maxWidth: '18rem', fontFamily: "'DM Sans', sans-serif" }}>
+                                <p style={{ fontSize: '0.82rem', color: theme.textMuted, lineHeight: 1.7, maxWidth: '18rem', fontFamily: "'DM Sans', sans-serif" }}>
                                     {step.desc}
                                 </p>
                             </div>
@@ -334,17 +331,17 @@ const WelcomePage: React.FC = () => {
             </section>
 
             {/* ── Testimonials ── */}
-            <section style={{ background: DARK, padding: '5rem 0' }}>
+            <section style={{ background: theme.bg, padding: '5rem 0' }}>
                 <div style={{ maxWidth: '80rem', margin: '0 auto', padding: '0 1.5rem' }}>
                     <div style={{ textAlign: 'center', marginBottom: '3.5rem' }} data-aos="fade-up">
                         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.25rem', marginBottom: '0.75rem' }}>
-                            {[1,2,3,4,5].map(i => <Star key={i} size={16} style={{ color: GOLD_T, fill: GOLD_T }} />)}
+                            {[1,2,3,4,5].map(i => <Star key={i} size={16} style={{ color: theme.accentLight, fill: theme.accentLight }} />)}
                         </div>
                         <span className="rc-label">Testimonials</span>
-                        <h2 className="rc-serif" style={{ fontSize: '2.5rem', fontWeight: 600, color: '#f8fafc', lineHeight: 1.1, margin: '0.75rem 0 1rem' }}>
-                            Loved by <em style={{ color: GOLD_T, fontStyle: 'italic' }}>Job Seekers</em>
+                        <h2 className="rc-serif" style={{ fontSize: '2.5rem', fontWeight: 600, color: theme.text, lineHeight: 1.1, margin: '0.75rem 0 1rem' }}>
+                            Loved by <em style={{ color: theme.accentLight, fontStyle: 'italic' }}>Job Seekers</em>
                         </h2>
-                        <p style={{ color: '#64748b', fontSize: '0.9rem', lineHeight: 1.7, fontFamily: "'DM Sans', sans-serif" }}>
+                        <p style={{ color: theme.textMuted, fontSize: '0.9rem', lineHeight: 1.7, fontFamily: "'DM Sans', sans-serif" }}>
                             Real people, real results.
                         </p>
                     </div>
@@ -353,15 +350,15 @@ const WelcomePage: React.FC = () => {
                         {testimonials.map((t, i) => (
                             <div
                                 key={t.name}
-                                style={{ background: DARK2, border: `1px solid ${DARK3}`, borderRadius: '1rem', padding: '1.75rem', position: 'relative' }}
+                                style={{ background: theme.card, border: `1px solid ${theme.border}`, borderRadius: '1rem', padding: '1.75rem', position: 'relative' }}
                                 data-aos="fade-up"
                                 data-aos-delay={i * 100}
                             >
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.2rem', marginBottom: '1rem' }}>
-                                    {[1,2,3,4,5].map(j => <Star key={j} size={12} style={{ color: GOLD_T, fill: GOLD_T }} />)}
+                                    {[1,2,3,4,5].map(j => <Star key={j} size={12} style={{ color: theme.accentLight, fill: theme.accentLight }} />)}
                                 </div>
-                                <p style={{ fontSize: '2.5rem', color: GOLD, lineHeight: 1, marginBottom: '0.5rem', fontFamily: 'Georgia, serif', opacity: 0.6 }}>"</p>
-                                <p style={{ fontSize: '0.85rem', color: '#cbd5e1', lineHeight: 1.7, marginBottom: '1.5rem', fontStyle: 'italic', fontFamily: "'DM Sans', sans-serif" }}>
+                                <p style={{ fontSize: '2.5rem', color: theme.accent, lineHeight: 1, marginBottom: '0.5rem', fontFamily: 'Georgia, serif', opacity: 0.6 }}>"</p>
+                                <p style={{ fontSize: '0.85rem', color: theme.textSub, lineHeight: 1.7, marginBottom: '1.5rem', fontStyle: 'italic', fontFamily: "'DM Sans', sans-serif" }}>
                                     {t.quote}
                                 </p>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
@@ -369,7 +366,7 @@ const WelcomePage: React.FC = () => {
                                         width: '2.25rem',
                                         height: '2.25rem',
                                         borderRadius: '50%',
-                                        background: `linear-gradient(135deg, ${GOLD}, #8B6914)`,
+                                        background: `linear-gradient(135deg, ${theme.accent}, ${theme.accentDark})`,
                                         display: 'flex',
                                         alignItems: 'center',
                                         justifyContent: 'center',
@@ -382,8 +379,8 @@ const WelcomePage: React.FC = () => {
                                         {t.initials}
                                     </div>
                                     <div>
-                                        <p style={{ fontSize: '0.85rem', fontWeight: 700, color: '#f8fafc', fontFamily: "'DM Sans', sans-serif" }}>{t.name}</p>
-                                        <p style={{ fontSize: '0.75rem', color: '#64748b', fontFamily: "'DM Sans', sans-serif" }}>{t.role}</p>
+                                        <p style={{ fontSize: '0.85rem', fontWeight: 700, color: theme.text, fontFamily: "'DM Sans', sans-serif" }}>{t.name}</p>
+                                        <p style={{ fontSize: '0.75rem', color: theme.textMuted, fontFamily: "'DM Sans', sans-serif" }}>{t.role}</p>
                                     </div>
                                 </div>
                             </div>
@@ -393,7 +390,7 @@ const WelcomePage: React.FC = () => {
             </section>
 
             {/* ── CTA ── */}
-            <section style={{ background: '#0c1520', padding: '5rem 0', position: 'relative', overflow: 'hidden' }} className="rc-dot-bg">
+            <section style={{ background: theme.bgDeep, padding: '5rem 0', position: 'relative', overflow: 'hidden' }} className="rc-dot-bg">
                 <div className="rc-glow-gold" style={{ width: '28rem', height: '28rem', bottom: '-8rem', right: '-4rem', opacity: 0.4 }} />
                 <div style={{ maxWidth: '48rem', margin: '0 auto', padding: '0 1.5rem', textAlign: 'center', position: 'relative', zIndex: 1 }}>
                     <div data-aos="zoom-in" style={{ marginBottom: '1.5rem' }}>
@@ -402,16 +399,16 @@ const WelcomePage: React.FC = () => {
                         </div>
                     </div>
                     <h2 className="rc-serif" data-aos="fade-up" data-aos-delay="50"
-                        style={{ fontSize: '2.5rem', fontWeight: 600, color: '#f8fafc', lineHeight: 1.1, marginBottom: '1rem' }}>
-                        Ready to Land Your <em style={{ color: GOLD_T, fontStyle: 'italic' }}>Dream Job?</em>
+                        style={{ fontSize: '2.5rem', fontWeight: 600, color: theme.text, lineHeight: 1.1, marginBottom: '1rem' }}>
+                        Ready to Land Your <em style={{ color: theme.accentLight, fontStyle: 'italic' }}>Dream Job?</em>
                     </h2>
-                    <p style={{ color: '#64748b', fontSize: '0.9rem', lineHeight: 1.75, marginBottom: '2.5rem', fontFamily: "'DM Sans', sans-serif" }} data-aos="fade-up" data-aos-delay="100">
+                    <p style={{ color: theme.textMuted, fontSize: '0.9rem', lineHeight: 1.75, marginBottom: '2.5rem', fontFamily: "'DM Sans', sans-serif" }} data-aos="fade-up" data-aos-delay="100">
                         Join thousands of professionals who use ResuCraft to get more interviews,
                         faster. It's free to start — no credit card needed.
                     </p>
                     <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'center', gap: '1rem' }} data-aos="fade-up" data-aos-delay="150">
                         <Link to="/auth/sign-up" className="rc-btn">
-                            Start Building for Free <span style={{ color: GOLD_T, position: 'relative', zIndex: 1 }}>↗</span>
+                            Start Building for Free <span style={{ color: theme.accentLight, position: 'relative', zIndex: 1 }}>↗</span>
                         </Link>
                         <Link to="/features" className="rc-btn-ghost">
                             See All Features

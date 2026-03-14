@@ -1,6 +1,8 @@
-import { Loader2, Pencil, Trash2 } from 'lucide-react';
+import { Loader2, Pencil, Trash2, Eye } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const TemplateCard = ({ template, onLoad, onDelete, isLoading = false }) => {
+    const navigate = useNavigate();
     const { data } = template;
 
     // Transform nested format to flat format for rendering
@@ -285,16 +287,26 @@ const TemplateCard = ({ template, onLoad, onDelete, isLoading = false }) => {
                     <button
                         onClick={(e) => {
                             e.stopPropagation();
+                            navigate(`/templates/${template._id}/preview`);
+                        }}
+                        className="flex-1 inline-flex items-center justify-center gap-1.5 py-2 bg-primary-500 hover:bg-primary-600 text-white text-xs font-semibold rounded-md transition-colors duration-150 active:scale-95"
+                    >
+                        <Eye className="size-3" />
+                        View
+                    </button>
+                    <button
+                        onClick={(e) => {
+                            e.stopPropagation();
                             if (!isLoading) onLoad(template);
                         }}
                         disabled={isLoading}
-                        className="flex-1 inline-flex items-center justify-center gap-1.5 py-2 bg-primary-500 hover:bg-primary-600 disabled:opacity-60 disabled:cursor-not-allowed text-white text-xs font-semibold rounded-md transition-colors duration-150 active:scale-95"
+                        className="flex-1 inline-flex items-center justify-center gap-1.5 py-2 bg-gray-100 hover:bg-gray-200 disabled:opacity-60 disabled:cursor-not-allowed text-gray-700 text-xs font-semibold rounded-md transition-colors duration-150 active:scale-95"
                     >
                         {isLoading
                             ? <Loader2 className="size-3 animate-spin" />
                             : <Pencil className="size-3" />
                         }
-                        {isLoading ? 'Loading…' : 'Load'}
+                        {isLoading ? 'Loading…' : 'Edit'}
                     </button>
                     <button
                         onClick={(e) => {
@@ -306,7 +318,6 @@ const TemplateCard = ({ template, onLoad, onDelete, isLoading = false }) => {
                         className="inline-flex items-center justify-center gap-1.5 px-3 py-2 bg-red-50 hover:bg-red-500 text-red-500 hover:text-white text-xs font-semibold rounded-md border border-red-200 hover:border-red-500 transition-all duration-150 active:scale-95"
                     >
                         <Trash2 className="size-3" />
-                        Delete
                     </button>
                 </div>
             </div>
