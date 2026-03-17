@@ -143,11 +143,11 @@ const AccordionSection = ({ icon: Icon, title, defaultOpen = true, children, acc
     };
 
     return (
-        <div className="rounded-xl border border-gray-100 bg-white overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+        <div className="card dark:b-gray-100 overflow-hidden  ">
             <button
                 type="button"
                 onClick={() => setOpen(!open)}
-                className={`w-full flex items-center gap-2.5 px-4 py-3 text-left text-[13px] font-semibold tracking-wide uppercase transition-colors duration-150 hover:bg-gray-50/80 ${open ? accentMap[accent] : 'text-gray-500 bg-white'}`}
+                className={`w-full flex items-center gap-2.5 px-4 py-3 text-left text-[13px] font-semibold tracking-wide uppercase transition-colors duration-150  bg-primary text-gray-500 `}
             >
                 {Icon && <Icon />}
                 <span className="flex-1">{title}</span>
@@ -209,7 +209,7 @@ const EditDrawer = ({
 
             {/* Drawer Panel */}
             <div
-                className="fixed top-0 right-0 w-[420px] h-screen bg-gray-50/95 backdrop-blur-xl z-[1000] flex flex-col animate-[slideIn_0.28s_cubic-bezier(0.16,1,0.3,1)]"
+                className="fixed bg-white dark:bg-dark-900 dark:border-dark-800 dark:shadow-dark-900 dark:text-dark-100 bottom-0 right-0 w-[420px] h-[93%]  backdrop-blur-xl z-[1000] flex flex-col animate-[slideIn_0.28s_cubic-bezier(0.16,1,0.3,1)]"
                 style={{ boxShadow: '-8px 0 30px rgba(0,0,0,0.08), -1px 0 0 rgba(0,0,0,0.05)' }}
             >
                 <style>{`
@@ -228,13 +228,13 @@ const EditDrawer = ({
                 `}</style>
 
                 {/* ── Header ── */}
-                <div className="flex items-center gap-3 px-5 py-4 border-b border-gray-200/80 bg-white/70 backdrop-blur-sm">
+                <div className="flex items-center gap-3 px-5 py-4 border-b border-gray-200/80  backdrop-blur-sm">
                     <div className="flex items-center justify-center w-9 h-9 rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600 text-white shadow-md shadow-blue-500/20">
                         {selectedHeaderSection ? <IconPalette /> : <IconEdit />}
                     </div>
                     <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2">
-                            <h3 className="text-[15px] font-bold text-gray-900 truncate">
+                            <h3 className="text-[15px] font-bold text-primary/300 truncate">
                                 Edit {getTitle()}
                             </h3>
                             <span className={`inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold tracking-wider ${badge.color}`}>
@@ -267,7 +267,7 @@ const EditDrawer = ({
                 </div>
 
                 {/* ── Footer ── */}
-                <div className="flex items-center gap-2.5 px-5 py-3.5 border-t border-gray-200/80 bg-white/70 backdrop-blur-sm">
+                <div className="flex items-center gap-2.5 px-5 py-3.5 border-t border-gray-200/80  backdrop-blur-sm">
                     <button
                         onClick={onClose}
                         className="flex-1 flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-lg text-[13px] font-semibold text-gray-600 bg-white border border-gray-200 hover:bg-gray-50 hover:border-gray-300 transition-all duration-150 shadow-sm"

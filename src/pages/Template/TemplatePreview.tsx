@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { Loader2, Sparkles, AlertTriangle, ArrowLeft, UserCheck } from 'lucide-react';
+import { Loader2, Sparkles, AlertTriangle, ArrowLeft, UserCheck, Mic } from 'lucide-react';
 import { useProfileCompletion } from '@hooks/useProfileCompletion';
 import { generateResume } from '@src/services/ai.service';
+import InterviewModal from '@src/components/interview/InterviewModal';
 
 // ── Template preview renderer (same logic as TemplateCard) ──────────────────
 
@@ -118,6 +119,7 @@ const TemplatePreview = () => {
     const [jobDescription, setJobDescription] = useState('');
     const [generating, setGenerating] = useState(false);
     const [genError, setGenError] = useState<string | null>(null);
+    const [showInterview, setShowInterview] = useState(false);
 
     useEffect(() => {
         const fetchTemplate = async () => {
@@ -296,11 +298,44 @@ const TemplatePreview = () => {
                                         AI is tailoring your resume — this may take 10–20 seconds…
                                     </p>
                                 )}
+
+                                {/* Divider */}
+                                <div className="relative">
+                                    <div className="absolute inset-0 flex items-center">
+                                        <div className="w-full border-t border-gray-200" />
+                                    </div>
+                                    <div className="relative flex justify-center text-xs">
+                                        <span className="bg-white px-2 text-gray-400">or</span>
+                                    </div>
+                                </div>
+
+                                {/* Practice Interview Button */}
+                                <button
+                                    onClick={() => setShowInterview(true)}
+                                    disabled={!jobDescOk}
+                                    className="w-full inline-flex items-center justify-center gap-2 py-3 border-2 border-primary-500 hover:bg-primary-50 disabled:opacity-50 disabled:cursor-not-allowed text-primary-600 font-semibold text-sm rounded-lg transition-all duration-150 active:scale-[0.98]"
+                                >
+                                    <Mic className="size-4" />
+                                    Practice Interview
+                                </button>
+                                {!jobDescOk && (
+                                    <p className="text-xs text-center text-gray-400 -mt-2">
+                                        Add a job description above to enable the interview
+                                    </p>
+                                )}
                             </div>
                         </div>
                     </div>
                 )}
             </div>
+
+            {/* Interview Modal */}
+            {showInterview && (
+                <InterviewModal
+                    jobDescription={jobDescription}
+                    onClose={() => setShowInterview(false)}
+                />
+            )}
         </div>
     );
 };
