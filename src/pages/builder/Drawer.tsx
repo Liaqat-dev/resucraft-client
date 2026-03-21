@@ -115,9 +115,133 @@ const alignIcons = {
     justify: IconAlignJustify,
 };
 
+/* ─── Drawer Global Styles ─── */
+
+const DRAWER_STYLES = `
+    @keyframes slideIn {
+        from { transform: translateX(100%); opacity: 0.5; }
+        to   { transform: translateX(0);    opacity: 1; }
+    }
+    .drawer-scrollbar::-webkit-scrollbar { width: 4px; }
+    .drawer-scrollbar::-webkit-scrollbar-track { background: transparent; }
+    .drawer-scrollbar::-webkit-scrollbar-thumb { background: var(--rc-border); border-radius: 10px; }
+    .drawer-scrollbar::-webkit-scrollbar-thumb:hover { background: var(--rc-text-muted); }
+
+    .dr-accordion {
+        border: 1px solid var(--rc-border);
+        border-radius: 10px;
+        overflow: hidden;
+    }
+    .dr-accordion-btn {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 16px;
+        text-align: left;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        border: none;
+        cursor: pointer;
+        transition: background 0.15s;
+        background: var(--rc-bg-alt);
+        color: var(--rc-text-sub);
+    }
+    .dr-accordion-btn:hover {
+        background: color-mix(in srgb, var(--rc-accent) 6%, var(--rc-bg-alt));
+    }
+    .dr-accordion-content {
+        background: var(--rc-card);
+    }
+    .dr-label {
+        color: var(--rc-text-muted);
+    }
+    .dr-text {
+        color: var(--rc-text);
+    }
+    .dr-text-sub {
+        color: var(--rc-text-sub);
+    }
+    .dr-val-badge {
+        background: var(--rc-bg-alt);
+        border: 1px solid var(--rc-border);
+        color: var(--rc-text);
+    }
+    .dr-range {
+        background: var(--rc-border) !important;
+    }
+    .dr-range::-webkit-slider-thumb {
+        background: var(--rc-accent) !important;
+        box-shadow: 0 1px 4px color-mix(in srgb, var(--rc-accent) 40%, transparent) !important;
+    }
+    .dr-range::-moz-range-thumb {
+        background: var(--rc-accent) !important;
+    }
+    .dr-toggle-active {
+        background: color-mix(in srgb, var(--rc-accent) 10%, transparent) !important;
+        border-color: color-mix(in srgb, var(--rc-accent) 38%, transparent) !important;
+        color: var(--rc-accent) !important;
+    }
+    .dr-toggle-inactive {
+        background: var(--rc-bg-alt) !important;
+        border-color: var(--rc-border) !important;
+        color: var(--rc-text-sub) !important;
+    }
+    .dr-toggle-inactive:hover {
+        border-color: color-mix(in srgb, var(--rc-accent) 35%, var(--rc-border)) !important;
+        color: var(--rc-text) !important;
+    }
+    .dr-align-active {
+        background: color-mix(in srgb, var(--rc-accent) 10%, transparent) !important;
+        border-color: color-mix(in srgb, var(--rc-accent) 38%, transparent) !important;
+        color: var(--rc-accent) !important;
+    }
+    .dr-align-inactive {
+        background: var(--rc-bg-alt) !important;
+        border-color: var(--rc-border) !important;
+        color: var(--rc-text-muted) !important;
+    }
+    .dr-align-inactive:hover {
+        background: var(--rc-card) !important;
+        color: var(--rc-text-sub) !important;
+    }
+    .dr-switch-on  { background-color: var(--rc-accent) !important; }
+    .dr-switch-off { background-color: color-mix(in srgb, var(--rc-border) 80%, transparent) !important; }
+    .dr-close-btn {
+        color: var(--rc-text-muted);
+        transition: all 0.15s;
+        border-radius: 8px;
+    }
+    .dr-close-btn:hover {
+        color: var(--rc-text);
+        background: var(--rc-bg-alt);
+    }
+    .dr-done-btn {
+        color: var(--rc-text-sub);
+        background: var(--rc-bg-alt);
+        border: 1px solid var(--rc-border);
+        transition: all 0.15s;
+    }
+    .dr-done-btn:hover {
+        background: var(--rc-card);
+        border-color: color-mix(in srgb, var(--rc-border) 80%, var(--rc-text-muted));
+    }
+    .dr-header-info {
+        background: color-mix(in srgb, var(--rc-accent) 7%, var(--rc-bg-alt));
+        border: 1px solid color-mix(in srgb, var(--rc-accent) 22%, transparent);
+        color: var(--rc-accent);
+    }
+    .dr-hex-label {
+        font-family: ui-monospace, 'Cascadia Code', monospace;
+        color: var(--rc-text-muted);
+    }
+`;
+
 /* ─── Accordion Section ─── */
 
-const AccordionSection = ({ icon: Icon, title, defaultOpen = true, children, accent = 'blue' }) => {
+const AccordionSection = ({ icon: Icon, title, defaultOpen = true, children }) => {
     const [open, setOpen] = useState(defaultOpen);
     const contentRef = useRef(null);
     const [height, setHeight] = useState(defaultOpen ? 'auto' : '0px');
@@ -135,19 +259,12 @@ const AccordionSection = ({ icon: Icon, title, defaultOpen = true, children, acc
         }
     }, [open]);
 
-    const accentMap = {
-        blue: 'text-blue-600 bg-blue-50 border-blue-100',
-        violet: 'text-violet-600 bg-violet-50 border-violet-100',
-        amber: 'text-amber-600 bg-amber-50 border-amber-100',
-        emerald: 'text-emerald-600 bg-emerald-50 border-emerald-100',
-    };
-
     return (
-        <div className="card dark:b-gray-100 overflow-hidden  ">
+        <div className="dr-accordion">
             <button
                 type="button"
                 onClick={() => setOpen(!open)}
-                className={`w-full flex items-center gap-2.5 px-4 py-3 text-left text-[13px] font-semibold tracking-wide uppercase transition-colors duration-150  bg-primary text-gray-500 `}
+                className="dr-accordion-btn"
             >
                 {Icon && <Icon />}
                 <span className="flex-1">{title}</span>
@@ -155,9 +272,10 @@ const AccordionSection = ({ icon: Icon, title, defaultOpen = true, children, acc
             </button>
             <div
                 ref={contentRef}
+                className="dr-accordion-content"
                 style={{ height, overflow: 'hidden', transition: 'height 0.2s ease' }}
             >
-                <div className="px-4 pb-4 pt-2 space-y-4">
+                <div className="px-4 pb-4 pt-3 space-y-4">
                     {children}
                 </div>
             </div>
@@ -206,55 +324,54 @@ const EditDrawer = ({
 
     return (
         <>
+            <style>{DRAWER_STYLES}</style>
 
             {/* Drawer Panel */}
             <div
-                className="fixed bg-white dark:bg-dark-900 dark:border-dark-800 dark:shadow-dark-900 dark:text-dark-100 bottom-0 right-0 w-[420px] h-[93%]  backdrop-blur-xl z-[1000] flex flex-col animate-[slideIn_0.28s_cubic-bezier(0.16,1,0.3,1)]"
-                style={{ boxShadow: '-8px 0 30px rgba(0,0,0,0.08), -1px 0 0 rgba(0,0,0,0.05)' }}
+                className="fixed bottom-0 right-0 w-[420px] h-[93%] z-[1000] flex flex-col animate-[slideIn_0.28s_cubic-bezier(0.16,1,0.3,1)]"
+                style={{
+                    background: 'var(--rc-card)',
+                    color: 'var(--rc-text)',
+                    boxShadow: '-8px 0 32px rgba(0,0,0,0.12), -1px 0 0 var(--rc-border)',
+                }}
             >
-                <style>{`
-                    @keyframes slideIn {
-                        from { transform: translateX(100%); opacity: 0.5; }
-                        to { transform: translateX(0); opacity: 1; }
-                    }
-                    @keyframes fadeIn {
-                        from { opacity: 0; }
-                        to { opacity: 1; }
-                    }
-                    .drawer-scrollbar::-webkit-scrollbar { width: 5px; }
-                    .drawer-scrollbar::-webkit-scrollbar-track { background: transparent; }
-                    .drawer-scrollbar::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 10px; }
-                    .drawer-scrollbar::-webkit-scrollbar-thumb:hover { background: #9ca3af; }
-                `}</style>
-
                 {/* ── Header ── */}
-                <div className="flex items-center gap-3 px-5 py-4 border-b border-gray-200/80  backdrop-blur-sm">
-                    <div className="flex items-center justify-center w-9 h-9 rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600 text-white shadow-md shadow-blue-500/20">
+                <div
+                    className="flex items-center gap-3 px-5 py-4"
+                    style={{ borderBottom: '1px solid var(--rc-border)' }}
+                >
+                    <div
+                        className="flex items-center justify-center w-9 h-9 rounded-lg text-white flex-shrink-0"
+                        style={{
+                            background: `linear-gradient(135deg, var(--rc-accent), var(--rc-accent-dark))`,
+                            boxShadow: `0 2px 8px color-mix(in srgb, var(--rc-accent) 38%, transparent)`,
+                        }}
+                    >
                         {selectedHeaderSection ? <IconPalette /> : <IconEdit />}
                     </div>
                     <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2">
-                            <h3 className="text-[15px] font-bold text-primary/300 truncate">
+                            <h3 className="dr-text text-[15px] font-bold truncate">
                                 Edit {getTitle()}
                             </h3>
                             <span className={`inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold tracking-wider ${badge.color}`}>
                                 {badge.text}
                             </span>
                         </div>
-                        <p className="text-[11px] text-gray-400 mt-0.5 truncate">
+                        <p className="dr-label text-[11px] mt-0.5 truncate">
                             {editingElement?.name || selectedHeaderSection?.title || 'Customize properties'}
                         </p>
                     </div>
                     <button
                         onClick={onClose}
-                        className="flex items-center justify-center w-8 h-8 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-all duration-150"
+                        className="dr-close-btn flex items-center justify-center w-8 h-8"
                     >
                         <IconClose />
                     </button>
                 </div>
 
                 {/* ── Scrollable Content ── */}
-                <div className="flex-1 overflow-y-auto drawer-scrollbar px-4 py-4 space-y-3">
+                <div className="flex-1 overflow-y-auto drawer-scrollbar px-4 py-4 space-y-2.5">
                     {selectedHeaderSection ? (
                         <HeaderFields section={selectedHeaderSection} onChange={(field, value) => onUpdateSection(selectedHeaderSection.id, { [field]: value })} />
                     ) : !editingElement.isSection ? (
@@ -267,10 +384,13 @@ const EditDrawer = ({
                 </div>
 
                 {/* ── Footer ── */}
-                <div className="flex items-center gap-2.5 px-5 py-3.5 border-t border-gray-200/80  backdrop-blur-sm">
+                <div
+                    className="flex items-center gap-2.5 px-5 py-3.5"
+                    style={{ borderTop: '1px solid var(--rc-border)' }}
+                >
                     <button
                         onClick={onClose}
-                        className="flex-1 flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-lg text-[13px] font-semibold text-gray-600 bg-white border border-gray-200 hover:bg-gray-50 hover:border-gray-300 transition-all duration-150 shadow-sm"
+                        className="dr-done-btn flex-1 flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-lg text-[13px] font-semibold"
                     >
                         Done
                     </button>
@@ -291,7 +411,7 @@ const EditDrawer = ({
 
 const ElementFields = ({ element, onChange }) => (
     <>
-        <AccordionSection icon={IconEdit} title="Content" accent="blue" defaultOpen>
+        <AccordionSection icon={IconEdit} title="Content" defaultOpen>
             <FloatingInput
                 label="Element Name"
                 value={element.name || ''}
@@ -331,7 +451,7 @@ const ElementFields = ({ element, onChange }) => (
             />
         </AccordionSection>
 
-        <AccordionSection icon={IconType} title="Typography" accent="violet" defaultOpen={false}>
+        <AccordionSection icon={IconType} title="Typography" defaultOpen={false}>
             <AlignmentButtons
                 value={element.textAlign || 'left'}
                 onChange={(val) => onChange('textAlign', val)}
@@ -349,14 +469,12 @@ const ElementFields = ({ element, onChange }) => (
                 options={fontFamilyOptions}
             />
             <div className="grid grid-cols-2 gap-3">
-                <div>
-                    <SliderField
-                        label="Font Size"
-                        value={element.fontSize || 16}
-                        min={8} max={72} unit="px"
-                        onChange={(v) => onChange('fontSize', parseInt(v))}
-                    />
-                </div>
+                <SliderField
+                    label="Font Size"
+                    value={element.fontSize || 16}
+                    min={8} max={72} unit="px"
+                    onChange={(v) => onChange('fontSize', parseInt(v))}
+                />
                 <FloatingSelect
                     label="Font Weight"
                     value={element.fontWeight || 'normal'}
@@ -387,7 +505,7 @@ const ElementFields = ({ element, onChange }) => (
             </div>
         </AccordionSection>
 
-        <AccordionSection icon={IconPalette} title="Color" accent="amber" defaultOpen={false}>
+        <AccordionSection icon={IconPalette} title="Color" defaultOpen={false}>
             <ColorSwatches
                 value={element.color || '#000000'}
                 onChange={(val) => onChange('color', val)}
@@ -400,7 +518,7 @@ const ElementFields = ({ element, onChange }) => (
 
 const LineBreakFields = ({ element, onChange }) => (
     <>
-        <AccordionSection icon={IconDivider} title="Line Break" accent="amber" defaultOpen>
+        <AccordionSection icon={IconDivider} title="Line Break" defaultOpen>
             <FloatingInput
                 label="Element Name"
                 value={element.name || ''}
@@ -412,21 +530,18 @@ const LineBreakFields = ({ element, onChange }) => (
                 onChange={(e) => onChange('ai_description', e.target.value)}
                 rows={2}
             />
-
             <SliderField
                 label="Thickness"
                 value={element.lineBreakThickness || 1}
                 min={1} max={10} unit="px"
                 onChange={(v) => onChange('lineBreakThickness', parseInt(v))}
             />
-
             <SliderField
                 label="Width"
                 value={element.lineBreakWidthPercent || 100}
                 min={10} max={100} unit="%"
                 onChange={(v) => onChange('lineBreakWidthPercent', parseInt(v))}
             />
-
             <FloatingSelect
                 label="Line Style"
                 value={element.lineBreakStyle || 'solid'}
@@ -440,7 +555,7 @@ const LineBreakFields = ({ element, onChange }) => (
             />
         </AccordionSection>
 
-        <AccordionSection icon={IconPalette} title="Color" accent="blue" defaultOpen>
+        <AccordionSection icon={IconPalette} title="Color" defaultOpen>
             <ColorSwatches
                 value={element.lineBreakColor || '#d1d5db'}
                 onChange={(val) => onChange('lineBreakColor', val)}
@@ -453,14 +568,14 @@ const LineBreakFields = ({ element, onChange }) => (
 
 const HeaderFields = ({ section, onChange }) => (
     <>
-        <div className="flex items-center gap-2.5 px-3.5 py-3 rounded-lg bg-gradient-to-r from-violet-50 to-blue-50 border border-violet-200/60">
+        <div className="dr-header-info flex items-center gap-2.5 px-3.5 py-3 rounded-lg">
             <IconPalette />
-            <p className="m-0 text-[12px] text-violet-700 font-medium">
+            <p className="m-0 text-[12px] font-medium">
                 Styling header for <span className="font-bold">"{section.title || 'Section'}"</span>
             </p>
         </div>
 
-        <AccordionSection icon={IconType} title="Typography" accent="violet" defaultOpen>
+        <AccordionSection icon={IconType} title="Typography" defaultOpen>
             <FloatingSelect
                 label="Font Family"
                 value={section.headerFontFamily || 'Arial'}
@@ -511,7 +626,7 @@ const HeaderFields = ({ section, onChange }) => (
             </div>
         </AccordionSection>
 
-        <AccordionSection icon={IconPalette} title="Color" accent="amber" defaultOpen>
+        <AccordionSection icon={IconPalette} title="Color" defaultOpen>
             <ColorSwatches
                 value={section.headerColor || '#000000'}
                 onChange={(val) => onChange('headerColor', val)}
@@ -527,7 +642,7 @@ const SectionFields = ({ section, onChange }) => {
 
     return (
         <>
-            <AccordionSection icon={IconLayout} title="General" accent="emerald" defaultOpen>
+            <AccordionSection icon={IconLayout} title="General" defaultOpen>
                 {!isSubsection && (
                     <FloatingInput
                         label="Section Title"
@@ -548,10 +663,9 @@ const SectionFields = ({ section, onChange }) => {
                         onChange={(val) => onChange('headerVisible', val)}
                     />
                 )}
-
             </AccordionSection>
 
-            <AccordionSection icon={IconSpacing} title="Spacing" accent="blue" defaultOpen={false}>
+            <AccordionSection icon={IconSpacing} title="Spacing" defaultOpen={false}>
                 <div className="grid grid-cols-2 gap-3">
                     <SliderField
                         label="Padding X"
@@ -582,7 +696,7 @@ const SectionFields = ({ section, onChange }) => {
 
             {!isSubsection && section.headerVisible !== false && (
                 <>
-                    <AccordionSection icon={IconType} title="Header Typography" accent="violet" defaultOpen={false}>
+                    <AccordionSection icon={IconType} title="Header Typography" defaultOpen={false}>
                         <FloatingSelect
                             label="Font Family"
                             value={section.headerFontFamily || 'Arial'}
@@ -633,7 +747,7 @@ const SectionFields = ({ section, onChange }) => {
                         </div>
                     </AccordionSection>
 
-                    <AccordionSection icon={IconPalette} title="Header Color" accent="amber" defaultOpen={false}>
+                    <AccordionSection icon={IconPalette} title="Header Color" defaultOpen={false}>
                         <ColorSwatches
                             value={section.headerColor || '#000000'}
                             onChange={(val) => onChange('headerColor', val)}
@@ -650,8 +764,8 @@ const SectionFields = ({ section, onChange }) => {
 const SliderField = ({ label, value, min, max, step = 1, unit = '', onChange }) => (
     <div>
         <div className="flex items-center justify-between mb-1.5">
-            <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wide">{label}</label>
-            <span className="text-[12px] font-bold text-gray-800 tabular-nums bg-gray-100 px-1.5 py-0.5 rounded">
+            <label className="dr-label text-[11px] font-semibold uppercase tracking-wide">{label}</label>
+            <span className="dr-val-badge text-[12px] font-bold tabular-nums px-1.5 py-0.5 rounded-md">
                 {value}{unit}
             </span>
         </div>
@@ -662,15 +776,13 @@ const SliderField = ({ label, value, min, max, step = 1, unit = '', onChange }) 
             step={step}
             value={value}
             onChange={(e) => onChange(e.target.value)}
-            className="w-full h-1.5 rounded-full appearance-none cursor-pointer bg-gray-200
+            className="dr-range w-full h-1.5 rounded-full appearance-none cursor-pointer
                 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4
-                [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-blue-500 [&::-webkit-slider-thumb]:shadow-md
-                [&::-webkit-slider-thumb]:shadow-blue-500/25 [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-white
+                [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-white
                 [&::-webkit-slider-thumb]:transition-transform [&::-webkit-slider-thumb]:duration-150
                 [&::-webkit-slider-thumb]:hover:scale-110
                 [&::-moz-range-thumb]:appearance-none [&::-moz-range-thumb]:w-4 [&::-moz-range-thumb]:h-4
-                [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-blue-500 [&::-moz-range-thumb]:shadow-md
-                [&::-moz-range-thumb]:border-2 [&::-moz-range-thumb]:border-white"
+                [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:border-2 [&::-moz-range-thumb]:border-white"
         />
     </div>
 );
@@ -679,13 +791,7 @@ const ToggleButton = ({ active, onClick, label, underline, description }) => (
     <button
         type="button"
         onClick={onClick}
-        className={`
-            inline-flex items-center gap-2 px-3.5 py-2 rounded-lg text-[13px] font-semibold border transition-all duration-150
-            ${active
-                ? 'bg-blue-50 border-blue-300 text-blue-700 shadow-sm shadow-blue-500/10'
-                : 'bg-white border-gray-200 text-gray-500 hover:border-gray-300 hover:bg-gray-50'
-            }
-        `}
+        className={`inline-flex items-center gap-2 px-3.5 py-2 rounded-lg text-[13px] font-semibold border transition-all duration-150 ${active ? 'dr-toggle-active' : 'dr-toggle-inactive'}`}
     >
         <span className={underline ? 'underline' : ''}>{label}</span>
         {description && <span className="text-[11px] font-medium opacity-60">{description}</span>}
@@ -703,13 +809,7 @@ const AlignmentButtons = ({ value, onChange, options }) => (
                     type="button"
                     onClick={() => onChange(opt.value)}
                     title={opt.title}
-                    className={`
-                        flex-1 flex items-center justify-center py-2.5 rounded-lg border transition-all duration-150
-                        ${isActive
-                            ? 'bg-blue-50 border-blue-300 text-blue-600 shadow-sm shadow-blue-500/10'
-                            : 'bg-white border-gray-200 text-gray-400 hover:border-gray-300 hover:text-gray-600 hover:bg-gray-50'
-                        }
-                    `}
+                    className={`flex-1 flex items-center justify-center py-2.5 rounded-lg border transition-all duration-150 ${isActive ? 'dr-align-active' : 'dr-align-inactive'}`}
                 >
                     {Icon ? <Icon /> : opt.title}
                 </button>
@@ -720,14 +820,11 @@ const AlignmentButtons = ({ value, onChange, options }) => (
 
 const SwitchField = ({ label, checked, onChange }) => (
     <div className="flex items-center justify-between py-1">
-        <span className="text-[13px] font-medium text-gray-700">{label}</span>
+        <span className="dr-text text-[13px] font-medium">{label}</span>
         <button
             type="button"
             onClick={() => onChange(!checked)}
-            className={`
-                relative w-10 h-[22px] rounded-full border-none cursor-pointer transition-colors duration-200 p-0 flex-shrink-0
-                ${checked ? 'bg-blue-500' : 'bg-gray-300'}
-            `}
+            className={`relative w-10 h-[22px] rounded-full border-none cursor-pointer transition-colors duration-200 p-0 flex-shrink-0 ${checked ? 'dr-switch-on' : 'dr-switch-off'}`}
         >
             <span
                 className="absolute top-[2px] w-[18px] h-[18px] rounded-full bg-white transition-all duration-200 shadow-sm"
@@ -750,10 +847,10 @@ const ColorSwatches = ({ value, onChange }) => (
     <div>
         <div className="flex items-center gap-3 mb-3">
             <div
-                className="w-8 h-8 rounded-lg border-2 border-white shadow-md ring-1 ring-gray-200"
-                style={{ backgroundColor: value }}
+                className="w-8 h-8 rounded-lg border-2 border-white shadow-md ring-1"
+                style={{ backgroundColor: value, boxShadow: '0 2px 6px rgba(0,0,0,0.15)', outline: '1px solid var(--rc-border)' }}
             />
-            <span className="text-[12px] font-mono font-semibold text-gray-500 uppercase">{value}</span>
+            <span className="dr-hex-label text-[12px] font-semibold uppercase">{value}</span>
         </div>
         <div className="grid grid-cols-8 gap-1.5">
             {presetColors.map((color) => {
@@ -768,11 +865,15 @@ const ColorSwatches = ({ value, onChange }) => (
                             w-full aspect-square rounded-lg border-2 cursor-pointer transition-all duration-150 p-0
                             hover:scale-110 hover:z-10
                             ${isActive
-                                ? 'border-blue-500 scale-110 ring-2 ring-blue-500/30 z-10'
-                                : 'border-transparent hover:border-gray-300'
+                                ? 'scale-110 z-10'
+                                : 'border-transparent hover:border-white/40'
                             }
                         `}
-                        style={{ backgroundColor: color }}
+                        style={{
+                            backgroundColor: color,
+                            borderColor: isActive ? 'var(--rc-accent)' : undefined,
+                            boxShadow: isActive ? `0 0 0 2px color-mix(in srgb, var(--rc-accent) 30%, transparent)` : undefined,
+                        }}
                     >
                         {isActive && (
                             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke={isLightColor(color) ? '#000' : '#fff'} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="mx-auto">

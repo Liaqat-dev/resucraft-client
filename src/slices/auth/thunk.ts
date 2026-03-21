@@ -101,16 +101,18 @@ export const googleLogin = createAsyncThunk(
     async (accessToken: string, {dispatch, rejectWithValue}) => {
         try {
             const response = await authService.googleLogin(accessToken);
+            const user = (response as any).user ?? response;
 
             dispatch(login({
+                accessToken: response.accessToken,
                 user: {
-                    _id: response._id,
-                    name: response.name,
-                    username: response.username,
-                    email: response.email,
-                    isVerified: response.isVerified,
+                    _id: user._id,
+                    name: user.name,
+                    username: user.username,
+                    email: user.email,
+                    isVerified: user.isVerified,
                     provider: 'google',
-                    twoFactorEnabled: response.twoFactorEnabled
+                    twoFactorEnabled: user.twoFactorEnabled || false
                 }
             }));
 

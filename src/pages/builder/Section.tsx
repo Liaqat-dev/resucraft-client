@@ -54,7 +54,6 @@ const CanvasSection = ({
     onMouseDown,
     onTitleChange,
     onContentTypeChange,
-
     onAddContent,
     onAddSubsection,
     onResizeMouseDown,
@@ -77,25 +76,22 @@ const CanvasSection = ({
 
     const handleAddText = (e) => {
         e.stopPropagation();
-        const updated = { ...section, contentType: 'text' };
         onContentTypeChange(section.id, 'text');
-        onAddContent(updated);
+        onAddContent({ ...section, contentType: 'text' });
         setMenuOpen(false);
     };
 
     const handleAddListItem = (e) => {
         e.stopPropagation();
-        const updated = { ...section, contentType: 'list-items' };
         onContentTypeChange(section.id, 'list-items');
-        onAddContent(updated);
+        onAddContent({ ...section, contentType: 'list-items' });
         setMenuOpen(false);
     };
 
     const handleAddLineBreak = (e) => {
         e.stopPropagation();
-        const updated = { ...section, contentType: 'line-break' };
         onContentTypeChange(section.id, 'line-break');
-        onAddContent(updated);
+        onAddContent({ ...section, contentType: 'line-break' });
         setMenuOpen(false);
     };
 
@@ -114,10 +110,12 @@ const CanvasSection = ({
                 top: section.y,
                 width: section.width,
                 height: section.height,
-                backgroundColor: 'rgba(249, 250, 251, 0.5)',
+                backgroundColor: isSelected
+                    ? 'color-mix(in srgb, var(--rc-accent, #3b82f6) 3%, rgba(249,250,251,0.5))'
+                    : 'rgba(249, 250, 251, 0.5)',
                 border: isSelected
-                    ? '1.5px solid #3b82f6'
-                    : `1px ${isSubsection ? 'dashed' : 'dotted'} #d1d5db`,
+                    ? '1.5px solid var(--rc-accent, #3b82f6)'
+                    : `1px ${isSubsection ? 'dashed' : 'dotted'} rgba(209,213,219,0.8)`,
                 borderRadius: isSubsection ? '4px' : '3px',
                 cursor: isDragging ? 'grabbing' : 'move',
                 boxSizing: 'border-box',
@@ -132,7 +130,7 @@ const CanvasSection = ({
                 boxShadow: isBeingDragged
                     ? '0 8px 32px rgba(0,0,0,0.18)'
                     : isSelected
-                        ? '0 0 0 3px rgba(59, 130, 246, 0.1)'
+                        ? '0 0 0 3px color-mix(in srgb, var(--rc-accent, #3b82f6) 14%, transparent)'
                         : 'none',
                 zIndex: isBeingDragged ? 100 : isSelected ? 10 : 1,
                 opacity: isBeingDragged ? 0.92 : 1,
@@ -140,7 +138,7 @@ const CanvasSection = ({
                     ? 'none'
                     : isReordering
                         ? 'top 0.12s cubic-bezier(0.4,0,0.2,1), box-shadow 0.15s'
-                        : 'border 0.15s, box-shadow 0.15s'
+                        : 'border 0.15s, box-shadow 0.15s, background-color 0.15s'
             }}
         >
             {/* ── Main Section Header ── */}
@@ -149,7 +147,6 @@ const CanvasSection = ({
                     display: 'flex',
                     justifyContent: 'space-between',
                     alignItems: 'center',
-                    // marginBottom: '4px',
                     paddingBottom: '6px',
                     gap: '8px'
                 }}>
@@ -181,7 +178,7 @@ const CanvasSection = ({
                             borderRadius: '4px',
                             transition: 'background 0.15s'
                         }}
-                        onMouseOver={(e) => e.currentTarget.style.backgroundColor = 'rgba(59,130,246,0.05)'}
+                        onMouseOver={(e) => e.currentTarget.style.backgroundColor = 'color-mix(in srgb, var(--rc-accent, #3b82f6) 5%, transparent)'}
                         onMouseOut={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
                     >
                         {section.title}
@@ -190,17 +187,15 @@ const CanvasSection = ({
                     {/* Badges */}
                     <div style={{ display: 'flex', gap: '4px', alignItems: 'center', flexShrink: 0 }}>
                         {childCount > 0 && (
-                            <span
-                                style={{
-                                    fontSize: '10px',
-                                    fontWeight: 600,
-                                    color: '#6b7280',
-                                    padding: '2px 6px',
-                                    backgroundColor: '#f3f4f6',
-                                    borderRadius: '4px',
-                                    lineHeight: '1.4'
-                                }}
-                            >
+                            <span style={{
+                                fontSize: '10px',
+                                fontWeight: 600,
+                                color: '#6b7280',
+                                padding: '2px 6px',
+                                backgroundColor: '#f3f4f6',
+                                borderRadius: '4px',
+                                lineHeight: '1.4'
+                            }}>
                                 {childCount}
                             </span>
                         )}
@@ -216,7 +211,7 @@ const CanvasSection = ({
                     alignItems: 'center',
                     marginBottom: '6px',
                     paddingBottom: '4px',
-                    borderBottom: '1px dashed #e5e7eb',
+                    borderBottom: '1px dashed rgba(209,213,219,0.7)',
                     gap: '6px'
                 }}>
                     <span style={{
@@ -255,8 +250,8 @@ const CanvasSection = ({
                     marginTop: isSubsection ? '16px' : '32px',
                     padding: isSubsection ? '12px' : '20px',
                     borderRadius: '8px',
-                    border: '1.5px dashed #e2e5ea',
-                    backgroundColor: '#fafbfc'
+                    border: '1.5px dashed rgba(209,213,219,0.7)',
+                    backgroundColor: 'rgba(250,251,252,0.6)'
                 }}>
                     <IconInbox />
                     <span style={{
@@ -277,7 +272,7 @@ const CanvasSection = ({
                         position: 'absolute',
                         bottom: isSubsection ? 8 : 10,
                         right: isSubsection ? 8 : 10,
-                        zIndex: 200
+                        zIndex: 200000
                     }}
                     onMouseDown={(e) => e.stopPropagation()}
                 >
@@ -291,18 +286,18 @@ const CanvasSection = ({
                             height: 30,
                             borderRadius: '10px',
                             border: 'none',
-                            backgroundColor: '#3b82f6',
+                            backgroundColor: 'var(--rc-accent, #3b82f6)',
                             color: 'white',
                             cursor: 'pointer',
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center',
-                            boxShadow: '0 2px 10px rgba(59,130,246,0.35)',
-                            transition: 'transform 0.2s, background-color 0.15s, border-radius 0.2s',
+                            boxShadow: '0 2px 10px color-mix(in srgb, var(--rc-accent, #3b82f6) 40%, transparent)',
+                            transition: 'transform 0.2s, filter 0.15s, border-radius 0.2s',
                             transform: menuOpen ? 'rotate(45deg)' : 'rotate(0deg)',
                         }}
-                        onMouseOver={(e) => { e.currentTarget.style.backgroundColor = '#2563eb'; }}
-                        onMouseOut={(e) => { e.currentTarget.style.backgroundColor = '#3b82f6'; }}
+                        onMouseOver={(e) => { e.currentTarget.style.filter = 'brightness(1.12)'; }}
+                        onMouseOut={(e) => { e.currentTarget.style.filter = 'brightness(1)'; }}
                     >
                         <IconPlus />
                     </button>
@@ -310,12 +305,13 @@ const CanvasSection = ({
                     {/* ── Popover Menu ── */}
                     {menuOpen && (
                         <div style={{
+                            zIndex:9999999,
                             position: 'absolute',
                             bottom: 38,
                             right: 0,
                             backgroundColor: 'white',
-                            borderRadius: '8px',
-                            boxShadow: '0 8px 30px rgba(0,0,0,0.12), 0 0 0 1px rgba(0,0,0,0.04)',
+                            borderRadius: '10px',
+                            boxShadow: '0 8px 32px rgba(0,0,0,0.13), 0 0 0 1px rgba(0,0,0,0.04)',
                             overflow: 'hidden',
                             minWidth: 170,
                             animation: 'popIn 0.15s cubic-bezier(0.16,1,0.3,1)'
@@ -390,6 +386,7 @@ const MenuItem = ({ icon, label, onClick, color, bg }) => (
         onClick={onClick}
         onMouseDown={(e) => e.stopPropagation()}
         style={{
+            zIndex: 9999999,
             display: 'flex',
             alignItems: 'center',
             gap: '10px',
@@ -397,7 +394,7 @@ const MenuItem = ({ icon, label, onClick, color, bg }) => (
             padding: '6px 8px',
             border: 'none',
             borderRadius: '8px',
-            backgroundColor: 'transparent',
+            backgroundColor: 'white',
             cursor: 'pointer',
             fontSize: '12px',
             fontWeight: 600,
@@ -410,6 +407,7 @@ const MenuItem = ({ icon, label, onClick, color, bg }) => (
     >
         <span style={{
             width: 26,
+            zIndex: 9999999,
             height: 26,
             borderRadius: '7px',
             backgroundColor: bg,

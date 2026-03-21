@@ -90,26 +90,37 @@ const IconCheck = () => (
     </svg>
 );
 
-/* ─── Section Wrapper ─── */
+/* ─── Panel Section ─── */
 
 const PanelSection = ({ children, className = '' }) => (
-    <div className={`bg-white rounded-xl border border-gray-100 shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-2 ${className}`}>
+    <div
+        className={`rounded-xl p-2 ${className}`}
+        style={{
+            background: 'var(--rc-card)',
+            border: '1px solid var(--rc-border)',
+            boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 0 rgba(255,255,255,0.03)',
+        }}
+    >
         {children}
     </div>
 );
 
 const SectionLabel = ({ icon: Icon, children }) => (
     <div className="flex items-center gap-1.5 mb-2.5">
-        {Icon && <span className="text-gray-400"><Icon /></span>}
-        <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{children}</span>
+        {Icon && <span style={{ color: 'var(--rc-text-muted)' }}><Icon /></span>}
+        <span className="text-[10px] font-bold uppercase tracking-widest" style={{ color: 'var(--rc-text-muted)' }}>{children}</span>
     </div>
 );
 
 /* ─── Main Toolbar ─── */
 
+const TEMPLATE_CATEGORIES = ['Modern', 'Classic', 'Creative', 'Minimal', 'Professional', 'Other'];
+
 const Toolbar = ({
     templateName,
     onTemplateNameChange,
+    templateCategory,
+    onTemplateCategoryChange,
     onAddSection,
     onSave,
     onUpdate,
@@ -154,18 +165,118 @@ const Toolbar = ({
             <style>{`
                 .toolbar-scroll::-webkit-scrollbar { width: 4px; }
                 .toolbar-scroll::-webkit-scrollbar-track { background: transparent; }
-                .toolbar-scroll::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 10px; }
-                .toolbar-scroll::-webkit-scrollbar-thumb:hover { background: #9ca3af; }
+                .toolbar-scroll::-webkit-scrollbar-thumb { background: var(--rc-border); border-radius: 10px; }
+                .toolbar-scroll::-webkit-scrollbar-thumb:hover { background: var(--rc-text-muted); }
+
+                .tb-zoom-val {
+                    background: var(--rc-bg-alt);
+                    color: var(--rc-text);
+                    border: 1px solid var(--rc-border);
+                }
+                .tb-zoom-label {
+                    color: var(--rc-text-sub);
+                }
+                .tb-grid-label {
+                    color: var(--rc-text-sub);
+                }
+                .tb-range {
+                    background: var(--rc-border) !important;
+                }
+                .tb-range::-webkit-slider-thumb {
+                    background: var(--rc-accent) !important;
+                    box-shadow: 0 1px 4px color-mix(in srgb, var(--rc-accent) 40%, transparent) !important;
+                }
+                .tb-range::-moz-range-thumb {
+                    background: var(--rc-accent) !important;
+                }
+                .tb-kbd {
+                    font-family: ui-monospace, 'Cascadia Code', monospace;
+                    background: var(--rc-bg-alt);
+                    border: 1px solid var(--rc-border);
+                    color: var(--rc-text-sub);
+                }
+                .tb-shortcut-desc {
+                    color: var(--rc-text-muted);
+                }
+                .tb-shortcut-panel {
+                    background: var(--rc-bg-alt) !important;
+                    border: 1px solid var(--rc-border) !important;
+                }
+                .tb-link-btn {
+                    border: 1px solid var(--rc-border);
+                    background: var(--rc-bg-alt);
+                    color: var(--rc-text-muted);
+                    transition: all 0.15s;
+                }
+                .tb-link-btn:hover {
+                    border-color: color-mix(in srgb, var(--rc-accent) 50%, var(--rc-border));
+                    color: var(--rc-accent);
+                }
+                .tb-link-active {
+                    border: 1px solid color-mix(in srgb, var(--rc-accent) 40%, transparent) !important;
+                    background: color-mix(in srgb, var(--rc-accent) 10%, transparent) !important;
+                    color: var(--rc-accent) !important;
+                }
+                .tb-reset-btn {
+                    border: 1px solid var(--rc-border);
+                    background: var(--rc-bg-alt);
+                    color: var(--rc-text-muted);
+                    transition: all 0.15s;
+                }
+                .tb-reset-btn:hover {
+                    background: var(--rc-card);
+                    color: var(--rc-text-sub);
+                }
+                .tb-add-section {
+                    color: white;
+                    font-weight: 600;
+                    font-size: 13px;
+                    border: none;
+                    cursor: pointer;
+                    background: linear-gradient(135deg, var(--rc-accent), var(--rc-accent-dark));
+                    box-shadow: 0 2px 10px color-mix(in srgb, var(--rc-accent) 35%, transparent);
+                    transition: all 0.2s;
+                }
+                .tb-add-section:hover {
+                    filter: brightness(1.08);
+                    box-shadow: 0 4px 16px color-mix(in srgb, var(--rc-accent) 42%, transparent);
+                    transform: translateY(-1px);
+                }
+                .tb-add-section:active {
+                    transform: translateY(0);
+                }
+                .tb-selection-badge {
+                    background: color-mix(in srgb, var(--rc-accent) 10%, transparent);
+                    border: 1px solid color-mix(in srgb, var(--rc-accent) 28%, transparent);
+                    color: var(--rc-accent);
+                }
+                .tb-toggle-on {
+                    background-color: var(--rc-accent) !important;
+                }
+                .tb-toggle-off {
+                    background-color: color-mix(in srgb, var(--rc-border) 100%, transparent) !important;
+                }
+                .tb-divider {
+                    border-color: var(--rc-border);
+                }
             `}</style>
 
-            {/* ── Template Name ── */}
+            {/* ── Template Name + Category ── */}
             <PanelSection>
                 <SectionLabel icon={IconFile}>Template</SectionLabel>
-                <FloatingInput
-                    label="Template Name"
-                    value={templateName}
-                    onChange={(e) => onTemplateNameChange(e.target.value)}
-                />
+                <div className="space-y-2">
+                    <FloatingInput
+                        label="Template Name"
+                        value={templateName}
+                        onChange={(e) => onTemplateNameChange(e.target.value)}
+                    />
+                    <FloatingSelect
+                        label="Category"
+                        value={templateCategory || 'Other'}
+                        onChange={(e) => onTemplateCategoryChange(e.target.value)}
+                        options={TEMPLATE_CATEGORIES.map(c => ({ value: c, label: c }))}
+                    />
+                </div>
             </PanelSection>
 
             {/* ── Page Size ── */}
@@ -197,17 +308,13 @@ const Toolbar = ({
             <PanelSection>
                 <div className="flex items-center justify-between mb-2.5">
                     <div className="flex items-center gap-1.5">
-                        <span className="text-gray-400"><IconMargin /></span>
-                        <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Margins (in)</span>
+                        <span style={{ color: 'var(--rc-text-muted)' }}><IconMargin /></span>
+                        <span className="text-[10px] font-bold uppercase tracking-widest" style={{ color: 'var(--rc-text-muted)' }}>Margins (in)</span>
                     </div>
                     <button
                         onClick={() => setLinkMargins(prev => !prev)}
                         title={linkMargins ? 'Unlink margins' : 'Link all margins'}
-                        className={`flex items-center justify-center w-7 h-7 rounded-md border transition-all duration-150 ${
-                            linkMargins
-                                ? 'border-blue-300 bg-blue-50 text-blue-500'
-                                : 'border-gray-200 bg-white text-gray-400 hover:border-gray-300 hover:bg-gray-50'
-                        }`}
+                        className={`flex items-center justify-center w-7 h-7 rounded-md transition-all duration-150 ${linkMargins ? 'tb-link-active' : 'tb-link-btn'}`}
                     >
                         {linkMargins ? <IconLink /> : <IconUnlink />}
                     </button>
@@ -234,8 +341,8 @@ const Toolbar = ({
                 {/* Zoom */}
                 <div className="mb-3">
                     <div className="flex items-center justify-between mb-1.5">
-                        <span className="text-[11px] font-semibold text-gray-500">Zoom</span>
-                        <span className="text-[11px] font-bold text-gray-800 tabular-nums bg-gray-100 px-1.5 py-0.5 rounded">
+                        <span className="tb-zoom-label text-[11px] font-semibold">Zoom</span>
+                        <span className="tb-zoom-val text-[11px] font-bold tabular-nums px-1.5 py-0.5 rounded-md">
                             {Math.round(scale * 100)}%
                         </span>
                     </div>
@@ -247,19 +354,18 @@ const Toolbar = ({
                             step="0.05"
                             value={scale}
                             onChange={(e) => onScaleChange(Number(e.target.value))}
-                            className="flex-1 h-1.5 rounded-full appearance-none cursor-pointer bg-gray-200
+                            className="tb-range flex-1 h-1.5 rounded-full appearance-none cursor-pointer
                                 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-3.5 [&::-webkit-slider-thumb]:h-3.5
-                                [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-blue-500 [&::-webkit-slider-thumb]:shadow-md
-                                [&::-webkit-slider-thumb]:shadow-blue-500/25 [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-white
+                                [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-white
                                 [&::-webkit-slider-thumb]:hover:scale-110 [&::-webkit-slider-thumb]:transition-transform
                                 [&::-moz-range-thumb]:w-3.5 [&::-moz-range-thumb]:h-3.5 [&::-moz-range-thumb]:rounded-full
-                                [&::-moz-range-thumb]:bg-blue-500 [&::-moz-range-thumb]:border-2 [&::-moz-range-thumb]:border-white"
+                                [&::-moz-range-thumb]:border-2 [&::-moz-range-thumb]:border-white"
                         />
                         {scale !== 1 && (
                             <button
                                 onClick={() => onScaleChange(1)}
                                 title="Reset to 100%"
-                                className="flex items-center justify-center w-6 h-6 rounded-md border border-gray-200 text-gray-400 hover:border-gray-300 hover:bg-gray-50 hover:text-gray-600 transition-all duration-150"
+                                className="tb-reset-btn flex items-center justify-center w-6 h-6 rounded-md transition-all duration-150"
                             >
                                 <IconRefresh />
                             </button>
@@ -268,44 +374,43 @@ const Toolbar = ({
                 </div>
 
                 {/* Grid toggle */}
-                <div className="flex items-center justify-between pt-2.5 border-t border-gray-100">
+                <div className="tb-divider flex items-center justify-between pt-2.5 border-t">
                     <div className="flex items-center gap-1.5">
-                        <span className="text-gray-400"><IconGrid /></span>
-                        <span className="text-[11px] font-semibold text-gray-500">Grid Lines</span>
+                        <span style={{ color: 'var(--rc-text-muted)' }}><IconGrid /></span>
+                        <span className="tb-grid-label text-[11px] font-semibold">Grid Lines</span>
                     </div>
                     <ToggleSwitch checked={showGrid} onChange={onToggleGrid} />
                 </div>
             </PanelSection>
 
             {/* ── Quick Guide ── */}
-            <PanelSection className="!bg-gradient-to-br !from-slate-50 !to-gray-50 !border-gray-200/60">
+            <div
+                className="tb-shortcut-panel rounded-xl p-2"
+            >
                 <div className="flex items-center gap-1.5 mb-2">
-                    <span className="text-gray-400"><IconMouse /></span>
-                    <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Shortcuts</span>
+                    <span style={{ color: 'var(--rc-text-muted)' }}><IconMouse /></span>
+                    <span className="text-[10px] font-bold uppercase tracking-widest" style={{ color: 'var(--rc-text-muted)' }}>Shortcuts</span>
                 </div>
-                <div className="space-y-1">
+                <div className="space-y-1.5">
                     {[
                         ['Click', 'Edit drawer'],
-                        ['Double-click', 'Add text'],
+                        ['Dbl-click', 'Add text'],
                         ['Shift+Click', 'Multi-select'],
                         ['Drag corners', 'Resize'],
-                        ['Del / Backspace', 'Remove'],
+                        ['Del / ⌫', 'Remove'],
                     ].map(([key, desc]) => (
                         <div key={key} className="flex items-center justify-between text-[11px]">
-                            <span className="font-mono font-semibold text-gray-500 bg-white px-1.5 py-0.5 rounded border border-gray-200 text-[10px]">{key}</span>
-                            <span className="text-gray-400">{desc}</span>
+                            <span className="tb-kbd px-1.5 py-0.5 rounded text-[10px] font-semibold">{key}</span>
+                            <span className="tb-shortcut-desc">{desc}</span>
                         </div>
                     ))}
                 </div>
-            </PanelSection>
+            </div>
 
             {/* ── Add Section ── */}
             <button
                 onClick={onAddSection}
-                className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl text-[13px] font-semibold text-white
-                    bg-gradient-to-r from-emerald-500 to-green-500 hover:from-emerald-600 hover:to-green-600
-                    shadow-md shadow-emerald-500/20 hover:shadow-lg hover:shadow-emerald-500/30
-                    transition-all duration-200 hover:-translate-y-[1px] active:translate-y-0"
+                className="tb-add-section flex items-center justify-center gap-2 w-full py-2.5 rounded-xl"
             >
                 <IconPlus />
                 Add Section
@@ -351,8 +456,11 @@ const Toolbar = ({
 
             {/* ── Selection Count ── */}
             {selectedCount > 0 && (
-                <div className="flex items-center justify-center gap-2 py-2.5 rounded-xl bg-blue-50 border border-blue-200 text-blue-700">
-                    <div className="flex items-center justify-center w-5 h-5 rounded-full bg-blue-500 text-white">
+                <div className="tb-selection-badge flex items-center justify-center gap-2 py-2.5 rounded-xl">
+                    <div
+                        className="flex items-center justify-center w-5 h-5 rounded-full text-white"
+                        style={{ background: 'var(--rc-accent)' }}
+                    >
                         <IconCheck />
                     </div>
                     <span className="text-[13px] font-bold">{selectedCount} selected</span>
@@ -365,10 +473,10 @@ const Toolbar = ({
 /* ─── Action Button ─── */
 
 const variantStyles = {
-    blue: 'bg-blue-500 hover:bg-blue-600 shadow-blue-500/20 hover:shadow-blue-500/30',
-    amber: 'bg-amber-500 hover:bg-amber-600 shadow-amber-500/20 hover:shadow-amber-500/30',
+    blue:   'bg-blue-500 hover:bg-blue-600 shadow-blue-500/20 hover:shadow-blue-500/30',
+    amber:  'bg-amber-500 hover:bg-amber-600 shadow-amber-500/20 hover:shadow-amber-500/30',
     violet: 'bg-violet-500 hover:bg-violet-600 shadow-violet-500/20 hover:shadow-violet-500/30',
-    slate: 'bg-slate-500 hover:bg-slate-600 shadow-slate-500/20 hover:shadow-slate-500/30',
+    slate:  'bg-slate-500 hover:bg-slate-600 shadow-slate-500/20 hover:shadow-slate-500/30',
 };
 
 const ActionButton = ({ onClick, disabled, icon, label, variant = 'blue' }) => (
@@ -396,10 +504,7 @@ const ToggleSwitch = ({ checked, onChange }) => (
     <button
         type="button"
         onClick={onChange}
-        className={`
-            relative w-9 h-5 rounded-full border-none cursor-pointer transition-colors duration-200 p-0 flex-shrink-0
-            ${checked ? 'bg-blue-500' : 'bg-gray-300'}
-        `}
+        className={`relative w-9 h-5 rounded-full border-none cursor-pointer transition-colors duration-200 p-0 flex-shrink-0 ${checked ? 'tb-toggle-on' : 'tb-toggle-off'}`}
     >
         <span
             className="absolute top-[2px] w-4 h-4 rounded-full bg-white transition-all duration-200 shadow-sm"

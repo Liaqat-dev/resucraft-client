@@ -17,23 +17,21 @@ const ResizeHandle = ({ position, onMouseDown }) => {
                 width: '7px',
                 height: '7px',
                 backgroundColor: '#ffffff',
-                border: '1.5px solid #3b82f6',
+                border: '1.5px solid var(--rc-accent, #3b82f6)',
                 borderRadius: '2px',
                 cursor: `${position}-resize`,
                 zIndex: 1000,
-                boxShadow: '0 0 0 1px rgba(59, 130, 246, 0.1), 0 1px 3px rgba(0,0,0,0.1)',
+                boxShadow: '0 0 0 1px color-mix(in srgb, var(--rc-accent, #3b82f6) 15%, transparent), 0 1px 3px rgba(0,0,0,0.1)',
                 transition: 'transform 0.1s',
                 ...positionStyles[position]
             }}
             onMouseDown={onMouseDown}
             onMouseOver={(e) => {
-                e.currentTarget.style.backgroundColor = '#3b82f6';
-                e.currentTarget.style.borderColor = '#3b82f6';
+                e.currentTarget.style.backgroundColor = 'var(--rc-accent, #3b82f6)';
                 e.currentTarget.style.transform = (positionStyles[position].transform || '') + ' scale(1.3)';
             }}
             onMouseOut={(e) => {
                 e.currentTarget.style.backgroundColor = '#ffffff';
-                e.currentTarget.style.borderColor = '#3b82f6';
                 e.currentTarget.style.transform = positionStyles[position].transform || '';
             }}
         />

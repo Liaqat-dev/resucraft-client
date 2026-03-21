@@ -3,8 +3,8 @@ import { flatToNested, nestedToFlat } from '../utils/transformUtils';
 import { CANVAS_SIZES } from '../constants';
 
 export function useTemplateActions({
-    elements, sections, templateName, canvasSize, customWidth, customHeight, margins, templateId,
-    setElements, setSections, setTemplateName, setTemplateId, setCanvasSize, setCustomWidth, setCustomHeight, setMargins, setSelectedIds
+    elements, sections, templateName, templateCategory, canvasSize, customWidth, customHeight, margins, templateId,
+    setElements, setSections, setTemplateName, setTemplateCategory, setTemplateId, setCanvasSize, setCustomWidth, setCustomHeight, setMargins, setSelectedIds
 }) {
     const [isSaving, setIsSaving] = useState(false);
 
@@ -52,6 +52,7 @@ export function useTemplateActions({
 
         const templateData = {
             name: templateName,
+            category: templateCategory || 'Other',
             data: {
                 elements: nestedElements,
                 sections: nestedSections,
@@ -102,6 +103,7 @@ export function useTemplateActions({
 
         const templateData = {
             name: templateName,
+            category: templateCategory || 'Other',
             data: {
                 elements: nestedElements,
                 sections: nestedSections,
@@ -152,6 +154,7 @@ export function useTemplateActions({
                 setElements(flatElements);
                 setSections(flatSections);
                 setTemplateName(templateData.name);
+                if (setTemplateCategory) setTemplateCategory(templateData.category || 'Other');
                 setTemplateId(templateData.id || loadId);
                 setCanvasSize(settings?.size || 'A4');
                 setCustomWidth(settings?.width || CANVAS_SIZES[settings?.size || 'A4'].width);

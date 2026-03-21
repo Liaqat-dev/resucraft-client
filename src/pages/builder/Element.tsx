@@ -9,11 +9,10 @@ function CanvasElement({ element, isSelected, onMouseDown, isDragging, onContent
         if (element.type === 'line-break') return;
 
         const el = contentRef.current;
-        // Temporarily remove height constraint so scrollHeight reflects natural content
         const prevHeight = el.style.height;
         el.style.height = 'auto';
-        const padding = 8; // 4px top + 4px bottom from outer div
-        const border = 3; // ~1.5px * 2 for border
+        const padding = 8;
+        const border = 3;
         const naturalHeight = el.scrollHeight + padding + border;
         el.style.height = prevHeight;
 
@@ -30,27 +29,26 @@ function CanvasElement({ element, isSelected, onMouseDown, isDragging, onContent
         if (displayed !== element.content) {
             contentRef.current.innerText = element.content;
         }
-        // Measure after content sync
         requestAnimationFrame(measureAndResize);
     }, [element.content, measureAndResize]);
 
     const getBulletSymbol = (bulletType) => {
         switch (bulletType) {
-            case 'disc': return '\u2022';
-            case 'circle': return '\u25CB';
-            case 'square': return '\u25A0';
+            case 'disc':     return '\u2022';
+            case 'circle':   return '\u25CB';
+            case 'square':   return '\u25A0';
             case 'numbered': return '1.';
-            case 'roman': return 'i.';
-            default: return '\u2022';
+            case 'roman':    return 'i.';
+            default:         return '\u2022';
         }
     };
 
     // ── Line Break Rendering ──
     if (element.type === 'line-break') {
-        const thickness = element.lineBreakThickness || 1;
-        const color = element.lineBreakColor || '#d1d5db';
-        const style = element.lineBreakStyle || 'solid';
-        const widthPercent = element.lineBreakWidthPercent || 100;
+        const thickness      = element.lineBreakThickness || 1;
+        const color          = element.lineBreakColor || '#d1d5db';
+        const style          = element.lineBreakStyle || 'solid';
+        const widthPercent   = element.lineBreakWidthPercent || 100;
 
         return (
             <div
@@ -64,13 +62,13 @@ function CanvasElement({ element, isSelected, onMouseDown, isDragging, onContent
                     cursor: isDragging ? 'grabbing' : 'move',
                     padding: '0',
                     border: isSelected
-                        ? '1.5px solid #3b82f6'
+                        ? '1.5px solid var(--rc-accent, #3b82f6)'
                         : '1px dashed rgba(59, 130, 246, 0.15)',
                     borderRadius: '2px',
                     boxSizing: 'border-box',
                     userSelect: 'none',
-                    backgroundColor: isSelected ? 'rgba(59, 130, 246, 0.02)' : 'transparent',
-                    boxShadow: isSelected ? '0 0 0 3px rgba(59, 130, 246, 0.08)' : 'none',
+                    backgroundColor: isSelected ? 'color-mix(in srgb, var(--rc-accent, #3b82f6) 3%, transparent)' : 'transparent',
+                    boxShadow: isSelected ? '0 0 0 3px color-mix(in srgb, var(--rc-accent, #3b82f6) 12%, transparent)' : 'none',
                     zIndex: isSelected ? 100 : 10,
                     display: 'flex',
                     alignItems: 'center',
@@ -121,13 +119,13 @@ function CanvasElement({ element, isSelected, onMouseDown, isDragging, onContent
                 cursor: isDragging ? 'grabbing' : 'move',
                 padding: '4px',
                 border: isSelected
-                    ? '1.5px solid #3b82f6'
-                    : '1px dashed rgba(59, 130, 246, 0.3)',
+                    ? '1.5px solid var(--rc-accent, #3b82f6)'
+                    : '1px dashed rgba(59, 130, 246, 0.25)',
                 borderRadius: '2px',
                 boxSizing: 'border-box',
                 userSelect: 'none',
-                backgroundColor: isSelected ? 'rgba(59, 130, 246, 0.04)' : 'transparent',
-                boxShadow: isSelected ? '0 0 0 3px rgba(59, 130, 246, 0.08)' : 'none',
+                backgroundColor: isSelected ? 'color-mix(in srgb, var(--rc-accent, #3b82f6) 3%, transparent)' : 'transparent',
+                boxShadow: isSelected ? '0 0 0 3px color-mix(in srgb, var(--rc-accent, #3b82f6) 12%, transparent)' : 'none',
                 zIndex: isSelected ? 100 : 10,
                 display: 'flex',
                 alignItems: element.type === 'list-item' ? 'flex-start' : 'center',

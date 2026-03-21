@@ -9,6 +9,7 @@ import { useSelectionDrawer } from './hooks/useSelectionDrawer';
 import { useCanvasInteractions } from './hooks/useCanvasInteractions';
 import { useSectionActions } from './hooks/useSectionActions';
 import { useTemplateActions } from './hooks/useTemplateActions';
+import { useLandingTheme } from '@hooks/useLandingTheme.ts';
 
 /* ─── Icons ─── */
 
@@ -29,6 +30,7 @@ function ResumeBuilder() {
     const [elements, setElements] = useState([]);
     const [selectedIds, setSelectedIds] = useState([]);
     const [templateName, setTemplateName] = useState('Untitled Resume');
+    const [templateCategory, setTemplateCategory] = useState('Other');
     const [templateId, setTemplateId] = useState(null);
     const [canvasSize, setCanvasSize] = useState('A4');
     const [customWidth, setCustomWidth] = useState('210mm');
@@ -38,6 +40,9 @@ function ResumeBuilder() {
     const [showGrid, setShowGrid] = useState(true);
     const [gridSize] = useState(4);
     const canvasRef = useRef(null);
+
+    // Activate --rc-* CSS custom properties for all child components
+    const theme = useLandingTheme();
 
     // --- Hooks ---
 
@@ -81,17 +86,15 @@ function ResumeBuilder() {
     const {
         isSaving, saveTemplate, updateTemplate, loadTemplate, exportToPDF, getTemplateJSON
     } = useTemplateActions({
-        elements, sections, templateName, canvasSize, customWidth, customHeight, margins, templateId,
-        setElements, setSections, setTemplateName, setTemplateId, setCanvasSize, setCustomWidth, setCustomHeight, setMargins, setSelectedIds
+        elements, sections, templateName, templateCategory, canvasSize, customWidth, customHeight, margins, templateId,
+        setElements, setSections, setTemplateName, setTemplateCategory, setTemplateId, setCanvasSize, setCustomWidth, setCustomHeight, setMargins, setSelectedIds
     });
 
     // --- Auto-resize element + cascade to parent section ---
 
     const onAutoResize = (elementId, newHeight) => {
-        // Update the element's height
         updateElement(elementId, { height: newHeight });
 
-        // Find the element to get its parent section
         const el = elements.find(e => e.id === elementId);
         if (!el || !el.parentSection) return;
 
@@ -99,14 +102,12 @@ function ResumeBuilder() {
             const sec = sections.find(s => s.id === sectionId);
             if (!sec) return;
 
-            // Find all child elements in this section
             const childElements = elements.map(e => {
                 if (e.parentSection !== sectionId) return null;
                 const h = e.id === elementId ? newHeight : e.height;
                 return (e.y - sec.y) + h;
             }).filter(Boolean);
 
-            // Find all child subsections in this section
             const childSubsections = sections
                 .filter(s => s.parentSection === sectionId)
                 .map(s => (s.y - sec.y) + s.height);
@@ -115,15 +116,11 @@ function ResumeBuilder() {
             if (allBottoms.length === 0) return;
 
             const maxBottom = Math.max(...allBottoms);
-            const newSectionHeight = maxBottom + 20; // 20px padding
+            const newSectionHeight = maxBottom + 20;
 
             if (Math.abs(newSectionHeight - sec.height) > 1) {
                 updateSection(sectionId, { height: newSectionHeight });
-
-                // Cascade to parent section if this section is nested
-                if (sec.parentSection) {
-                    cascadeSection(sec.parentSection);
-                }
+                if (sec.parentSection) cascadeSection(sec.parentSection);
             }
         };
 
@@ -137,9 +134,7 @@ function ResumeBuilder() {
 
         selectedIds.forEach(id => {
             elements.forEach(el => {
-                if (el.parentSection === id) {
-                    idsToDelete.add(el.id);
-                }
+                if (el.parentSection === id) idsToDelete.add(el.id);
             });
             sections.forEach(sec => {
                 if (sec.parentSection === id) {
@@ -194,7 +189,6 @@ function ResumeBuilder() {
         }
     }, []);
 
-    // Keep all section/subsection widths in sync with canvas settings
     useEffect(() => {
         setSections(prev => {
             if (prev.length === 0) return prev;
@@ -229,35 +223,34 @@ function ResumeBuilder() {
         }
     };
 
-    const handleCustomWidthChange = (val) => {
-        setCustomWidth(val);
-        setCanvasSize('Custom');
-    };
-    const handleCustomHeightChange = (val) => {
-        setCustomHeight(val);
-        setCanvasSize('Custom');
-    };
+    const handleCustomWidthChange = (val) => { setCustomWidth(val); setCanvasSize('Custom'); };
+    const handleCustomHeightChange = (val) => { setCustomHeight(val); setCanvasSize('Custom'); };
 
     const currentCanvasSize = { width: customWidth, height: customHeight };
-
     const hasMargins = margins.top > 0 || margins.right > 0 || margins.bottom > 0 || margins.left > 0;
+
+    // Theme-derived canvas workspace colors
+    const wsBg    = theme.isDark ? '#111827' : '#e4e9f0';
+    const wsDot   = theme.isDark ? 'rgba(255,255,255,0.045)' : 'rgba(0,0,0,0.065)';
 
     // --- Render ---
 
     return (
-        <div className="relative  overflow-auto bg-builder-canvas">
+        <div
+            className="relative overflow-auto"
+            style={{
+                minHeight: '100vh',
+                backgroundColor: wsBg,
+                backgroundImage: `radial-gradient(circle, ${wsDot} 1px, transparent 1px)`,
+                backgroundSize: '24px 24px',
+            }}
+        >
             <style>{`
-                .bg-builder-canvas {
-                    background-color: #eef1f5;
-                    background-image:
-                        radial-gradient(circle, #d5dbe3 1px, transparent 1px);
-                    background-size: 24px 24px;
-                }
                 .canvas-paper {
                     box-shadow:
                         0 0 0 1px rgba(0,0,0,0.04),
-                        0 4px 16px rgba(0,0,0,0.06),
-                        0 12px 40px rgba(0,0,0,0.08);
+                        0 4px 16px rgba(0,0,0,0.07),
+                        0 14px 48px rgba(0,0,0,0.10);
                 }
                 .canvas-paper::before {
                     content: '';
@@ -265,19 +258,19 @@ function ResumeBuilder() {
                     inset: 0;
                     border-radius: 2px;
                     pointer-events: none;
-                    box-shadow: inset 0 0 0 1px rgba(0,0,0,0.06);
+                    box-shadow: inset 0 0 0 1px rgba(0,0,0,0.05);
                     z-index: 1;
                 }
                 .margin-rect {
                     position: absolute;
                     pointer-events: none;
                     z-index: 5;
-                    border: 2px dotted rgba(99, 140, 255, 0.45);
+                    border: 1.5px dashed color-mix(in srgb, var(--rc-accent, #638cff) 45%, transparent);
                     border-radius: 1px;
                 }
                 .selection-box {
-                    border: 1.5px dashed #3b82f6;
-                    background-color: rgba(59, 130, 246, 0.06);
+                    border: 1.5px dashed var(--rc-accent, #3b82f6);
+                    background-color: color-mix(in srgb, var(--rc-accent, #3b82f6) 6%, transparent);
                     border-radius: 2px;
                     pointer-events: none;
                     z-index: 9999;
@@ -298,6 +291,8 @@ function ResumeBuilder() {
             <Toolbar
                 templateName={templateName}
                 onTemplateNameChange={setTemplateName}
+                templateCategory={templateCategory}
+                onTemplateCategoryChange={setTemplateCategory}
                 onAddSection={addSection}
                 onSave={saveTemplate}
                 onUpdate={updateTemplate}
@@ -323,7 +318,7 @@ function ResumeBuilder() {
             />
 
             {/* ── Canvas Area ── */}
-            <div className="flex justify-center pt-10 pb-10">
+            <div className="flex justify-center pt-10 pb-16">
                 <div
                     ref={canvasRef}
                     onDoubleClick={handleCanvasDoubleClick}
@@ -338,8 +333,8 @@ function ResumeBuilder() {
                         marginBottom: scale !== 1 ? `calc((${scale} - 1) * -50%)` : undefined,
                         ...(showGrid ? {
                             backgroundImage:
-                                `linear-gradient(to right, rgba(0,0,0,0.035) 1px, transparent 1px),
-                                 linear-gradient(to bottom, rgba(0,0,0,0.035) 1px, transparent 1px)`,
+                                `linear-gradient(to right, rgba(0,0,0,0.03) 1px, transparent 1px),
+                                 linear-gradient(to bottom, rgba(0,0,0,0.03) 1px, transparent 1px)`,
                             backgroundSize: `${gridSize}px ${gridSize}px`
                         } : {})
                     }}
@@ -376,7 +371,6 @@ function ResumeBuilder() {
                                 onMouseDown={handleItemMouseDown}
                                 onTitleChange={(id, title) => updateSection(id, { title })}
                                 onContentTypeChange={(id, contentType) => updateSection(id, { contentType })}
-
                                 onAddContent={addContentToSection}
                                 onAddSubsection={addSubsection}
                                 onResizeMouseDown={handleResizeMouseDown}
@@ -423,12 +417,13 @@ function ResumeBuilder() {
             <button
                 onClick={exportToPDF}
                 className="fixed bottom-5 left-5 flex items-center gap-2 px-5 py-3 rounded-2xl text-[14px] font-bold text-white
-                    bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700
-                    shadow-lg shadow-blue-600/30 hover:shadow-xl hover:shadow-blue-600/40
-                    transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0 z-[100]
-                    group"
+                    transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0 z-[100] group"
+                style={{
+                    background: `linear-gradient(135deg, var(--rc-accent, #3b82f6), var(--rc-accent-dark, #1d4ed8))`,
+                    boxShadow: `0 4px 20px color-mix(in srgb, var(--rc-accent, #3b82f6) 45%, transparent), 0 2px 6px rgba(0,0,0,0.15)`,
+                }}
             >
-                <span className="flex items-center justify-center w-7 h-7 rounded-lg bg-white/20 group-hover:bg-white/25 transition-colors">
+                <span className="flex items-center justify-center w-7 h-7 rounded-lg bg-white/20 group-hover:bg-white/28 transition-colors">
                     <IconFileText />
                 </span>
                 Export PDF

@@ -277,9 +277,16 @@ const TemplateCard = ({ template, onLoad, onDelete, isLoading = false }) => {
                     <span className="text-xs text-gray-400">
                         {formatDate(template.updatedAt)}
                     </span>
-                    <span className="text-xs font-medium text-gray-500 bg-gray-100 rounded-full px-2 py-0.5">
-                        {elements.length} elements
-                    </span>
+                    <div className="flex items-center gap-1.5">
+                        {template.category && template.category !== 'Other' && (
+                            <span className="text-xs font-semibold text-primary-600 bg-primary-50 border border-primary-100 rounded-full px-2 py-0.5">
+                                {template.category}
+                            </span>
+                        )}
+                        <span className="text-xs font-medium text-gray-500 bg-gray-100 rounded-full px-2 py-0.5">
+                            {elements.length} el
+                        </span>
+                    </div>
                 </div>
 
                 {/* Actions */}
