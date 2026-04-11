@@ -11,7 +11,6 @@ import {addOns, plans, pricingAdmin} from "./pricing/pricing";
 import {faqData} from "./faq/faq";
 import {colors} from "./color";
 import {ticketsData} from "./helpCenter/tickets";
-import {menu} from "./sidebar/menu";
 
 export {
     defaultSwitches,
@@ -27,5 +26,4 @@ export {
     faqData,
     colors,
     ticketsData,
-    menu,
 };

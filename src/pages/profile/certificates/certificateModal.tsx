@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { Certificate, CreateCertificateData } from "@dtos/userProfile.ts";
-import { Award, Calendar, FileText, Hash, Link as LinkIcon, Loader2, X } from "lucide-react";
+import { Award, Calendar, FileText, Hash, Link as LinkIcon, Loader2, Mic, MicOff, X } from "lucide-react";
 import toast from "react-hot-toast";
 import { useProfile } from "@src/hooks/useProfile.ts";
+import { useSpeechFill } from "@hooks/useSpeechFill.ts";
 
 interface Props {
     onClose: () => void;
@@ -17,6 +18,8 @@ const inputCls =
     "border-gray-200 dark:border-dark-800 hover:border-gray-300 dark:hover:border-dark-700 " +
     "focus:ring-primary-500/20 focus:border-primary-500";
 
+const inputMicCls = inputCls.replace("pr-4", "pr-9");
+
 const labelCls = "block text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-dark-400";
 const iconCls = "absolute inset-y-0 left-3 flex items-center pointer-events-none text-gray-400 dark:text-dark-500";
 
@@ -29,6 +32,8 @@ const FormField: React.FC<{ label: string; icon: React.ReactNode; children: Reac
         </div>
     </div>
 );
+
+type TextField = "name" | "issuer" | "credentialId" | "description";
 
 const CertificateModal: React.FC<Props> = ({ onClose, certToEdit }) => {
     const { createCertificate, editCertificate } = useProfile();
@@ -44,6 +49,9 @@ const CertificateModal: React.FC<Props> = ({ onClose, certToEdit }) => {
     });
     const [loading, setLoading] = useState(false);
 
+    const { supported, listening, transcript, startListening, stopListening, resetTranscript } = useSpeechFill();
+    const [activeField, setActiveField] = useState<TextField | null>(null);
+
     useEffect(() => {
         if (certToEdit) {
             setForm({
@@ -57,6 +65,40 @@ const CertificateModal: React.FC<Props> = ({ onClose, certToEdit }) => {
             });
         }
     }, [certToEdit]);
+
+    // When recognition stops, write transcript into the active field
+    useEffect(() => {
+        if (!listening && activeField && transcript) {
+            setForm(prev => ({ ...prev, [activeField]: transcript }));
+            setActiveField(null);
+            resetTranscript();
+        }
+    }, [listening]);
+
+    const handleMic = (field: TextField) => {
+        if (listening && activeField === field) {
+            stopListening();
+        } else {
+            setActiveField(field);
+            startListening();
+        }
+    };
+
+    const MicBtn: React.FC<{ field: TextField }> = ({ field }) => {
+        if (!supported) return null;
+        const active = listening && activeField === field;
+        return (
+            <button
+                type="button"
+                onClick={() => handleMic(field)}
+                title={active ? "Stop listening" : "Speak to fill"}
+                className={`absolute inset-y-0 right-2 flex items-center transition-colors
+                    ${active ? "text-red-500 animate-pulse" : "text-gray-400 hover:text-primary-500"}`}
+            >
+                {active ? <MicOff size={14} /> : <Mic size={14} />}
+            </button>
+        );
+    };
 
     const set = (field: keyof CreateCertificateData, value: string) =>
         setForm((prev) => ({ ...prev, [field]: value }));
@@ -110,10 +152,11 @@ const CertificateModal: React.FC<Props> = ({ onClose, certToEdit }) => {
                             value={form.name}
                             onChange={(e) => set("name", e.target.value)}
                             placeholder="e.g. AWS Solutions Architect"
-                            className={inputCls}
+                            className={supported ? inputMicCls : inputCls}
                             disabled={loading}
                             autoFocus
                         />
+                        <MicBtn field="name" />
                     </FormField>
 
                     <FormField label="Issuing Organisation" icon={<Award size={14} />}>
@@ -122,9 +165,10 @@ const CertificateModal: React.FC<Props> = ({ onClose, certToEdit }) => {
                             value={form.issuer}
                             onChange={(e) => set("issuer", e.target.value)}
                             placeholder="e.g. Amazon Web Services"
-                            className={inputCls}
+                            className={supported ? inputMicCls : inputCls}
                             disabled={loading}
                         />
+                        <MicBtn field="issuer" />
                     </FormField>
 
                     <div className="grid grid-cols-2 gap-4">
@@ -154,9 +198,10 @@ const CertificateModal: React.FC<Props> = ({ onClose, certToEdit }) => {
                             value={form.credentialId}
                             onChange={(e) => set("credentialId", e.target.value)}
                             placeholder="e.g. ABC123XYZ"
-                            className={inputCls}
+                            className={supported ? inputMicCls : inputCls}
                             disabled={loading}
                         />
+                        <MicBtn field="credentialId" />
                     </FormField>
 
                     <FormField label="Credential URL" icon={<LinkIcon size={14} />}>
@@ -181,9 +226,10 @@ const CertificateModal: React.FC<Props> = ({ onClose, certToEdit }) => {
                                 onChange={(e) => set("description", e.target.value)}
                                 rows={3}
                                 placeholder="Optional notes about this certification..."
-                                className={`${inputCls} resize-none pt-2.5`}
+                                className={`${supported ? inputMicCls : inputCls} resize-none pt-2.5`}
                                 disabled={loading}
                             />
+                            <MicBtn field="description" />
                         </div>
                     </div>
                 </div>

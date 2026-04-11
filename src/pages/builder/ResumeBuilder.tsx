@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import Toolbar from './Toolbar.tsx';
 import EditDrawer from './Drawer.tsx';
 import CanvasSection from './Section.tsx';
@@ -10,6 +11,7 @@ import { useCanvasInteractions } from './hooks/useCanvasInteractions';
 import { useSectionActions } from './hooks/useSectionActions';
 import { useTemplateActions } from './hooks/useTemplateActions';
 import { useLandingTheme } from '@hooks/useLandingTheme.ts';
+import { templateService } from '@src/services/template.service';
 
 /* ─── Icons ─── */
 
@@ -26,6 +28,7 @@ const IconFileText = () => (
 );
 
 function ResumeBuilder() {
+    const { id } = useParams<{ id: string }>();
     const [sections, setSections] = useState([]);
     const [elements, setElements] = useState([]);
     const [selectedIds, setSelectedIds] = useState([]);
@@ -164,30 +167,25 @@ function ResumeBuilder() {
     // --- Effects ---
 
     useEffect(() => {
-        const templateToLoad = localStorage.getItem('templateToLoad');
-        if (templateToLoad) {
-            try {
-                const template = JSON.parse(templateToLoad);
+        if (id) {
+            templateService.get(id).then(template => {
                 const settings = template.data.canvasSettings;
-                const { elements: nestedElements, sections: nestedSections } = nestedToFlat(template.data, settings);
-
-                setElements(nestedElements || []);
-                setSections(nestedSections || []);
+                const { elements: flatElements, sections: flatSections } = nestedToFlat(template.data, settings);
+                setElements(flatElements || []);
+                setSections(flatSections || []);
                 setTemplateName(template.name);
-                setTemplateId(template._id || null);
+                setTemplateCategory(template.category || 'Other');
+                setTemplateId(template.id || id);
                 setCanvasSize(settings?.size || 'A4');
                 setCustomWidth(settings?.width || CANVAS_SIZES[settings?.size || 'A4'].width);
                 setCustomHeight(settings?.height || CANVAS_SIZES[settings?.size || 'A4'].height);
                 if (settings?.margins) setMargins(settings.margins);
                 setSelectedIds([]);
-
-                localStorage.removeItem('templateToLoad');
-            } catch (err) {
+            }).catch(err => {
                 console.error('Error loading template:', err);
-                localStorage.removeItem('templateToLoad');
-            }
+            });
         }
-    }, []);
+    }, [id]);
 
     useEffect(() => {
         setSections(prev => {

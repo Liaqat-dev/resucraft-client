@@ -11,12 +11,6 @@ import SelectPage from "@pages/form/select";
 import Switches from "@pages/form/switches";
 import WizardBasic from "@pages/form/wizard-basic";
 import {ReactNode} from "react";
-import BaseTables from "@pages/table/base";
-import BasicTables from "@pages/table/datatables/basic";
-import Bordered from "@pages/table/datatables/bordered";
-import Stripe from "@pages/table/datatables/stripe";
-import Hover from "@pages/table/datatables/hover";
-import RowGrouPing from "@pages/table/datatables/rowGrouping";
 import AccountSecurity from "@pages/account/security";
 import SkillsPage from "@pages/profile/skills/skillsPage.tsx";
 import PersonalInfoPage from "@pages/profile/personalInfo/personalInfoPage.tsx";
@@ -35,7 +29,6 @@ import PrivacyPolicy from "@pages/page/privacyPolicy";
 import HelpCenter from "@pages/page/helpCenter";
 import PageNotFoundError from "@pages/page/404";
 import FiveZeroZero from "@pages/page/500";
-import EnableDisable from "@pages/table/datatables/enableDisable";
 import Login from "@pages/auth/login.tsx";
 import Register from "@pages/auth/register.tsx";
 import ResetPassword from "@pages/auth/resetPassword.tsx";
@@ -70,6 +63,8 @@ const routes: IRoute[] = [
         //dashboards
         {path: "/loading", component: <SpinLoader/>},
         {path: "/", component: <TemplateGallery/>},
+        {path: "/templates", component: <TemplateGallery/>},
+        {path: "/my-templates", component: <TemplateGallery/>},
         {path: "/templates/:id/preview", component: <TemplatePreview/>},
 
 
@@ -87,15 +82,6 @@ const routes: IRoute[] = [
         {path: "/form/clipboard", component: <Clipboards/>},
         {path: "form/wizard-basic", component: <WizardBasic/>},
 
-        //tables
-        {path: "/table/base", component: <BaseTables/>},
-        {path: "/table/datatables/basic", component: <BasicTables/>},
-        {path: "/table/datatables/bordered", component: <Bordered/>},
-        {path: "/table/datatables/stripe", component: <Stripe/>},
-        {path: "/table/datatables/hover", component: <Hover/>},
-        {path: "/table/datatables/row-grouping", component: <RowGrouPing/>},
-        {path: "/table/datatables/enable-disable", component: <EnableDisable/>},
-    
         //page
 
         {path: "/page/pricing", component: <PricingPage/>},
@@ -161,6 +147,7 @@ const nonAuthRoutes: IRoute[] = [
 ];
 const builderRoutes: IRoute[] = [
     {path: "/builder", component: <ResumeBuilder/>},
+    {path: "/builder/:id", component: <ResumeBuilder/>},
 ]
 
 export {routes, nonAuthRoutes, builderRoutes};

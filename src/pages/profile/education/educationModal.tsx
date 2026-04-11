@@ -1,7 +1,8 @@
 import React, {useState, useEffect} from "react";
 import {educationService, Education, CreateEducationData} from "../../../services/education.service.ts";
-import {BookOpen, BookMarked, Calendar, FileText, GraduationCap, Loader2, X} from "lucide-react";
+import {BookOpen, BookMarked, Calendar, FileText, GraduationCap, Loader2, Mic, MicOff, X} from "lucide-react";
 import toast from "react-hot-toast";
+import {useSpeechFill} from "@hooks/useSpeechFill.ts";
 
 interface Props {
     onClose: () => void;
@@ -9,7 +10,6 @@ interface Props {
     educationToEdit?: Education;
 }
 
-// ── Shared input styles (mirrors personalInfoPage Field) ──────────────────────
 const inputCls =
     "w-full pl-9 pr-4 py-2.5 text-sm rounded-md border " +
     "bg-white dark:bg-dark-900 dark:text-dark-100 " +
@@ -18,10 +18,10 @@ const inputCls =
     "border-gray-200 dark:border-dark-800 hover:border-gray-300 dark:hover:border-dark-700 " +
     "focus:ring-primary-500/20 focus:border-primary-500";
 
+const inputMicCls = inputCls.replace("pr-4", "pr-9");
+
 const labelCls = "block text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-dark-400";
 const iconCls  = "absolute inset-y-0 left-3 flex items-center pointer-events-none text-gray-400 dark:text-dark-500";
-
-// ── Field sub-component ───────────────────────────────────────────────────────
 
 interface FieldProps {
     label: string;
@@ -38,7 +38,7 @@ const FormField: React.FC<FieldProps> = ({label, icon, children}) => (
     </div>
 );
 
-// ── Modal ─────────────────────────────────────────────────────────────────────
+type TextField = "school" | "degree" | "fieldOfStudy" | "description";
 
 const EducationModal: React.FC<Props> = ({onClose, onSaved, educationToEdit}) => {
     const [form, setForm] = useState<CreateEducationData>({
@@ -50,6 +50,9 @@ const EducationModal: React.FC<Props> = ({onClose, onSaved, educationToEdit}) =>
         description: "",
     });
     const [loading, setLoading] = useState(false);
+
+    const { supported, listening, transcript, startListening, stopListening, resetTranscript } = useSpeechFill();
+    const [activeField, setActiveField] = useState<TextField | null>(null);
 
     useEffect(() => {
         if (educationToEdit) {
@@ -63,6 +66,40 @@ const EducationModal: React.FC<Props> = ({onClose, onSaved, educationToEdit}) =>
             });
         }
     }, [educationToEdit]);
+
+    // When recognition stops, write transcript into the active field
+    useEffect(() => {
+        if (!listening && activeField && transcript) {
+            setForm(prev => ({...prev, [activeField]: transcript}));
+            setActiveField(null);
+            resetTranscript();
+        }
+    }, [listening]);
+
+    const handleMic = (field: TextField) => {
+        if (listening && activeField === field) {
+            stopListening();
+        } else {
+            setActiveField(field);
+            startListening();
+        }
+    };
+
+    const MicBtn: React.FC<{field: TextField}> = ({field}) => {
+        if (!supported) return null;
+        const active = listening && activeField === field;
+        return (
+            <button
+                type="button"
+                onClick={() => handleMic(field)}
+                title={active ? "Stop listening" : "Speak to fill"}
+                className={`absolute inset-y-0 right-2 flex items-center transition-colors
+                    ${active ? "text-red-500 animate-pulse" : "text-gray-400 hover:text-primary-500"}`}
+            >
+                {active ? <MicOff size={14}/> : <Mic size={14}/>}
+            </button>
+        );
+    };
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const {name, value} = e.target;
@@ -120,9 +157,10 @@ const EducationModal: React.FC<Props> = ({onClose, onSaved, educationToEdit}) =>
                             value={form.school}
                             onChange={handleChange}
                             placeholder="e.g. MIT"
-                            className={inputCls}
+                            className={supported ? inputMicCls : inputCls}
                             disabled={loading}
                         />
+                        <MicBtn field="school"/>
                     </FormField>
 
                     <FormField label="Degree" icon={<BookOpen size={14}/>}>
@@ -132,9 +170,10 @@ const EducationModal: React.FC<Props> = ({onClose, onSaved, educationToEdit}) =>
                             value={form.degree}
                             onChange={handleChange}
                             placeholder="e.g. Bachelor of Science"
-                            className={inputCls}
+                            className={supported ? inputMicCls : inputCls}
                             disabled={loading}
                         />
+                        <MicBtn field="degree"/>
                     </FormField>
 
                     <FormField label="Field of Study" icon={<BookMarked size={14}/>}>
@@ -144,9 +183,10 @@ const EducationModal: React.FC<Props> = ({onClose, onSaved, educationToEdit}) =>
                             value={form.fieldOfStudy}
                             onChange={handleChange}
                             placeholder="e.g. Computer Science"
-                            className={inputCls}
+                            className={supported ? inputMicCls : inputCls}
                             disabled={loading}
                         />
+                        <MicBtn field="fieldOfStudy"/>
                     </FormField>
 
                     <div className="grid grid-cols-2 gap-4">
@@ -185,9 +225,10 @@ const EducationModal: React.FC<Props> = ({onClose, onSaved, educationToEdit}) =>
                                 onChange={handleChange}
                                 rows={3}
                                 placeholder="Relevant coursework, thesis, achievements..."
-                                className={`${inputCls} resize-none pt-2.5`}
+                                className={`${supported ? inputMicCls : inputCls} resize-none pt-2.5`}
                                 disabled={loading}
                             />
+                            <MicBtn field="description"/>
                         </div>
                     </div>
                 </div>

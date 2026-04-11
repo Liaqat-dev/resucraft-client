@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { flatToNested, nestedToFlat } from '../utils/transformUtils';
 import { CANVAS_SIZES } from '../constants';
+import { templateService } from '../../../services/template.service';
 
 export function useTemplateActions({
     elements, sections, templateName, templateCategory, canvasSize, customWidth, customHeight, margins, templateId,
@@ -68,23 +69,11 @@ export function useTemplateActions({
         };
 
         try {
-            // Save to MongoDB via backend
-            const response = await fetch('http://localhost:5000/api/templates/save', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(templateData)
-            });
-
-            if (!response.ok) {
-                throw new Error('Failed to save template');
-            }
-
-            const result = await response.json();
+            const result = await templateService.save(templateData);
             setTemplateId(result.id);
             console.log(`✅ Template saved successfully!\nID: ${result.id}`);
         } catch (error) {
             console.error('Save error:', error);
-            // Fallback to localStorage
             const localTemplateId = 'template-' + Date.now();
             localStorage.setItem(localTemplateId, JSON.stringify(templateData));
             localStorage.setItem('lastTemplateId', localTemplateId);
@@ -118,16 +107,7 @@ export function useTemplateActions({
         };
 
         try {
-            const response = await fetch(`http://localhost:5000/api/templates/${templateId}`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(templateData)
-            });
-
-            if (!response.ok) {
-                throw new Error('Failed to update template');
-            }
-
+            await templateService.update(templateId, templateData);
             console.log(`✅ Template updated successfully!`);
         } catch (error) {
             console.error('Update error:', error);
@@ -139,11 +119,9 @@ export function useTemplateActions({
 
     const loadTemplate = async (loadId) => {
         try {
-            // Try loading from MongoDB
-            const response = await fetch(`http://localhost:5000/api/templates/${loadId}`);
+            const templateData = await templateService.get(loadId);
 
-            if (response.ok) {
-                const templateData = await response.json();
+            if (templateData) {
 
                 const settings = templateData.data.canvasSettings;
 
@@ -161,8 +139,6 @@ export function useTemplateActions({
                 setCustomHeight(settings?.height || CANVAS_SIZES[settings?.size || 'A4'].height);
                 if (settings?.margins) setMargins(settings.margins);
                 setSelectedIds([]);
-            } else {
-                throw new Error('Template not found in database');
             }
         } catch (error) {
             console.error('Load error:', error);

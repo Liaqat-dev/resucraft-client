@@ -1,8 +1,9 @@
 import React, {useState, useEffect} from "react";
 import {Experience, CreateExperienceData} from "@dtos/index.ts";
 import {experienceService} from "@src/services/experience.service.ts";
-import {Briefcase, Building2, Calendar, FileText, Loader2, X} from "lucide-react";
+import {Briefcase, Building2, Calendar, FileText, Loader2, Mic, MicOff, X} from "lucide-react";
 import toast from "react-hot-toast";
+import {useSpeechFill} from "@hooks/useSpeechFill.ts";
 
 interface Props {
     userId: string;
@@ -11,7 +12,6 @@ interface Props {
     experienceToEdit?: Experience;
 }
 
-// ── Shared input styles (mirrors personalInfoPage Field) ──────────────────────
 const inputCls =
     "w-full pl-9 pr-4 py-2.5 text-sm rounded-md border " +
     "bg-white dark:bg-dark-900 dark:text-dark-100 " +
@@ -20,10 +20,10 @@ const inputCls =
     "border-gray-200 dark:border-dark-800 hover:border-gray-300 dark:hover:border-dark-700 " +
     "focus:ring-primary-500/20 focus:border-primary-500";
 
+const inputMicCls = inputCls.replace("pr-4", "pr-9");
+
 const labelCls = "block text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-dark-400";
 const iconCls  = "absolute inset-y-0 left-3 flex items-center pointer-events-none text-gray-400 dark:text-dark-500";
-
-// ── Field sub-component ───────────────────────────────────────────────────────
 
 interface FieldProps {
     label: string;
@@ -40,7 +40,7 @@ const FormField: React.FC<FieldProps> = ({label, icon, children}) => (
     </div>
 );
 
-// ── Modal ─────────────────────────────────────────────────────────────────────
+type TextField = "company" | "role" | "description";
 
 const ExperienceModal: React.FC<Props> = ({userId, onClose, onSaved, experienceToEdit}) => {
     const [company, setCompany] = useState("");
@@ -50,6 +50,9 @@ const ExperienceModal: React.FC<Props> = ({userId, onClose, onSaved, experienceT
     const [endDate, setEndDate] = useState("");
     const [currentlyWorking, setCurrentlyWorking] = useState(false);
     const [loading, setLoading] = useState(false);
+
+    const { supported, listening, transcript, startListening, stopListening, resetTranscript } = useSpeechFill();
+    const [activeField, setActiveField] = useState<TextField | null>(null);
 
     useEffect(() => {
         if (experienceToEdit) {
@@ -61,6 +64,42 @@ const ExperienceModal: React.FC<Props> = ({userId, onClose, onSaved, experienceT
             setCurrentlyWorking(experienceToEdit.currentlyWorking);
         }
     }, [experienceToEdit]);
+
+    // When recognition stops, write transcript into the active field
+    useEffect(() => {
+        if (!listening && activeField && transcript) {
+            if (activeField === "company") setCompany(transcript);
+            else if (activeField === "role") setRole(transcript);
+            else if (activeField === "description") setDescription(transcript);
+            setActiveField(null);
+            resetTranscript();
+        }
+    }, [listening]);
+
+    const handleMic = (field: TextField) => {
+        if (listening && activeField === field) {
+            stopListening();
+        } else {
+            setActiveField(field);
+            startListening();
+        }
+    };
+
+    const MicBtn: React.FC<{field: TextField}> = ({field}) => {
+        if (!supported) return null;
+        const active = listening && activeField === field;
+        return (
+            <button
+                type="button"
+                onClick={() => handleMic(field)}
+                title={active ? "Stop listening" : "Speak to fill"}
+                className={`absolute inset-y-0 right-2 flex items-center transition-colors
+                    ${active ? "text-red-500 animate-pulse" : "text-gray-400 hover:text-primary-500"}`}
+            >
+                {active ? <MicOff size={14}/> : <Mic size={14}/>}
+            </button>
+        );
+    };
 
     const handleSave = async () => {
         if (!company || !role || !startDate) {
@@ -116,9 +155,10 @@ const ExperienceModal: React.FC<Props> = ({userId, onClose, onSaved, experienceT
                             value={company}
                             onChange={(e) => setCompany(e.target.value)}
                             placeholder="e.g. Acme Corp"
-                            className={inputCls}
+                            className={supported ? inputMicCls : inputCls}
                             disabled={loading}
                         />
+                        <MicBtn field="company"/>
                     </FormField>
 
                     <FormField label="Role" icon={<Briefcase size={14}/>}>
@@ -127,9 +167,10 @@ const ExperienceModal: React.FC<Props> = ({userId, onClose, onSaved, experienceT
                             value={role}
                             onChange={(e) => setRole(e.target.value)}
                             placeholder="e.g. Software Engineer"
-                            className={inputCls}
+                            className={supported ? inputMicCls : inputCls}
                             disabled={loading}
                         />
+                        <MicBtn field="role"/>
                     </FormField>
 
                     <div className="grid grid-cols-2 gap-4">
@@ -186,9 +227,10 @@ const ExperienceModal: React.FC<Props> = ({userId, onClose, onSaved, experienceT
                                 onChange={(e) => setDescription(e.target.value)}
                                 rows={4}
                                 placeholder="Describe your responsibilities and achievements..."
-                                className={`${inputCls} resize-none pt-2.5`}
+                                className={`${supported ? inputMicCls : inputCls} resize-none pt-2.5`}
                                 disabled={loading}
                             />
+                            <MicBtn field="description"/>
                         </div>
                     </div>
                 </div>

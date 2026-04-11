@@ -42,18 +42,18 @@ const Footer: React.FC = () => {
                     {/* Brand col */}
                     <div style={{ gridColumn: "span 1" }}>
                         <Link to="/" style={{ display: "flex", alignItems: "center", gap: "0.65rem", textDecoration: "none", marginBottom: "1rem" }}>
-                            <div style={{
-                                width: 32, height: 32, borderRadius: 8, flexShrink: 0,
-                                background: `linear-gradient(135deg, ${theme.accent}, ${theme.accentDark})`,
-                                display: "flex", alignItems: "center", justifyContent: "center",
-                            }}>
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round">
-                                    <rect x="4" y="3" width="16" height="18" rx="2" />
-                                    <line x1="8" y1="8" x2="16" y2="8" />
-                                    <line x1="8" y1="12" x2="13" y2="12" />
-                                    <line x1="8" y1="16" x2="11" y2="16" />
-                                </svg>
-                            </div>
+                            {/*<div style={{*/}
+                            {/*    width: 32, height: 32, borderRadius: 8, flexShrink: 0,*/}
+                            {/*    background: `linear-gradient(135deg, ${theme.accent}, ${theme.accentDark})`,*/}
+                            {/*    display: "flex", alignItems: "center", justifyContent: "center",*/}
+                            {/*}}>*/}
+                            {/*    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round">*/}
+                            {/*        <rect x="4" y="3" width="16" height="18" rx="2" />*/}
+                            {/*        <line x1="8" y1="8" x2="16" y2="8" />*/}
+                            {/*        <line x1="8" y1="12" x2="13" y2="12" />*/}
+                            {/*        <line x1="8" y1="16" x2="11" y2="16" />*/}
+                            {/*    </svg>*/}
+                            {/*</div>*/}
                             <span className="rc-serif" style={{ fontSize: "1.25rem", fontWeight: 600, color: theme.text, letterSpacing: "0.04em" }}>
                                 ResuCraft
                             </span>
