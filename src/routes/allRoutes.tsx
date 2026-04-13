@@ -4,7 +4,6 @@ import Clipboards from "@pages/form/clipboard";
 import FileInput from "@pages/form/file-input";
 import InputGroup from "@pages/form/input-group";
 import InputSpin from "@pages/form/input-spin";
-import Pickers from "@pages/form/pickers";
 import Range from "@pages/form/range";
 import Recaptcha from "@pages/form/recaptcha";
 import SelectPage from "@pages/form/select";
@@ -73,7 +72,6 @@ const routes: IRoute[] = [
         {path: "/form/input-group", component: <InputGroup/>},
         {path: "/form/file-input", component: <FileInput/>},
         {path: "/form/select", component: <SelectPage/>},
-        {path: "/form/pickers", component: <Pickers/>},
         {path: "/form/range", component: <Range/>},
         {path: "/form/switches", component: <Switches/>},
         {path: "/form/checkbox-radio", component: <CheckboxRadio/>},

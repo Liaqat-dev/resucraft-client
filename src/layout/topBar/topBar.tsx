@@ -1,6 +1,6 @@
 import {BellRing, Moon, Search, Settings, Sun,} from "lucide-react";
 import {Link} from "react-router-dom";
-import React, {ChangeEvent, useEffect, useRef, useState} from "react";
+import React, {ChangeEvent, useEffect, useState} from "react";
 import logo from "@assets/images/main-logo.png";
 import logoWhite from "@assets/images/logo-white.png";
 import ToolsAppsModal from "@src/components/layout/toolsAppsModal.tsx";
@@ -34,15 +34,6 @@ const TopBar: React.FC<TopBarProps> = ({
     const dispatch = useDispatch<AppDispatch>();
     const [scrolled, setScrolled] = useState(false);
     const [open, setOpen] = useState(false);
-    const flatpickrRef = useRef<any>(null);
-    const [isOpen] = useState(false);
-
-    useEffect(() => {
-        // Automatically open the calendar when the dropdown is shown
-        if (isOpen && flatpickrRef.current) {
-            flatpickrRef.current.flatpickr.open();
-        }
-    }, [isOpen]);
     useEffect(() => {
         const handleScroll = () => {
             if (window.scrollY > 50) {

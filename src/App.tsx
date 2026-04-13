@@ -1,4 +1,3 @@
-import "flatpickr/dist/flatpickr.css";
 import "simplebar-react/dist/simplebar.min.css";
 import "@assets/css/tailwind.css";
 import "@assets/css/icons.css";
