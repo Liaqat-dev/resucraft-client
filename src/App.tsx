@@ -19,6 +19,7 @@ import {
     changeSidebarColor,
     changeSidebarSize,
 } from "./slices/thunk";
+import { initializeAuth } from "@slices/auth/thunk.ts";
 
 import Routing from "./routes";
 import {initialState} from "./slices/layout/reducer";
@@ -30,6 +31,11 @@ function App() {
         return () => {
             htmlElement.classList.remove("scroll-smooth", "group");
         };
+    }, []);
+
+    useEffect(() => {
+        const dispatch = store.dispatch as AppDispatch;
+        dispatch(initializeAuth());
     }, []);
 
     useEffect(() => {
