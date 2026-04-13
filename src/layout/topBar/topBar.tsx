@@ -190,7 +190,7 @@ const TopBar: React.FC<TopBarProps> = ({
                                                     <div className="grow">
                                                         <p className="mb-0.5 text-sm">
                                                             <span className="font-medium">Donna Berlin</span>{" "}
-                                                            wants to edit Domiex Admin & dashboards
+                                                            wants to edit ResuCraft Admin & dashboards
                                                         </p>
                                                         <p className="text-xs text-gray-500 dark:text-dark-500">
                                                             5 min ago

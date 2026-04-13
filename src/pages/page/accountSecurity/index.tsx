@@ -28,7 +28,7 @@ const AccountSecurity: NextPageWithLayout = () => {
 
   useEffect(() => {
     document.title =
-      "Account Security | Domiex - React TS Admin & Dashboard Template";
+      "Account Security | ResuCraft";
   }, []);
 
   return (

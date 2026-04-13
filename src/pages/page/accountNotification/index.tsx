@@ -15,7 +15,7 @@ import { Link } from "react-router-dom";
 const AccountNotification: NextPageWithLayout = () => {
   useEffect(() => {
     document.title =
-      "Account Notification | Domiex - React TS Admin & Dashboard Template";
+      "Account Notification | ResuCraft";
   }, []);
 
   return (

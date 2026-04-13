@@ -5,7 +5,7 @@ import BreadCrumb from "@src/components/common/breadCrumb";
 
 const Clipboards: NextPageWithLayout = () => {
   useEffect(() => {
-    document.title = "Clipboard | Domiex - React TS Admin & Dashboard Template";
+    document.title = "Clipboard | ResuCraft";
   }, []);
 
   const inputRef = useRef<any>(null);

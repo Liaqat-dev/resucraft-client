@@ -13,7 +13,7 @@ import React, { useEffect } from "react";
 
 const Switches: NextPageWithLayout = () => {
   useEffect(() => {
-    document.title = "Switches | Domiex - React TS Admin & Dashboard Template";
+    document.title = "Switches | ResuCraft";
   }, []);
 
   return (

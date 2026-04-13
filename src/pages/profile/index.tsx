@@ -7,7 +7,7 @@ import {Award, Briefcase, Eye, GraduationCap, Lightbulb, Monitor, User} from "lu
 const Profile: NextPageWithLayout = () => {
     useEffect(() => {
         document.title =
-            "User Overview | Domiex - React TS Admin & Dashboard Template";
+            "User Overview | ResuCraft";
     }, []);
 
     return (

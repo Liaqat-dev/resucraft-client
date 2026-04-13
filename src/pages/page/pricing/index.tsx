@@ -22,7 +22,7 @@ interface PlanCardProps {
 
 const PlanCard: React.FC<PlanCardProps> = ({ plan }) => {
   useEffect(() => {
-    document.title = "Pricing | Domiex - React TS Admin & Dashboard Template";
+    document.title = "Pricing | ResuCraft";
   }, []);
 
   const IconComponent = Icons[

@@ -45,7 +45,7 @@ const WizardBasic: NextPageWithLayout = () => {
 
   useEffect(() => {
     document.title =
-      "Wizard Basic | Domiex - React TS Admin & Dashboard Template";
+      "Wizard Basic | ResuCraft";
   }, []);
 
   const checkPasswordStrength = () => {

@@ -7,7 +7,7 @@ import { Link } from "react-router-dom";
 const PrivacyPolicy: NextPageWithLayout = () => {
   useEffect(() => {
     document.title =
-      "Privacy Policy | Domiex - React TS Admin & Dashboard Template";
+      "Privacy Policy | ResuCraft";
   }, []);
 
   return (
@@ -19,7 +19,7 @@ const PrivacyPolicy: NextPageWithLayout = () => {
           <div className="card">
             <div className="card-body">
               <div className="text-center mb-7">
-                <h5 className="mb-1">Domiex - Admin & Dashboard Templates</h5>
+                <h5 className="mb-1">ResuCrafts</h5>
                 <p className="text-gray-500 dark:text-dark-500">
                   Effective Date: 26 April, 2024
                 </p>

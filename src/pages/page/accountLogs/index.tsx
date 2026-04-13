@@ -64,7 +64,7 @@ const DeviceCard: React.FC<Device> = ({ icon, name, status, location, ip }) => {
 
   useEffect(() => {
     document.title =
-      "Account Logs | Domiex - React TS Admin & Dashboard Template";
+      "Account Logs | ResuCraft";
   }, []);
 
   const toggleDropdown = () => setIsOpen(!isOpen);

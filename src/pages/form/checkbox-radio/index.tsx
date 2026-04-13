@@ -7,7 +7,7 @@ import { Link } from "react-router-dom";
 const CheckboxRadio: NextPageWithLayout = () => {
   useEffect(() => {
     document.title =
-      "Checkbox & Radio | Domiex - React TS Admin & Dashboard Template";
+      "Checkbox & Radio | ResuCraft";
   }, []);
 
   return (

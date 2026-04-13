@@ -5,7 +5,7 @@ import Flatpickr from "react-flatpickr";
 
 const Pickers: NextPageWithLayout = () => {
   useEffect(() => {
-    document.title = "Pickers | Domiex - React TS Admin & Dashboard Template";
+    document.title = "Pickers | ResuCraft";
   }, []);
 
   return (

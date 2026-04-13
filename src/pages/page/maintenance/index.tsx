@@ -10,7 +10,7 @@ const Maintenance: NextPageWithLayout = () => {
 
   useEffect(() => {
     document.title =
-      "Maintenance | Domiex - React TS Admin & Dashboard Template";
+      "Maintenance | ResuCraft";
   }, []);
 
   useEffect(() => {

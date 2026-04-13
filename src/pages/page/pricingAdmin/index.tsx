@@ -44,7 +44,7 @@ const PricingAdmin: NextPageWithLayout = () => {
   const itemsPerPage = 7;
 
   useEffect(() => {
-    document.title = "Pricing | Domiex - React TS Admin & Dashboard Template";
+    document.title = "Pricing | ResuCraft";
   }, []);
 
   const handlePageChange = (page: number) => {

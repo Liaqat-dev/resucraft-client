@@ -20,7 +20,7 @@ const CountdownTimer: React.FC<{ deadline: Date }> = ({ deadline }) => {
 
   useEffect(() => {
     document.title =
-      "Coming Soon | Domiex - React TS Admin & Dashboard Template";
+      "Coming Soon | ResuCraft";
   }, []);
 
   useEffect(() => {

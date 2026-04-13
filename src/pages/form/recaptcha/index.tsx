@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 
 const Recaptcha: NextPageWithLayout = () => {
   useEffect(() => {
-    document.title = "reCAPTCHA | Domiex - React TS Admin & Dashboard Template";
+    document.title = "reCAPTCHA | ResuCraft";
   }, []);
 
   const [formData, setFormData] = useState({

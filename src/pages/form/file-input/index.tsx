@@ -9,7 +9,7 @@ const FileInput: NextPageWithLayout = () => {
 
   useEffect(() => {
     document.title =
-      "File Input | Domiex - React TS Admin & Dashboard Template";
+      "File Input | ResuCraft";
   }, []);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {

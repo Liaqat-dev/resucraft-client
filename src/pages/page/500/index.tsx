@@ -9,7 +9,7 @@ const FiveZeroZero: NextPageWithLayout = () => {
   const tiltRef = useRef(null);
 
   useEffect(() => {
-    document.title = "500 | Domiex - React TS Admin & Dashboard Template";
+    document.title = "500 | ResuCraft";
   }, []);
 
   useEffect(() => {
@@ -39,7 +39,7 @@ const FiveZeroZero: NextPageWithLayout = () => {
                 Oops! Internal Server Error
               </h1>
               <p className="max-w-2xl mx-auto my-5 text-gray-500 dark:text-dark-500 text-16">
-                Our servers may have been abducted by Domiex... Please give us a
+                Our servers may have been abducted by ResuCraft... Please give us a
                 moment while we search for them.
               </p>
               <Link to="/dashboards/ecommerce" className="btn btn-primary">

@@ -41,7 +41,7 @@ const AccountBillingPlan: NextPageWithLayout = () => {
 
   useEffect(() => {
     document.title =
-      "Account Billing & Plan | Domiex - React TS Admin & Dashboard Template";
+      "Account Billing & Plan | ResuCraft";
   }, []);
 
   const cards = [

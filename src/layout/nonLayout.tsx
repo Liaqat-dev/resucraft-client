@@ -7,8 +7,8 @@ interface NonLayoutProps {
 
 const NonLayout = ({children, breadcrumbTitle}: NonLayoutProps) => {
     const title = breadcrumbTitle
-        ? ` ${breadcrumbTitle} | Domiex - React TS Admin & Dashboard Template `
-        : "Domiex - Admin & Dashboard Template";
+        ? ` ${breadcrumbTitle} | ResuCraft `
+        : "ResuCraft";
 
 
     return (

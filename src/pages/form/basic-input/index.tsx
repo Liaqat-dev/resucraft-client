@@ -12,7 +12,7 @@ const BasicInput: NextPageWithLayout = () => {
 
   useEffect(() => {
     document.title =
-      "Basic Input | Domiex - React TS Admin & Dashboard Template";
+      "Basic Input | ResuCraft";
   }, []);
 
   return (

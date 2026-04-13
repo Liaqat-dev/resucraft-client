@@ -152,7 +152,7 @@ const InputSpin: NextPageWithLayout = () => {
 
   useEffect(() => {
     document.title =
-      "Input Spin | Domiex - React TS Admin & Dashboard Template";
+      "Input Spin | ResuCraft";
   }, []);
 
   return (

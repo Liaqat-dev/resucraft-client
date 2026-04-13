@@ -32,7 +32,7 @@ const AccountSettings: NextPageWithLayout = () => {
 
   useEffect(() => {
     document.title =
-      "Account Settings | Domiex - React TS Admin & Dashboard Template";
+      "Account Settings | ResuCraft";
   }, []);
 
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {

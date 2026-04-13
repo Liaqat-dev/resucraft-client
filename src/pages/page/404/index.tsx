@@ -4,7 +4,7 @@ import React, { useEffect } from "react";
 
 const PageNotFoundError: NextPageWithLayout = () => {
   useEffect(() => {
-    document.title = "404 | Domiex - React TS Admin & Dashboard Template";
+    document.title = "404 | ResuCraft";
   }, []);
 
   return (

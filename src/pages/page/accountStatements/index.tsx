@@ -57,7 +57,7 @@ const AccountStatements: NextPageWithLayout = () => {
 
   useEffect(() => {
     document.title =
-      "Account Statements | Domiex - React TS Admin & Dashboard Template";
+      "Account Statements | ResuCraft";
   }, []);
 
   // Table

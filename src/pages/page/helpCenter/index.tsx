@@ -6,7 +6,7 @@ import React, { useEffect } from "react";
 const HelpCenter: NextPageWithLayout = () => {
   useEffect(() => {
     document.title =
-      "Help Center | Domiex - React TS Admin & Dashboard Template";
+      "Help Center | ResuCraft";
   }, []);
 
   return (

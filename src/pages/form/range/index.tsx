@@ -8,7 +8,7 @@ import DynamicBounds from "./Daynamic";
 const Range: NextPageWithLayout = () => {
   useEffect(() => {
     document.title =
-      "Range Slider | Domiex - React TS Admin & Dashboard Template";
+      "Range Slider | ResuCraft";
   }, []);
 
   const marks = {

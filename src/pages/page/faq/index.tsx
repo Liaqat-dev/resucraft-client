@@ -10,7 +10,7 @@ const Faq: NextPageWithLayout = () => {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   useEffect(() => {
-    document.title = "FAQ | Domiex - React TS Admin & Dashboard Template";
+    document.title = "FAQ | ResuCraft";
   }, []);
 
   const handleToggle = (index: number) => {
@@ -115,7 +115,7 @@ const Faq: NextPageWithLayout = () => {
         <div className="col-span-12">
           <div className="card">
             <div className="card-header">
-              <h6>Video Tutorial by Domiex</h6>
+              <h6>Video Tutorial by ResuCraft</h6>
             </div>
             <div className="card-body">
               <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">

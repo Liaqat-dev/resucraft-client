@@ -2,7 +2,7 @@ import axios, { AxiosError, InternalAxiosRequestConfig } from "axios";
 import store from "../slices/store.ts";
 import { logout, setRefreshAccessToken } from '@src/slices/auth/reducer.ts';
 
-const BASE_URL = `${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api`;
+const BASE_URL = import.meta.env.VITE_REACT_APP_BACKEND_BASE_URL;
 
 // Create Axios instance
 const api = axios.create({

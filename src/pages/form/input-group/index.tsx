@@ -7,7 +7,7 @@ import BreadCrumb from "@src/components/common/breadCrumb";
 const InputGroup: NextPageWithLayout = () => {
   useEffect(() => {
     document.title =
-      "Input Group | Domiex - React TS Admin & Dashboard Template";
+      "Input Group | ResuCraft";
   }, []);
 
   return (
