@@ -19,7 +19,7 @@ import {
     changeSidebarColor,
     changeSidebarSize,
 } from "./slices/thunk";
-import { initializeAuth } from "@slices/auth/thunk.ts";
+import { initializeAuth } from "@src/slices/auth/thunk.ts";
 
 import Routing from "./routes";
 import {initialState} from "./slices/layout/reducer";
