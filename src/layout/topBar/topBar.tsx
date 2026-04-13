@@ -13,7 +13,7 @@ import user11 from "@assets/images/avatar/user-11.png";
 import user18 from "@assets/images/avatar/user-18.png";
 import SimpleBar from "simplebar-react";
 import SettingsModal from "@src/components/layout/settingsModal.tsx";
-import {LAYOUT_MODE_TYPES, SIDEBAR_COLOR,} from "@constants/layout.tsx";
+import {LAYOUT_MODE_TYPES, SIDEBAR_COLOR,} from "@constants/layout";
 import {changeSettingModalOpen} from "@src/slices/layout/reducer.ts";
 
 import Profile from "@layout/topBar/profile.tsx";
