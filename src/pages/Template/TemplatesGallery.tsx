@@ -9,7 +9,7 @@ import DeleteToast from '@src/components/custom/toast/deleteToast';
 import {useAuth} from "@hooks/useAuth.ts";
 
 const CATEGORIES = ['All', 'Modern', 'Classic', 'Creative', 'Minimal', 'Professional', 'Other'];
-const RECENTS_LIMIT = 6;
+const RECENTS_LIMIT = 4;
 
 /* ── Section header ─────────────────────────────────────────────── */
 const SectionHeader = ({
@@ -320,17 +320,14 @@ const TemplatesGallery = () => {
                                             title="Recents"
                                             count={recents.length}
                                         />
-                                        {/* Horizontal scroll row */}
-                                        <div
-                                            className="flex gap-4 overflow-x-auto pb-2"
-                                            style={{ scrollbarWidth: 'none' }}
-                                        >
+                                        <Grid>
+                                            {/* Blank card always first */}
                                             {recents.map(t => (
-                                                <div key={t._id} className="w-44 shrink-0">
-                                                    <TemplateCard template={t} onDelete={handleDelete} isOwn />
-                                                </div>
-                                            ))}
-                                        </div>
+                                                    <div key={t._id} className=" shrink-0 "  >
+                                                        <TemplateCard template={t} onDelete={handleDelete} isOwn />
+                                                    </div>
+                                                ))}
+                                        </Grid>
                                     </section>
                                 )}
 

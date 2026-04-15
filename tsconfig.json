@@ -23,6 +23,7 @@
       "@src/*": ["./src/*"],
       "@assets/*": ["./src/assets/*"],
       "@data/*": ["./src/data/*"],
+      "@services/*": ["./src/services/*"],
       "@views/*": ["./src/views/*"],
       "@pages/*": ["./src/pages/*"],
       "@common/*": ["src/components/common/*"],

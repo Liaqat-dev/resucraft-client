@@ -11,7 +11,7 @@ export function useTemplateActions({
 
     const exportToPDF = async () => {
         try {
-            const response = await fetch('http://localhost:5000/api/pdf/generate-pdf', {
+            const response = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASE_URL}/pdf/generate-pdf`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({

@@ -77,7 +77,7 @@ const TemplateCard = ({ template, onDelete, isOwn = true }: TemplateCardProps) =
     const { canvasSettings = {} } = data || {};
 
     const A4_W = 210, A4_H = 297;
-    const PREVIEW_W = 320;
+    const PREVIEW_W = 230;
     const PREVIEW_H = PREVIEW_W * (A4_H / A4_W);
 
     const canvasW = canvasSettings?.width

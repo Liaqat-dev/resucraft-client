@@ -18,17 +18,16 @@ export default defineConfig({
       "@common": path.resolve(__dirname, "./src/components/CommonComponents"),
       "@constants": path.resolve(__dirname, "./src/components/constants"),
       "@custom": path.resolve(__dirname, "./src/components/custom"),
+      "@services": path.resolve(__dirname, "./src/services"),
       "@layoutComponent": path.resolve(
         __dirname,
         "./src/components/LayoutComponent",
       ),
       "@dtos": path.resolve(__dirname, "./src/dtos"),
-      "@apidata": path.resolve(__dirname, "./src/apidata"),
       "@routing": path.resolve(__dirname, "./src/routes"),
       "@layout": path.resolve(__dirname, "./src/layout"),
       "@nonLayout": path.resolve(__dirname, "./src/layout"),
       "@api": path.resolve(__dirname, "./src/api"),
-      // '@fullcalendar/resource-timeline': '/node_modules/@fullcalendar/resource-timeline',
     },
   },
   server: {
