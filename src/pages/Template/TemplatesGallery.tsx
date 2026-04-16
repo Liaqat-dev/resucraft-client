@@ -1,8 +1,8 @@
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import {useEffect, useState} from 'react';
+import {useNavigate} from 'react-router-dom';
 import TemplateCard from './TemplateCard.js';
-import {  RefreshCw, Search, X, ChevronRight, Clock, LayoutTemplate, Globe } from 'lucide-react';
-import { templateService } from '@src/services/template.service';
+import {ChevronRight, Clock, Globe, LayoutTemplate, RefreshCw, Search, X} from 'lucide-react';
+import {templateService} from '@src/services/template.service';
 import DeleteToast from '@src/components/custom/toast/deleteToast';
 import {useAuth} from "@hooks/useAuth.ts";
 import {BlankCard} from "@pages/Template/BlankCard.tsx";
@@ -12,11 +12,11 @@ const RECENTS_LIMIT = 4;
 
 /* ── Section header ─────────────────────────────────────────────── */
 const SectionHeader = ({
-    icon,
-    title,
-    count,
-    action,
-}: {
+                           icon,
+                           title,
+                           count,
+                           action,
+                       }: {
     icon: React.ReactNode;
     title: string;
     count?: number;
@@ -31,7 +31,8 @@ const SectionHeader = ({
                 {title}
             </h2>
             {count !== undefined && (
-                <span className="text-[11px] font-semibold text-gray-400 dark:text-dark-500 bg-gray-100 dark:bg-dark-800 px-1.5 py-0.5 rounded-full">
+                <span
+                    className="text-[11px] font-semibold text-gray-400 dark:text-dark-500 bg-gray-100 dark:bg-dark-800 px-1.5 py-0.5 rounded-full">
                     {count}
                 </span>
             )}
@@ -42,35 +43,38 @@ const SectionHeader = ({
                 className="inline-flex items-center gap-1 text-[12px] font-semibold text-primary-500 hover:text-primary-600 transition-colors"
             >
                 {action.label}
-                <ChevronRight className="size-3.5" />
+                <ChevronRight className="size-3.5"/>
             </button>
         )}
     </div>
 );
 
 
-
 /* ── Main component ─────────────────────────────────────────────── */
 const TemplatesGallery = () => {
     const navigate = useNavigate();
-    const {user,isAuthenticated }=useAuth();
+    const {user, isAuthenticated} = useAuth();
 
-    const [myTemplates, setMyTemplates]          = useState<any[]>([]);
+    const [myTemplates, setMyTemplates] = useState<any[]>([]);
     const [communityTemplates, setCommunityTemplates] = useState<any[]>([]);
-    const [loadingMine, setLoadingMine]          = useState(true);
-    const [loadingAll, setLoadingAll]            = useState(true);
-    const [error, setError]                      = useState<string | null>(null);
-    const [search, setSearch]                    = useState('');
-    const [activeCategory, setActiveCategory]    = useState('All');
+    const [loadingMine, setLoadingMine] = useState(true);
+    const [loadingAll, setLoadingAll] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+    const [myTemplateError, setMyTemplateError] = useState<string | null>(null);
+    const [search, setSearch] = useState('');
+    const [activeCategory, setActiveCategory] = useState('All');
 
-    useEffect(() => { fetchAll(); }, []);
+    useEffect(() => {
+        fetchAll();
+    }, []);
+    useEffect(() => {
+        setMyTemplateError(null);
+        fetchMine()
+    }, [isAuthenticated]);
 
-    const fetchAll = async () => {
-        setError(null);
-
-        /* my templates */
+    const fetchMine = async () => {
         setLoadingMine(true);
-        if(isAuthenticated){
+        if (isAuthenticated) {
             try {
                 const data = await templateService.list();
                 setMyTemplates(data.templates || []);
@@ -80,6 +84,10 @@ const TemplatesGallery = () => {
                 setLoadingMine(false);
             }
         }
+    }
+
+    const fetchAll = async () => {
+        setError(null);
 
         /* all templates → filter out current user's */
         setLoadingAll(true);
@@ -119,7 +127,7 @@ const TemplatesGallery = () => {
             return matchCat && matchSearch;
         });
 
-    const filteredMine      = applyFilter(myTemplates);
+    const filteredMine = applyFilter(myTemplates);
     const filteredCommunity = applyFilter(communityTemplates);
 
     const countFor = (cat: string) => {
@@ -130,7 +138,7 @@ const TemplatesGallery = () => {
     const loading = loadingMine && loadingAll;
 
     /* ── Grid helper ── */
-    const Grid = ({ children }: { children: React.ReactNode }) => (
+    const Grid = ({children}: { children: React.ReactNode }) => (
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-5">
             {children}
         </div>
@@ -142,7 +150,8 @@ const TemplatesGallery = () => {
 
                 {/* ── Search bar ── */}
                 <div className="relative mb-5">
-                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 size-[18px] text-gray-400 pointer-events-none" />
+                    <Search
+                        className="absolute left-4 top-1/2 -translate-y-1/2 size-[18px] text-gray-400 pointer-events-none"/>
                     <input
                         type="text"
                         value={search}
@@ -155,13 +164,13 @@ const TemplatesGallery = () => {
                             onClick={() => setSearch('')}
                             className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-700 transition-colors"
                         >
-                            <X className="size-4" />
+                            <X className="size-4"/>
                         </button>
                     )}
                 </div>
 
                 {/* ── Category tabs ── */}
-                <div className="flex items-center gap-2 overflow-x-auto pb-2 mb-8" style={{ scrollbarWidth: 'none' }}>
+                <div className="flex items-center gap-2 overflow-x-auto pb-2 mb-8" style={{scrollbarWidth: 'none'}}>
                     {CATEGORIES.map(cat => {
                         const count = countFor(cat);
                         if (count === 0 && cat !== 'All') return null;
@@ -189,8 +198,9 @@ const TemplatesGallery = () => {
                 {loading && (
                     <div className="flex flex-col items-center justify-center py-36 gap-4">
                         <div className="relative size-10">
-                            <div className="size-10 rounded-full border-[3px] border-gray-100 dark:border-dark-700" />
-                            <div className="absolute inset-0 size-10 rounded-full border-[3px] border-transparent border-t-primary-500 animate-spin" />
+                            <div className="size-10 rounded-full border-[3px] border-gray-100 dark:border-dark-700"/>
+                            <div
+                                className="absolute inset-0 size-10 rounded-full border-[3px] border-transparent border-t-primary-500 animate-spin"/>
                         </div>
                         <p className="text-[13px] text-gray-400 dark:text-dark-500">Loading templates…</p>
                     </div>
@@ -199,17 +209,21 @@ const TemplatesGallery = () => {
                 {/* ── Error ── */}
                 {error && !loading && (
                     <div className="flex flex-col items-center py-24 text-center gap-4">
-                        <div className="size-14 rounded-2xl bg-red-50 dark:bg-red-500/10 flex items-center justify-center">
-                            <svg className="size-6 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m0 3.75h.008M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
+                        <div
+                            className="size-14 rounded-2xl bg-red-50 dark:bg-red-500/10 flex items-center justify-center">
+                            <svg className="size-6 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                                 strokeWidth={1.5}>
+                                <path strokeLinecap="round" strokeLinejoin="round"
+                                      d="M12 9v3.75m0 3.75h.008M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
                             </svg>
                         </div>
                         <div>
                             <p className="font-bold text-gray-900 dark:text-dark-100">Failed to load templates</p>
                             <p className="text-sm text-gray-400 mt-0.5">{error}</p>
                         </div>
-                        <button onClick={fetchAll} className="inline-flex items-center gap-1.5 px-5 py-2 bg-red-500 hover:bg-red-600 text-white text-sm font-semibold rounded-xl transition-colors">
-                            <RefreshCw className="size-3.5" />
+                        <button onClick={fetchAll}
+                                className="inline-flex items-center gap-1.5 px-5 py-2 bg-red-500 hover:bg-red-600 text-white text-sm font-semibold rounded-xl transition-colors">
+                            <RefreshCw className="size-3.5"/>
                             Retry
                         </button>
                     </div>
@@ -222,15 +236,20 @@ const TemplatesGallery = () => {
                             <div>
                                 {filteredMine.length === 0 && filteredCommunity.length === 0 ? (
                                     <div className="flex flex-col items-center justify-center py-28 text-center">
-                                        <div className="size-14 rounded-full bg-gray-100 dark:bg-dark-800 flex items-center justify-center mb-4">
-                                            <Search className="size-5 text-gray-400" />
+                                        <div
+                                            className="size-14 rounded-full bg-gray-100 dark:bg-dark-800 flex items-center justify-center mb-4">
+                                            <Search className="size-5 text-gray-400"/>
                                         </div>
-                                        <p className="font-bold text-gray-800 dark:text-dark-200 mb-1">No matches found</p>
+                                        <p className="font-bold text-gray-800 dark:text-dark-200 mb-1">No matches
+                                            found</p>
                                         <p className="text-[13px] text-gray-400 dark:text-dark-500 mb-4">
                                             {search ? `Nothing matches "${search}"` : `No templates in "${activeCategory}"`}
                                         </p>
                                         <button
-                                            onClick={() => { setSearch(''); setActiveCategory('All'); }}
+                                            onClick={() => {
+                                                setSearch('');
+                                                setActiveCategory('All');
+                                            }}
                                             className="text-sm font-semibold text-primary-500 hover:text-primary-600 transition-colors"
                                         >
                                             Clear filters
@@ -241,13 +260,15 @@ const TemplatesGallery = () => {
                                         {filteredMine.length > 0 && (
                                             <div>
                                                 <SectionHeader
-                                                    icon={<LayoutTemplate className="size-3.5 text-gray-500 dark:text-dark-400" />}
+                                                    icon={<LayoutTemplate
+                                                        className="size-3.5 text-gray-500 dark:text-dark-400"/>}
                                                     title="My Templates"
                                                     count={filteredMine.length}
                                                 />
                                                 <Grid>
                                                     {filteredMine.map(t => (
-                                                        <TemplateCard key={t._id} template={t} onDelete={handleDelete} isOwn />
+                                                        <TemplateCard key={t._id} template={t} onDelete={handleDelete}
+                                                                      isOwn/>
                                                     ))}
                                                 </Grid>
                                             </div>
@@ -255,13 +276,14 @@ const TemplatesGallery = () => {
                                         {filteredCommunity.length > 0 && (
                                             <div>
                                                 <SectionHeader
-                                                    icon={<Globe className="size-3.5 text-gray-500 dark:text-dark-400" />}
+                                                    icon={<Globe
+                                                        className="size-3.5 text-gray-500 dark:text-dark-400"/>}
                                                     title="Community Templates"
                                                     count={filteredCommunity.length}
                                                 />
                                                 <Grid>
                                                     {filteredCommunity.map(t => (
-                                                        <TemplateCard key={t._id} template={t} isOwn={false} />
+                                                        <TemplateCard key={t._id} template={t} isOwn={false}/>
                                                     ))}
                                                 </Grid>
                                             </div>
@@ -279,17 +301,17 @@ const TemplatesGallery = () => {
                                 {recents.length > 0 && (
                                     <section>
                                         <SectionHeader
-                                            icon={<Clock className="size-3.5 text-gray-500 dark:text-dark-400" />}
+                                            icon={<Clock className="size-3.5 text-gray-500 dark:text-dark-400"/>}
                                             title="Recents"
                                             count={recents.length}
                                         />
                                         <Grid>
                                             {/* Blank card always first */}
                                             {recents.map(t => (
-                                                    <div key={t._id} className=" shrink-0 "  >
-                                                        <TemplateCard template={t} onDelete={handleDelete} isOwn />
-                                                    </div>
-                                                ))}
+                                                <div key={t._id} className=" shrink-0 ">
+                                                    <TemplateCard template={t} onDelete={handleDelete} isOwn/>
+                                                </div>
+                                            ))}
                                         </Grid>
                                     </section>
                                 )}
@@ -297,17 +319,17 @@ const TemplatesGallery = () => {
                                 {/* 2. My Templates */}
                                 <section>
                                     <SectionHeader
-                                        icon={<LayoutTemplate className="size-3.5 text-gray-500 dark:text-dark-400" />}
+                                        icon={<LayoutTemplate className="size-3.5 text-gray-500 dark:text-dark-400"/>}
                                         title="My Templates"
                                         count={myTemplates.length}
-                                        action={{ label: 'Create new', onClick: () => navigate('/builder') }}
+                                        action={{label: 'Create new', onClick: () => navigate('/builder')}}
                                     />
                                     <Grid>
                                         {/* Blank card always first */}
-                                        <BlankCard onClick={() => navigate('/builder')} />
+                                        <BlankCard onClick={() => navigate('/builder')}/>
 
                                         {isAuthenticated && myTemplates.map(t => (
-                                            <TemplateCard key={t._id} template={t} onDelete={handleDelete} isOwn />
+                                            <TemplateCard key={t._id} template={t} onDelete={handleDelete} isOwn/>
                                         ))}
                                     </Grid>
 
@@ -322,20 +344,22 @@ const TemplatesGallery = () => {
                                 {(loadingAll || communityTemplates.length > 0) && (
                                     <section>
                                         <SectionHeader
-                                            icon={<Globe className="size-3.5 text-gray-500 dark:text-dark-400" />}
+                                            icon={<Globe className="size-3.5 text-gray-500 dark:text-dark-400"/>}
                                             title="All Templates"
                                             count={loadingAll ? undefined : communityTemplates.length}
                                         />
 
                                         {loadingAll ? (
-                                            <div className="flex items-center gap-3 py-8 text-gray-400 dark:text-dark-500">
-                                                <div className="size-5 rounded-full border-2 border-gray-200 border-t-primary-500 animate-spin" />
+                                            <div
+                                                className="flex items-center gap-3 py-8 text-gray-400 dark:text-dark-500">
+                                                <div
+                                                    className="size-5 rounded-full border-2 border-gray-200 border-t-primary-500 animate-spin"/>
                                                 <span className="text-[13px]">Loading community templates…</span>
                                             </div>
                                         ) : (
                                             <Grid>
                                                 {communityTemplates.map(t => (
-                                                    <TemplateCard key={t._id} template={t} isOwn={false} />
+                                                    <TemplateCard key={t._id} template={t} isOwn={false}/>
                                                 ))}
                                             </Grid>
                                         )}
