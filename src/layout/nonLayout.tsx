@@ -2,19 +2,12 @@ import React from "react";
 
 interface NonLayoutProps {
     children: React.ReactNode;
-    breadcrumbTitle?: string;
 }
 
-const NonLayout = ({children, breadcrumbTitle}: NonLayoutProps) => {
-    const title = breadcrumbTitle
-        ? ` ${breadcrumbTitle} | ResuCraft `
-        : "ResuCraft";
-
-
+const NonLayout = ({children,}: NonLayoutProps) => {
     return (
         <React.Fragment>
-            <title>{title}</title>
-
+            <title>{"ResuCraft"}</title>
             <main>{children}</main>
         </React.Fragment>
     );

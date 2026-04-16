@@ -7,7 +7,7 @@ import React, {
   useCallback,
   ReactNode,
 } from "react";
-import { LAYOUT_TYPES, SIDEBAR_SIZE } from "@constants/layout";
+import { LAYOUT_TYPES } from "@constants/layout";
 import { useSelector } from "react-redux";
 import { Link, useLocation } from "react-router-dom";
 import { RootState } from "@src/slices/store.ts";
@@ -58,8 +58,7 @@ const Dropdown: React.FC<DropdownProps> = ({
   const handleToggle = useCallback(() => {
     // if horizontall
     if (
-      layoutType === LAYOUT_TYPES.HORIZONTAL ||
-      layoutSidebar === SIDEBAR_SIZE.SMALL
+      layoutType === LAYOUT_TYPES.HORIZONTAL
     ) {
       if (!dropdownRef?.current?.closest(".dropdown-menu")) openDropdowns = [];
 
@@ -145,8 +144,7 @@ const Dropdown: React.FC<DropdownProps> = ({
   }, [handleClickOutsideSidebar]);
   useEffect(() => {
     if (
-      layoutType === LAYOUT_TYPES.HORIZONTAL ||
-      layoutSidebar === SIDEBAR_SIZE.SMALL
+      layoutType === LAYOUT_TYPES.HORIZONTAL
     ) {
       setIsOpen(false);
     }

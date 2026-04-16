@@ -11,13 +11,10 @@ import store, {AppDispatch} from "./slices/store.ts";
 import {
     changeDarkModeClass,
     changeDataColor,
-    changeDirection,
     changeLayout,
     changeLayoutContentWidth,
     changeLayoutMode,
     changeModernNavigation,
-    changeSidebarColor,
-    changeSidebarSize,
 } from "./slices/thunk";
 import { initializeAuth } from "@src/slices/auth/thunk.ts";
 
@@ -53,26 +50,8 @@ function App() {
             ),
         );
         dispatch(
-            changeSidebarSize(
-                getPreviousStorageData("data-sidebar-size") ??
-                initialState.layoutSidebar,
-            ),
-        );
-        dispatch(
-            changeDirection(
-                getPreviousStorageData("data-layout-direction") ??
-                initialState.layoutDirection,
-            ),
-        );
-        dispatch(
             changeLayout(
                 getPreviousStorageData("data-layout-type") ?? initialState.layoutType,
-            ),
-        );
-        dispatch(
-            changeSidebarColor(
-                getPreviousStorageData("data-sidebar-colors") ??
-                initialState.layoutSidebarColor,
             ),
         );
         dispatch(

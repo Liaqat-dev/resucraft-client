@@ -1,29 +1,22 @@
-import {BellRing, LayoutDashboard, Moon, Search, Settings, Sun,} from "lucide-react";
+import {LayoutDashboard, Moon, Settings, Sun,} from "lucide-react";
 import {Link} from "react-router-dom";
-import React, {ChangeEvent, useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import logo from "@assets/images/main-logo.png";
 import logoWhite from "@assets/images/logo-white.png";
 import ToolsAppsModal from "@src/components/layout/toolsAppsModal.tsx";
 import {useDispatch, useSelector} from "react-redux";
 import {AppDispatch, RootState} from "@src/slices/store.ts";
-import {changeLayoutMode, changeSidebarColor} from "@src/slices/thunk.ts";
+import {changeLayoutMode} from "@src/slices/thunk.ts";
 import SettingsModal from "@src/components/layout/settingsModal.tsx";
-import {LAYOUT_MODE_TYPES, SIDEBAR_COLOR,} from "@constants/layout";
+import {LAYOUT_MODE_TYPES,} from "@constants/layout";
 import {changeSettingModalOpen} from "@src/slices/layout/reducer.ts";
 
 import Profile from "@layout/topBar/profile.tsx";
 import {useAuth} from "@hooks/useAuth.ts";
 
-interface TopBarProps {
-    searchMenu: (value: string) => void;
-    searchText: string;
-    toggleSidebar: () => void;
-}
 
-const TopBar: React.FC<TopBarProps> = ({
-
-                                       }) => {
-    const {layoutMode, isSettingModalOpen, layoutSidebarColor} = useSelector(
+const TopBar: React.FC = () => {
+    const {layoutMode, isSettingModalOpen} = useSelector(
         (state: RootState) => state.Layout,
     );
     const {user} = useAuth();
@@ -128,9 +121,6 @@ const TopBar: React.FC<TopBarProps> = ({
                                             ? LAYOUT_MODE_TYPES.DARK
                                             : LAYOUT_MODE_TYPES.LIGHT,
                                     );
-                                    if (layoutSidebarColor === SIDEBAR_COLOR.DARK) {
-                                        dispatch(changeSidebarColor(SIDEBAR_COLOR.LIGHT));
-                                    }
                                 }}
                             >
                                 {layoutMode === LAYOUT_MODE_TYPES.LIGHT ||
@@ -141,125 +131,6 @@ const TopBar: React.FC<TopBarProps> = ({
                                     <Sun className={`size-4 `}/>
                                 )}
                             </button>
-
-
-                            {/* Notifications */}
-
-                  {/*          <Dropdown*/}
-                  {/*              position="right"*/}
-                  {/*              trigger="click"*/}
-                  {/*              dropdownClassName="dropdown"*/}
-                  {/*          >*/}
-                  {/*              <DropdownButton colorClass="topbar-link">*/}
-                  {/*<span className="relative">*/}
-                  {/*  <BellRing className="size-4"></BellRing>*/}
-                  {/*  <div*/}
-                  {/*      className="absolute top-0 -mt-1 bg-green-500 rounded-full ltr:-mr-1 rtl:-ml-1 ltr:right-0 rtl:left-0 size-2 animate-ping"></div>*/}
-                  {/*  <div*/}
-                  {/*      className="absolute top-0 -mt-1 bg-green-500 rounded-full ltr:-mr-1 rtl:-ml-1 ltr:right-0 rtl:left-0 size-2"></div>*/}
-                  {/*</span>*/}
-                  {/*              </DropdownButton>*/}
-                  {/*              <DropdownMenu menuclass="!w-96">*/}
-                  {/*                  <div className="flex items-center gap-3 p-4">*/}
-                  {/*                      <h6 className="grow">Notification (4)</h6>*/}
-                  {/*                      <Link*/}
-                  {/*                          to="#!"*/}
-                  {/*                          className="text-sm shrink-0 link link-primary"*/}
-                  {/*                      >*/}
-                  {/*                          Mark All as read*/}
-                  {/*                      </Link>*/}
-                  {/*                  </div>*/}
-                  {/*                  <div className="py-4 border-t border-gray-200 dark:border-dark-800">*/}
-                  {/*                      <SimpleBar>*/}
-                  {/*                          <div className="px-3">*/}
-                  {/*                              <Link*/}
-                  {/*                                  to="#!"*/}
-                  {/*                                  className="relative flex gap-3 p-2 transition duration-300 ease-linear rounded-md hover:bg-gray-100 [&.unread]:bg-gray-100 dark:[&.unread]:bg-dark-850 dark:hover:bg-dark-850 unread"*/}
-                  {/*                              >*/}
-                  {/*                                  <img*/}
-                  {/*                                      src={user10}*/}
-                  {/*                                      alt="user10Img"*/}
-                  {/*                                      className="rounded-full size-7 shrink-0"*/}
-                  {/*                                  />*/}
-                  {/*                                  <div className="grow">*/}
-                  {/*                                      <p className="mb-0.5 text-sm">*/}
-                  {/*                                          <span className="font-medium">Donna Berlin</span>{" "}*/}
-                  {/*                                          wants to edit ResuCraft Admin & dashboards*/}
-                  {/*                                      </p>*/}
-                  {/*                                      <p className="text-xs text-gray-500 dark:text-dark-500">*/}
-                  {/*                                          5 min ago*/}
-                  {/*                                      </p>*/}
-                  {/*                                  </div>*/}
-                  {/*                              </Link>*/}
-                  {/*                              <Link*/}
-                  {/*                                  to="#!"*/}
-                  {/*                                  className="relative flex gap-3 p-2 transition duration-300 ease-linear rounded-md hover:bg-gray-100 [&.unread]:bg-gray-100 dark:[&.unread]:bg-dark-850 dark:hover:bg-dark-850"*/}
-                  {/*                              >*/}
-                  {/*                                  <img*/}
-                  {/*                                      src={user11}*/}
-                  {/*                                      alt="user11Img"*/}
-                  {/*                                      className="rounded-full size-7 shrink-0"*/}
-                  {/*                                  />*/}
-                  {/*                                  <div className="grow">*/}
-                  {/*                                      <p className="mb-0.5 text-sm">*/}
-                  {/*                                          <span className="font-medium">Liam Clark</span>{" "}*/}
-                  {/*                                          commented in domiex*/}
-                  {/*                                      </p>*/}
-                  {/*                                      <p className="text-xs text-gray-500 dark:text-dark-500">*/}
-                  {/*                                          8 min ago*/}
-                  {/*                                      </p>*/}
-                  {/*                                      <p className="mt-3 text-sm line-clamp-2">*/}
-                  {/*                                          " Greetings, I'm making blazor web assembly app /*/}
-                  {/*                                          MAUI. Does your template available for this? "*/}
-                  {/*                                      </p>*/}
-                  {/*                                  </div>*/}
-                  {/*                              </Link>*/}
-                  {/*                              <Link*/}
-                  {/*                                  to="#!"*/}
-                  {/*                                  className="relative flex gap-3 p-2 transition duration-300 ease-linear rounded-md hover:bg-gray-100 [&.unread]:bg-gray-100 dark:[&.unread]:bg-dark-850 dark:hover:bg-dark-850"*/}
-                  {/*                              >*/}
-                  {/*                                  <div*/}
-                  {/*                                      className="flex items-center justify-center text-xs text-gray-500 bg-gray-100 rounded-full size-7 shrink-0">*/}
-                  {/*                                      LN*/}
-                  {/*                                  </div>*/}
-                  {/*                                  <div className="grow">*/}
-                  {/*                                      <p className="mb-0.5 text-sm">*/}
-                  {/*                                          <span className="font-medium">Lucas Nguyen</span>{" "}*/}
-                  {/*                                          competed create new components*/}
-                  {/*                                      </p>*/}
-                  {/*                                      <p className="text-xs text-gray-500 dark:text-dark-500">*/}
-                  {/*                                          01:15 PM*/}
-                  {/*                                      </p>*/}
-                  {/*                                  </div>*/}
-                  {/*                              </Link>*/}
-                  {/*                              <Link*/}
-                  {/*                                  to="#!"*/}
-                  {/*                                  className="relative flex gap-3 p-2 transition duration-300 ease-linear rounded-md hover:bg-gray-100 [&.unread]:bg-gray-100 dark:[&.unread]:bg-dark-850 dark:hover:bg-dark-850"*/}
-                  {/*                              >*/}
-                  {/*                                  <img*/}
-                  {/*                                      src={user18}*/}
-                  {/*                                      alt="user18Img"*/}
-                  {/*                                      className="rounded-full size-7 shrink-0"*/}
-                  {/*                                  />*/}
-                  {/*                                  <div className="grow">*/}
-                  {/*                                      <p className="mb-0.5 text-sm">*/}
-                  {/*                                          <span className="font-medium">James Taylor</span>{" "}*/}
-                  {/*                                          marked your order.*/}
-                  {/*                                      </p>*/}
-                  {/*                                      <span className="mb-2 badge badge-primary">*/}
-                  {/*            Completed*/}
-                  {/*          </span>*/}
-                  {/*                                      <p className="text-xs text-gray-500 dark:text-dark-500">*/}
-                  {/*                                          03:57 AM*/}
-                  {/*                                      </p>*/}
-                  {/*                                  </div>*/}
-                  {/*                              </Link>*/}
-                  {/*                          </div>*/}
-                  {/*                      </SimpleBar>*/}
-                  {/*                  </div>*/}
-                  {/*              </DropdownMenu>*/}
-                  {/*          </Dropdown>*/}
-
                             <Profile/>
 
 

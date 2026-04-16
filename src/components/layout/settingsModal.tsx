@@ -8,9 +8,8 @@ import {
     DATA_COLORS,
     LAYOUT_MODE_TYPES,
     LAYOUT_TYPES,
-    SIDEBAR_COLOR,
 } from "@src/components/constants/layout";
-import {changeDarkModeClass, changeDataColor, changeLayoutMode, changeSidebarColor,} from "@src/slices/thunk";
+import {changeDarkModeClass, changeDataColor, changeLayoutMode,} from "@src/slices/thunk";
 
 const SettingsModal = ({open, handleCloseModal}: any) => {
     const dispatch = useDispatch<any>();
@@ -24,11 +23,6 @@ const SettingsModal = ({open, handleCloseModal}: any) => {
 
     const handleThemeLayout = (value: LAYOUT_MODE_TYPES) => {
         dispatch(changeLayoutMode(value));
-    };
-
-
-    const handleThemeSideColorChange = (value: SIDEBAR_COLOR) => {
-        dispatch(changeSidebarColor(value));
     };
 
     const handleThemeColor = (value: DATA_COLORS) => {
@@ -326,103 +320,6 @@ const SettingsModal = ({open, handleCloseModal}: any) => {
                                     </div>
                                 </div>
                             )}
-                            {layoutType !== LAYOUT_TYPES.HORIZONTAL && (
-                                <div>
-                                    <h6 className="my-4">Sidebar Asset Colors:</h6>
-                                    <div className="flex flex-wrap items-center gap-3">
-                                        <div className="input-radio-group">
-                                            <input
-                                                id="lightSidebarColors"
-                                                name="sidebarColors"
-                                                type="radio"
-                                                className="hidden input-radio peer"
-                                                value={layoutSidebarColor}
-                                                onChange={() =>
-                                                    handleThemeSideColorChange(SIDEBAR_COLOR.LIGHT)
-                                                }
-                                                checked={layoutSidebarColor === SIDEBAR_COLOR.LIGHT}
-                                            />
-                                            <label
-                                                htmlFor="lightSidebarColors"
-                                                className="bg-gray-100 rounded-full input-radio-label size-10 peer-checked:ring-1 peer-checked:ring-offset-2 dark:peer-checked:ring-offset-dark-900 peer-checked:ring-primary-400"
-                                            ></label>
-                                        </div>
-
-                                        <div className="input-radio-group">
-                                            <input
-                                                id="darkSidebarColors"
-                                                name="sidebarColors"
-                                                type="radio"
-                                                className="hidden input-radio peer"
-                                                value={layoutSidebarColor}
-                                                onChange={() =>
-                                                    handleThemeSideColorChange(SIDEBAR_COLOR.DARK)
-                                                }
-                                                checked={layoutSidebarColor === SIDEBAR_COLOR.DARK}
-                                            />
-                                            <label
-                                                htmlFor="darkSidebarColors"
-                                                className="bg-gray-800 rounded-full input-radio-label size-10 peer-checked:ring-1 peer-checked:ring-offset-2 dark:peer-checked:ring-offset-dark-900 peer-checked:ring-primary-400"
-                                            ></label>
-                                        </div>
-
-                                        <div className="input-radio-group">
-                                            <input
-                                                id="brandSidebarColors"
-                                                name="sidebarColors"
-                                                type="radio"
-                                                className="hidden input-radio peer"
-                                                value={layoutSidebarColor}
-                                                onChange={() =>
-                                                    handleThemeSideColorChange(SIDEBAR_COLOR.BRAND)
-                                                }
-                                                checked={layoutSidebarColor === SIDEBAR_COLOR.BRAND}
-                                            />
-                                            <label
-                                                htmlFor="brandSidebarColors"
-                                                className="rounded-full bg-primary-900 input-radio-label size-10 peer-checked:ring-1 peer-checked:ring-offset-2 dark:peer-checked:ring-offset-dark-900 peer-checked:ring-primary-400"
-                                            ></label>
-                                        </div>
-
-                                        <div className="input-radio-group">
-                                            <input
-                                                id="purpleSidebarColors"
-                                                name="sidebarColors"
-                                                type="radio"
-                                                className="hidden input-radio peer"
-                                                value={layoutSidebarColor}
-                                                onChange={() =>
-                                                    handleThemeSideColorChange(SIDEBAR_COLOR.PURPLE)
-                                                }
-                                                checked={layoutSidebarColor === SIDEBAR_COLOR.PURPLE}
-                                            />
-                                            <label
-                                                htmlFor="purpleSidebarColors"
-                                                className="rounded-full bg-purple-950 input-radio-label size-10 peer-checked:ring-1 peer-checked:ring-offset-2 dark:peer-checked:ring-offset-dark-900 peer-checked:ring-primary-400"
-                                            ></label>
-                                        </div>
-
-                                        <div className="input-radio-group">
-                                            <input
-                                                id="skySidebarColors"
-                                                name="sidebarColors"
-                                                type="radio"
-                                                className="hidden input-radio peer"
-                                                value={layoutSidebarColor}
-                                                onChange={() =>
-                                                    handleThemeSideColorChange(SIDEBAR_COLOR.SKY)
-                                                }
-                                                checked={layoutSidebarColor === SIDEBAR_COLOR.SKY}
-                                            />
-                                            <label
-                                                htmlFor="skySidebarColors"
-                                                className="rounded-full bg-sky-950 input-radio-label size-10 peer-checked:ring-1 peer-checked:ring-offset-2 dark:peer-checked:ring-offset-dark-900 peer-checked:ring-primary-400"
-                                            ></label>
-                                        </div>
-                                    </div>
-                                </div>
-                            )}
-
                             <h6 className="my-4">Primary Asset Colors:</h6>
                             <div className="flex flex-wrap items-center gap-3">
                                 <div className="input-radio-group">

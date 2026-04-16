@@ -6,6 +6,11 @@ const WS_BASE = (import.meta.env.VITE_REACT_APP_BACKEND_BASE_URL ?? 'http://loca
     .replace('http', 'ws');
 const WS_URL = `${WS_BASE}/ws/interview`;
 
+// How loud (0–1 float32) before we consider the user speaking
+const SPEECH_THRESHOLD = 0.012;
+// How many silent frames to keep isSpeaking=true after speech drops below threshold
+const SPEAKING_HOLD_FRAMES = 8;
+
 export type SessionStatus = 'idle' | 'connecting' | 'ready' | 'interviewing' | 'ending' | 'done' | 'error';
 
 export interface TranscriptEntry {
@@ -29,6 +34,8 @@ export function useInterviewSession() {
     const [feedback, setFeedback] = useState<FeedbackData | null>(null);
     const [error, setError] = useState<string | null>(null);
     const [isMicActive, setIsMicActive] = useState(false);
+    const [isMuted, setIsMuted] = useState(false);
+    const [isSpeaking, setIsSpeaking] = useState(false);
 
     const wsRef = useRef<WebSocket | null>(null);
     const audioCtxRef = useRef<AudioContext | null>(null);
@@ -37,6 +44,11 @@ export function useInterviewSession() {
     const sourceRef = useRef<MediaStreamAudioSourceNode | null>(null);
     const silentGainRef = useRef<GainNode | null>(null);
     const nextPlayTimeRef = useRef(0);
+
+    // Mute / VAD refs — read inside onaudioprocess without causing stale closures
+    const isMutedRef = useRef(false);
+    const isSpeakingRef = useRef(false);
+    const speakingCounterRef = useRef(0);
 
     const accessToken = useSelector((s: any) => s.auth?.accessToken);
 
@@ -81,15 +93,33 @@ export function useInterviewSession() {
         const inputRate = ctx.sampleRate;
         const ratio = inputRate / TARGET_RATE;
 
-        // Use ScriptProcessorNode (deprecated but universally supported)
+        // ScriptProcessorNode: deprecated but universally supported
         const processor = ctx.createScriptProcessor(4096, 1, 1);
         processorRef.current = processor;
 
         processor.onaudioprocess = (e) => {
-            const ws = wsRef.current;
-            if (!ws || ws.readyState !== WebSocket.OPEN) return;
-
             const input = e.inputBuffer.getChannelData(0);
+
+            // ── VAD: RMS with hysteresis ──────────────────────────────────
+            let sumSq = 0;
+            for (let i = 0; i < input.length; i++) sumSq += input[i] * input[i];
+            const rms = Math.sqrt(sumSq / input.length);
+
+            if (rms > SPEECH_THRESHOLD) {
+                speakingCounterRef.current = SPEAKING_HOLD_FRAMES;
+            } else if (speakingCounterRef.current > 0) {
+                speakingCounterRef.current--;
+            }
+            const speaking = speakingCounterRef.current > 0;
+            if (speaking !== isSpeakingRef.current) {
+                isSpeakingRef.current = speaking;
+                setIsSpeaking(speaking);
+            }
+
+            // ── Send audio (skip when muted or WS closed) ─────────────────
+            const ws = wsRef.current;
+            if (isMutedRef.current || !ws || ws.readyState !== WebSocket.OPEN) return;
+
             const outputLen = Math.floor(input.length / ratio);
             const downsampled = new Float32Array(outputLen);
             for (let i = 0; i < outputLen; i++) downsampled[i] = input[Math.floor(i * ratio)];
@@ -127,15 +157,38 @@ export function useInterviewSession() {
         sourceRef.current = null;
         silentGainRef.current = null;
         streamRef.current = null;
+        isSpeakingRef.current = false;
+        speakingCounterRef.current = 0;
         setIsMicActive(false);
+        setIsSpeaking(false);
+    }, []);
+
+    // ── Mute toggle ───────────────────────────────────────────────────────────
+    // Keeps the mic stream alive (no re-permission prompt on unmute).
+    // onaudioprocess simply skips sending when muted.
+    const toggleMute = useCallback(() => {
+        const next = !isMutedRef.current;
+        isMutedRef.current = next;
+        setIsMuted(next);
+        if (next) {
+            // Immediately clear speaking indicator when muting
+            isSpeakingRef.current = false;
+            speakingCounterRef.current = 0;
+            setIsSpeaking(false);
+        }
     }, []);
 
     // ── Session ───────────────────────────────────────────────────────────────
-    const startSession = useCallback((jobDescription: string) => {
+    const startSession = useCallback((jobDescription: string, candidateProfile?: string) => {
         setStatus('connecting');
         setTranscript([]);
         setFeedback(null);
         setError(null);
+        setIsMuted(false);
+        setIsSpeaking(false);
+        isMutedRef.current = false;
+        isSpeakingRef.current = false;
+        speakingCounterRef.current = 0;
 
         const ctx = new AudioContext();
         audioCtxRef.current = ctx;
@@ -145,7 +198,12 @@ export function useInterviewSession() {
         wsRef.current = ws;
 
         ws.onopen = () => {
-            ws.send(JSON.stringify({ type: 'start_session', jobDescription, token: accessToken }));
+            ws.send(JSON.stringify({
+                type: 'start_session',
+                jobDescription,
+                candidateProfile: candidateProfile ?? '',
+                token: accessToken,
+            }));
         };
 
         ws.onmessage = (event) => {
@@ -178,7 +236,6 @@ export function useInterviewSession() {
                     break;
 
                 case 'turn_complete':
-                    // Could drive UI indicators
                     break;
 
                 case 'error':
@@ -199,9 +256,7 @@ export function useInterviewSession() {
             setStatus('error');
         };
 
-        ws.onclose = () => {
-            // Only reset if not intentionally done
-        };
+        ws.onclose = () => {};
     }, [accessToken, startMicrophone, stopMicrophone, playAudioChunk]);
 
     const endInterview = useCallback(() => {
@@ -216,10 +271,13 @@ export function useInterviewSession() {
         wsRef.current = null;
         audioCtxRef.current?.close();
         audioCtxRef.current = null;
+        isMutedRef.current = false;
         setStatus('idle');
         setTranscript([]);
         setFeedback(null);
         setError(null);
+        setIsMuted(false);
+        setIsSpeaking(false);
     }, [stopMicrophone]);
 
     return {
@@ -228,6 +286,9 @@ export function useInterviewSession() {
         feedback,
         error,
         isMicActive,
+        isMuted,
+        isSpeaking,
+        toggleMute,
         startSession,
         endInterview,
         closeSession,

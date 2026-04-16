@@ -1,6 +1,108 @@
-import { useEffect, useRef } from 'react';
-import { X, Mic, MicOff, PhoneOff, Loader2, AlertTriangle, CheckCircle2, TrendingUp } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
+import { X, PhoneOff, Loader2, AlertTriangle, CheckCircle2, TrendingUp, Mic, MicOff } from 'lucide-react';
 import { useInterviewSession, type FeedbackData, type SessionStatus } from '@hooks/useInterviewSession';
+import { profileService } from '@services/profileService';
+import { experienceService } from '@services/experience.service';
+import { skillService } from '@services/skills.service';
+import { projectsService } from '@services/projects.service';
+
+// ── Profile fetcher ───────────────────────────────────────────────────────────
+
+async function fetchCandidateProfile(): Promise<string> {
+    const parts: string[] = [];
+
+    const [personalInfo, experienceRes, skillsRes, projectsRes] = await Promise.allSettled([
+        profileService.getPersonalInfo(),
+        experienceService.getExperiences(),
+        skillService.getAll(),
+        projectsService.getAll(),
+    ]);
+
+    if (personalInfo.status === 'fulfilled') {
+        const p = personalInfo.value;
+        const name = [p.firstName, p.lastName].filter(Boolean).join(' ');
+        if (name)         parts.push(`Name: ${name}`);
+        if (p.profession) parts.push(`Profession: ${p.profession}`);
+        if (p.bio)        parts.push(`Bio: ${p.bio}`);
+    }
+
+    if (experienceRes.status === 'fulfilled') {
+        const list = experienceRes.value.experiences ?? [];
+        if (list.length) {
+            parts.push('\nEXPERIENCE:');
+            list.forEach((e) => {
+                const end = e.currentlyWorking ? 'present' : (e.endDate ?? '');
+                const dates = [e.startDate, end].filter(Boolean).join(' – ');
+                const desc = e.description ? `: ${e.description}` : '';
+                parts.push(`- ${e.role} at ${e.company} (${dates})${desc}`);
+            });
+        }
+    }
+
+    if (skillsRes.status === 'fulfilled') {
+        const skills = skillsRes.value.skills ?? skillsRes.value ?? [];
+        const technical = skills.filter((s: any) => s.category === 'Technical').map((s: any) => s.name);
+        const soft      = skills.filter((s: any) => s.category === 'Soft').map((s: any) => s.name);
+        if (technical.length) parts.push(`\nTechnical Skills: ${technical.join(', ')}`);
+        if (soft.length)      parts.push(`Soft Skills: ${soft.join(', ')}`);
+    }
+
+    if (projectsRes.status === 'fulfilled') {
+        const list = projectsRes.value.projects ?? [];
+        if (list.length) {
+            parts.push('\nPROJECTS:');
+            list.forEach((p: any) => {
+                const tech = p.technologies?.length ? ` [${p.technologies.join(', ')}]` : '';
+                const desc = p.description ? `: ${p.description}` : '';
+                parts.push(`- ${p.title}${tech}${desc}`);
+            });
+        }
+    }
+
+    return parts.join('\n') || '';
+}
+
+// ── VAD Waveform ──────────────────────────────────────────────────────────────
+// Five bars that animate when the user is speaking; static when silent.
+
+const BAR_HEIGHTS = [55, 100, 40, 80, 30]; // % of container height, varied for natural look
+const BAR_DELAYS  = ['0ms', '120ms', '240ms', '80ms', '200ms'];
+
+function VoiceWaveform({ isSpeaking, isMuted }: { isSpeaking: boolean; isMuted: boolean }) {
+    if (isMuted) {
+        return (
+            <div className="flex items-center gap-1.5">
+                <MicOff className="size-3.5 text-red-400" />
+                <span className="text-xs font-semibold text-red-500">Muted</span>
+            </div>
+        );
+    }
+
+    return (
+        <div className="flex items-center gap-1.5">
+            <div className="flex items-end gap-[3px] h-4">
+                {BAR_HEIGHTS.map((h, i) => (
+                    <span
+                        key={i}
+                        className={`w-[3px] rounded-full transition-all ${
+                            isSpeaking ? 'bg-green-500' : 'bg-gray-300'
+                        }`}
+                        style={{
+                            height: isSpeaking ? `${h}%` : '30%',
+                            animationDelay: BAR_DELAYS[i],
+                            ...(isSpeaking ? {
+                                animation: `vadPulse 0.6s ease-in-out ${BAR_DELAYS[i]} infinite alternate`,
+                            } : {}),
+                        }}
+                    />
+                ))}
+            </div>
+            <span className={`text-xs font-semibold ${isSpeaking ? 'text-green-600' : 'text-gray-400'}`}>
+                {isSpeaking ? 'Speaking…' : 'Listening'}
+            </span>
+        </div>
+    );
+}
 
 // ── Score Badge ───────────────────────────────────────────────────────────────
 
@@ -33,21 +135,18 @@ function FeedbackPanel({ feedback, onClose }: { feedback: FeedbackData; onClose:
                 </button>
             </div>
 
-            {/* Scores */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                <ScoreBadge label="Overall" score={feedback.overallScore} />
+                <ScoreBadge label="Overall"       score={feedback.overallScore} />
                 <ScoreBadge label="Communication" score={feedback.communicationScore} />
-                <ScoreBadge label="Technical" score={feedback.technicalScore} />
-                <ScoreBadge label="Relevance" score={feedback.relevanceScore} />
+                <ScoreBadge label="Technical"     score={feedback.technicalScore} />
+                <ScoreBadge label="Relevance"     score={feedback.relevanceScore} />
             </div>
 
-            {/* Summary */}
             <div className="bg-gray-50 border border-gray-200 rounded-xl p-4">
                 <p className="text-sm font-semibold text-gray-700 mb-1.5">Summary</p>
                 <p className="text-sm text-gray-600 leading-relaxed">{feedback.summary}</p>
             </div>
 
-            {/* Strengths & Improvements */}
             <div className="grid sm:grid-cols-2 gap-4">
                 <div>
                     <div className="flex items-center gap-1.5 mb-2">
@@ -89,20 +188,17 @@ function FeedbackPanel({ feedback, onClose }: { feedback: FeedbackData; onClose:
     );
 }
 
-// ── Status Header ─────────────────────────────────────────────────────────────
+// ── Status label ──────────────────────────────────────────────────────────────
 
-function statusLabel(status: SessionStatus, isMicActive: boolean): { text: string; color: string } {
+function statusLabel(status: SessionStatus): { text: string; color: string } {
     switch (status) {
-        case 'connecting': return { text: 'Connecting to AI interviewer…', color: 'text-amber-600' };
-        case 'ready':      return { text: 'Starting microphone…', color: 'text-amber-600' };
-        case 'interviewing': return {
-            text: isMicActive ? 'Interview in progress — speak clearly' : 'Processing…',
-            color: 'text-green-600',
-        };
-        case 'ending':     return { text: 'Compiling feedback…', color: 'text-amber-600' };
-        case 'done':       return { text: 'Interview complete', color: 'text-green-600' };
-        case 'error':      return { text: 'Connection error', color: 'text-red-600' };
-        default:           return { text: 'Ready to start', color: 'text-gray-500' };
+        case 'connecting':   return { text: 'Connecting to AI interviewer…', color: 'text-amber-600' };
+        case 'ready':        return { text: 'Starting microphone…',          color: 'text-amber-600' };
+        case 'interviewing': return { text: 'Interview in progress',          color: 'text-green-600' };
+        case 'ending':       return { text: 'Compiling feedback…',            color: 'text-amber-600' };
+        case 'done':         return { text: 'Interview complete',             color: 'text-green-600' };
+        case 'error':        return { text: 'Connection error',               color: 'text-red-600'   };
+        default:             return { text: 'Ready to start',                 color: 'text-gray-500'  };
     }
 }
 
@@ -114,19 +210,34 @@ interface InterviewModalProps {
 }
 
 export default function InterviewModal({ jobDescription, onClose }: InterviewModalProps) {
-    const { status, transcript, feedback, error, isMicActive, startSession, endInterview, closeSession } =
-        useInterviewSession();
+    const {
+        status, transcript, feedback, error,
+        isMicActive, isMuted, isSpeaking,
+        toggleMute, startSession, endInterview, closeSession,
+    } = useInterviewSession();
 
     const transcriptEndRef = useRef<HTMLDivElement>(null);
+    const [profileReady, setProfileReady] = useState(false);
 
-    // Auto-start when modal opens
+    // Fetch candidate profile then start the session
     useEffect(() => {
-        startSession(jobDescription);
-        return () => closeSession();
+        let cancelled = false;
+
+        fetchCandidateProfile()
+            .catch(() => '')
+            .then((profile) => {
+                if (cancelled) return;
+                setProfileReady(true);
+                startSession(jobDescription, profile);
+            });
+
+        return () => {
+            cancelled = true;
+            closeSession();
+        };
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    // Scroll transcript to bottom
     useEffect(() => {
         transcriptEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     }, [transcript]);
@@ -136,130 +247,181 @@ export default function InterviewModal({ jobDescription, onClose }: InterviewMod
         onClose();
     };
 
-    const isActive = status === 'interviewing' || status === 'ready';
-    const isConnecting = status === 'connecting' || status === 'ready';
-    const label = statusLabel(status, isMicActive);
+    const isActive      = status === 'interviewing' || status === 'ready';
+    const isConnecting  = status === 'connecting' || status === 'ready' || !profileReady;
+    const label         = statusLabel(status);
+    const showMuteBtn   = status === 'interviewing' && isMicActive;
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-            <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col overflow-hidden">
+        <>
+            {/* VAD bar animation keyframes injected once */}
+            <style>{`
+                @keyframes vadPulse {
+                    from { transform: scaleY(0.4); }
+                    to   { transform: scaleY(1.0); }
+                }
+            `}</style>
 
-                {/* ── Feedback view ── */}
-                {status === 'done' && feedback ? (
-                    <FeedbackPanel feedback={feedback} onClose={handleClose} />
-                ) : (
-                    <>
-                        {/* Header */}
-                        <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
-                            <div className="flex items-center gap-3">
-                                {isConnecting ? (
-                                    <Loader2 className="size-4 text-amber-500 animate-spin" />
-                                ) : (
-                                    <div className={`size-2.5 rounded-full ${isMicActive ? 'bg-green-400 animate-pulse' : 'bg-gray-300'}`} />
-                                )}
-                                <div>
-                                    <p className="text-sm font-semibold text-gray-900">AI Mock Interview</p>
-                                    <p className={`text-xs font-medium ${label.color}`}>{label.text}</p>
-                                </div>
-                            </div>
-                            <button
-                                onClick={handleClose}
-                                className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-400 hover:text-gray-700 transition-colors"
-                            >
-                                <X className="size-4" />
-                            </button>
-                        </div>
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+                <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col overflow-hidden">
 
-                        {/* Error */}
-                        {error && (
-                            <div className="mx-5 mt-4 flex items-start gap-2 bg-red-50 border border-red-200 rounded-lg p-3">
-                                <AlertTriangle className="size-4 text-red-500 flex-shrink-0 mt-0.5" />
-                                <p className="text-sm text-red-700">{error}</p>
-                            </div>
-                        )}
-
-                        {/* Transcript */}
-                        <div className="flex-1 overflow-y-auto px-5 py-4 space-y-3 min-h-0">
-                            {transcript.length === 0 && !error && status === 'interviewing' && (
-                                <div className="flex flex-col items-center justify-center h-40 gap-3 text-gray-400">
-                                    <div className="flex gap-1 items-end h-6">
-                                        <span className="w-1.5 bg-green-400 rounded-full animate-bounce" style={{ height: '60%', animationDelay: '0ms' }} />
-                                        <span className="w-1.5 bg-green-400 rounded-full animate-bounce" style={{ height: '100%', animationDelay: '150ms' }} />
-                                        <span className="w-1.5 bg-green-400 rounded-full animate-bounce" style={{ height: '40%', animationDelay: '300ms' }} />
+                    {status === 'done' && feedback ? (
+                        <FeedbackPanel feedback={feedback} onClose={handleClose} />
+                    ) : (
+                        <>
+                            {/* Header */}
+                            <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
+                                <div className="flex items-center gap-3">
+                                    {isConnecting ? (
+                                        <Loader2 className="size-4 text-amber-500 animate-spin" />
+                                    ) : (
+                                        <div className={`size-2.5 rounded-full transition-colors ${
+                                            isMuted        ? 'bg-red-400' :
+                                            isMicActive    ? 'bg-green-400 animate-pulse' :
+                                                             'bg-gray-300'
+                                        }`} />
+                                    )}
+                                    <div>
+                                        <p className="text-sm font-semibold text-gray-900">AI Mock Interview</p>
+                                        <p className={`text-xs font-medium ${label.color}`}>{label.text}</p>
                                     </div>
-                                    <p className="text-sm">AI is speaking — listen for your first question</p>
                                 </div>
-                            )}
-                            {transcript.length === 0 && !error && (status === 'connecting' || status === 'ready') && (
-                                <div className="flex flex-col items-center justify-center h-40 gap-3 text-gray-400">
-                                    <Loader2 className="size-6 animate-spin" />
-                                    <p className="text-sm">Connecting to interviewer…</p>
-                                </div>
-                            )}
-                            {transcript.map((entry, i) => (
-                                <div
-                                    key={i}
-                                    className={`flex ${entry.speaker === 'user' ? 'justify-end' : 'justify-start'}`}
+                                <button
+                                    onClick={handleClose}
+                                    className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-400 hover:text-gray-700 transition-colors"
                                 >
-                                    <div
-                                        className={`max-w-[80%] rounded-2xl px-4 py-2.5 text-sm leading-relaxed ${
-                                            entry.speaker === 'ai'
-                                                ? 'bg-gray-100 text-gray-800 rounded-tl-sm'
-                                                : 'bg-primary-500 text-white rounded-tr-sm'
-                                        }`}
-                                    >
-                                        {entry.text}
-                                    </div>
+                                    <X className="size-4" />
+                                </button>
+                            </div>
+
+                            {/* Error */}
+                            {error && (
+                                <div className="mx-5 mt-4 flex items-start gap-2 bg-red-50 border border-red-200 rounded-lg p-3">
+                                    <AlertTriangle className="size-4 text-red-500 flex-shrink-0 mt-0.5" />
+                                    <p className="text-sm text-red-700">{error}</p>
                                 </div>
-                            ))}
-                            <div ref={transcriptEndRef} />
-                        </div>
+                            )}
 
-                        {/* Footer Controls */}
-                        <div className="px-5 py-4 border-t border-gray-100 flex items-center justify-between gap-3">
-                            <div className="flex items-center gap-2 text-xs text-gray-400">
-                                {isMicActive ? (
-                                    <>
-                                        <Mic className="size-3.5 text-green-500" />
-                                        <span className="text-green-600 font-medium">Mic active</span>
-                                    </>
-                                ) : (
-                                    <>
-                                        <MicOff className="size-3.5" />
-                                        <span>Mic off</span>
-                                    </>
-                                )}
-                            </div>
+                            {/* Muted banner */}
+                            {isMuted && status === 'interviewing' && (
+                                <div className="mx-5 mt-4 flex items-center justify-between bg-red-50 border border-red-200 rounded-lg px-4 py-2.5">
+                                    <div className="flex items-center gap-2">
+                                        <MicOff className="size-4 text-red-500" />
+                                        <span className="text-sm font-medium text-red-700">
+                                            Microphone muted — the interviewer cannot hear you
+                                        </span>
+                                    </div>
+                                    <button
+                                        onClick={toggleMute}
+                                        className="text-xs font-semibold text-red-600 hover:text-red-800 underline"
+                                    >
+                                        Unmute
+                                    </button>
+                                </div>
+                            )}
 
-                            <div className="flex items-center gap-2">
-                                {status === 'ending' && (
-                                    <div className="flex items-center gap-1.5 text-xs text-amber-600">
-                                        <Loader2 className="size-3.5 animate-spin" />
-                                        Generating feedback…
+                            {/* Transcript */}
+                            <div className="flex-1 overflow-y-auto px-5 py-4 space-y-3 min-h-0">
+                                {transcript.length === 0 && !error && status === 'interviewing' && (
+                                    <div className="flex flex-col items-center justify-center h-40 gap-3 text-gray-400">
+                                        <div className="flex gap-1 items-end h-6">
+                                            <span className="w-1.5 bg-green-400 rounded-full animate-bounce" style={{ height: '60%', animationDelay: '0ms' }} />
+                                            <span className="w-1.5 bg-green-400 rounded-full animate-bounce" style={{ height: '100%', animationDelay: '150ms' }} />
+                                            <span className="w-1.5 bg-green-400 rounded-full animate-bounce" style={{ height: '40%', animationDelay: '300ms' }} />
+                                        </div>
+                                        <p className="text-sm">AI is speaking — listen for your first question</p>
                                     </div>
                                 )}
-                                {isActive && (
-                                    <button
-                                        onClick={endInterview}
-                                        className="inline-flex items-center gap-1.5 px-4 py-2 bg-red-500 hover:bg-red-600 text-white text-sm font-semibold rounded-lg transition-colors"
-                                    >
-                                        <PhoneOff className="size-4" />
-                                        End Interview
-                                    </button>
+                                {transcript.length === 0 && !error && (status === 'connecting' || status === 'ready' || !profileReady) && (
+                                    <div className="flex flex-col items-center justify-center h-40 gap-3 text-gray-400">
+                                        <Loader2 className="size-6 animate-spin" />
+                                        <p className="text-sm">
+                                            {!profileReady ? 'Loading your profile…' : 'Connecting to interviewer…'}
+                                        </p>
+                                    </div>
                                 )}
-                                {(status === 'error' || status === 'done') && (
-                                    <button
-                                        onClick={handleClose}
-                                        className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-semibold rounded-lg transition-colors"
+                                {transcript.map((entry, i) => (
+                                    <div
+                                        key={i}
+                                        className={`flex ${entry.speaker === 'user' ? 'justify-end' : 'justify-start'}`}
                                     >
-                                        Close
-                                    </button>
-                                )}
+                                        <div
+                                            className={`max-w-[80%] rounded-2xl px-4 py-2.5 text-sm leading-relaxed ${
+                                                entry.speaker === 'ai'
+                                                    ? 'bg-gray-100 text-gray-800 rounded-tl-sm'
+                                                    : 'bg-primary-500 text-white rounded-tr-sm'
+                                            }`}
+                                        >
+                                            {entry.text}
+                                        </div>
+                                    </div>
+                                ))}
+                                <div ref={transcriptEndRef} />
                             </div>
-                        </div>
-                    </>
-                )}
+
+                            {/* Footer */}
+                            <div className="px-5 py-4 border-t border-gray-100 flex items-center justify-between gap-3">
+                                {/* Left — VAD waveform */}
+                                <div className="flex items-center gap-3">
+                                    {isMicActive ? (
+                                        <VoiceWaveform isSpeaking={isSpeaking && !isMuted} isMuted={isMuted} />
+                                    ) : (
+                                        <div className="flex items-center gap-1.5 text-gray-400">
+                                            <MicOff className="size-3.5" />
+                                            <span className="text-xs">Mic off</span>
+                                        </div>
+                                    )}
+
+                                    {/* Mute / unmute button */}
+                                    {showMuteBtn && (
+                                        <button
+                                            onClick={toggleMute}
+                                            title={isMuted ? 'Unmute microphone' : 'Mute microphone'}
+                                            className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold border transition-colors ${
+                                                isMuted
+                                                    ? 'bg-red-50 border-red-200 text-red-600 hover:bg-red-100'
+                                                    : 'bg-gray-50 border-gray-200 text-gray-600 hover:bg-gray-100'
+                                            }`}
+                                        >
+                                            {isMuted
+                                                ? <><Mic className="size-3.5" /> Unmute</>
+                                                : <><MicOff className="size-3.5" /> Mute</>
+                                            }
+                                        </button>
+                                    )}
+                                </div>
+
+                                {/* Right — action buttons */}
+                                <div className="flex items-center gap-2">
+                                    {status === 'ending' && (
+                                        <div className="flex items-center gap-1.5 text-xs text-amber-600">
+                                            <Loader2 className="size-3.5 animate-spin" />
+                                            Generating feedback…
+                                        </div>
+                                    )}
+                                    {isActive && (
+                                        <button
+                                            onClick={endInterview}
+                                            className="inline-flex items-center gap-1.5 px-4 py-2 bg-red-500 hover:bg-red-600 text-white text-sm font-semibold rounded-lg transition-colors"
+                                        >
+                                            <PhoneOff className="size-4" />
+                                            End Interview
+                                        </button>
+                                    )}
+                                    {(status === 'error' || status === 'done') && (
+                                        <button
+                                            onClick={handleClose}
+                                            className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-semibold rounded-lg transition-colors"
+                                        >
+                                            Close
+                                        </button>
+                                    )}
+                                </div>
+                            </div>
+                        </>
+                    )}
+                </div>
             </div>
-        </div>
+        </>
     );
 }

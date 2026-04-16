@@ -1,22 +1,15 @@
-import React, {useCallback, useEffect, useState} from "react";
+import React, {useEffect} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {AppDispatch, RootState} from "@src/slices/store.ts";
-import {changeSidebarSize} from "@src/slices/thunk";
 import TopBar from "./topBar/topBar.tsx";
-import {LAYOUT_TYPES, SIDEBAR_SIZE} from "@src/components/constants/layout";
-import {changeHTMLAttribute, setNewThemeData} from "@src/slices/layout/utils";
+import {LAYOUT_TYPES} from "@src/components/constants/layout";
 import {changeSettingModalOpen} from "@src/slices/layout/reducer";
-import {useLocation} from "react-router-dom";
 
 interface LayoutProps {
     children: React.ReactNode;
-    breadcrumbTitle?: string;
 }
 
-const BuilderLayout = ({children, breadcrumbTitle}: LayoutProps) => {
-    const title = breadcrumbTitle
-        ? ` ${breadcrumbTitle} | ResuCraft `
-        : "ResuCraft";
+const BuilderLayout = ({children}: LayoutProps) => {
     const {
         layoutMode,
         layoutType,
@@ -28,44 +21,6 @@ const BuilderLayout = ({children, breadcrumbTitle}: LayoutProps) => {
         layoutDirection,
     } = useSelector((state: RootState) => state.Layout);
     const dispatch = useDispatch<AppDispatch>();
-    const [searchValue, setSearchValue] = useState<string>("");
-    const router = useLocation();
-    useEffect(() => {
-        // If the user has no session and has no prior login, redirect to login page
-        if (!localStorage.getItem("wasLoggedIn")) {
-            localStorage.setItem("wasLoggedIn", 'true')
-            // navigate("/auth/signin-basic");
-        }
-    }, [router]);
-    const handleThemeSidebarSize = useCallback(() => {
-        if (layoutType !== "horizontal") {
-            // Toggle between BIG and SMALL sidebar
-            const newSize =
-                layoutSidebar === SIDEBAR_SIZE.DEFAULT
-                    ? SIDEBAR_SIZE.SMALL
-                    : SIDEBAR_SIZE.DEFAULT;
-            setNewThemeData("data-sidebar-size", newSize);
-            changeHTMLAttribute("data-sidebar", newSize);
-            dispatch(changeSidebarSize(newSize));
-        } else {
-            // If layout is horizontal, always use default size
-            setNewThemeData("data-sidebar-size", SIDEBAR_SIZE.DEFAULT);
-            changeHTMLAttribute("data-sidebar", SIDEBAR_SIZE.DEFAULT);
-            dispatch(changeSidebarSize(SIDEBAR_SIZE.DEFAULT));
-        }
-    }, [layoutType, layoutSidebar, dispatch]);
-
-    const toggleSidebar = () => {
-        if (window.innerWidth < 1000) {
-            // Toggle sidebar open/close for small screens
-            setNewThemeData("data-sidebar-size", SIDEBAR_SIZE.DEFAULT);
-            changeHTMLAttribute("data-sidebar", SIDEBAR_SIZE.DEFAULT);
-            dispatch(changeSidebarSize(SIDEBAR_SIZE.DEFAULT));
-        } else {
-            // On larger screens, toggle between big and small sidebar
-            handleThemeSidebarSize();
-        }
-    };
 
     useEffect(() => {
         const handleResize = () => {
@@ -96,9 +51,6 @@ const BuilderLayout = ({children, breadcrumbTitle}: LayoutProps) => {
         };
     }, [layoutType]); // Only rerun the effect when layoutType changes
     // handle search menu
-    const handleSearchClient = (value: string) => {
-        setSearchValue(value);
-    };
     useEffect(() => {
         let timer: NodeJS.Timeout;
         if (window.innerWidth >= 768) {
@@ -129,18 +81,8 @@ const BuilderLayout = ({children, breadcrumbTitle}: LayoutProps) => {
 
     return (
         <React.Fragment>
-            {/* Main topbar */}
-            {/* <Head> */}
-            <title>{title}</title>
-            {/* </Head> */}
-
-            <TopBar
-                searchMenu={(value: string) => handleSearchClient(value)}
-                searchText={searchValue}
-                toggleSidebar={toggleSidebar}
-            />
-
-
+            <title>{"ResuCraft"}</title>
+            <TopBar/>
             <div
                 className="relative min-h-screen group-data-[layout=boxed]:bg-white group-data-[layout=boxed]:rounded-md">
                 <div className=" pt-[calc(theme('spacing.topbar')_*_1.0)]
