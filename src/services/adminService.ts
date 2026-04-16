@@ -37,7 +37,7 @@ export interface AdminTemplate {
     name: string;
     category: string;
     visibility: 'public' | 'private';
-    status: 'pending' | 'approved' | 'draft';
+    status: 'draft' | 'pending' | 'published';
     userId: { _id: string; username: string; email: string; profilePic?: { url?: string } } | string;
     data: any;
     createdAt: string;
@@ -46,7 +46,7 @@ export interface AdminTemplate {
 
 export interface AdminTemplateStats {
     total: number;
-    status: { pending: number; approved: number; draft: number };
+    status: { draft: number; pending: number; published: number };
     visibility: { public: number; private: number };
 }
 

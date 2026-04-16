@@ -1,13 +1,7 @@
 import React, { useState } from 'react';
-import { FloatingInput, FloatingNumber, FloatingSelect } from '@src/components/common/FloatingInput.tsx';
+import { FloatingNumber } from '@src/components/common/FloatingInput.tsx';
 
 /* ─── Icons ─── */
-
-const IconFile = () => (
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" /><polyline points="14 2 14 8 20 8" />
-    </svg>
-);
 
 const IconSave = () => (
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -114,35 +108,18 @@ const SectionLabel = ({ icon: Icon, children }) => (
 
 /* ─── Main Toolbar ─── */
 
-const TEMPLATE_CATEGORIES = ['Modern', 'Classic', 'Creative', 'Minimal', 'Professional', 'Other'];
-
 const Toolbar = ({
-    templateName,
-    onTemplateNameChange,
-    templateCategory,
-    onTemplateCategoryChange,
     onAddSection,
     onSave,
-    onUpdate,
-    templateId,
-    onLoad,
     onCopyJSON,
     selectedCount,
     isSaving,
-    canvasSize,
-    onCanvasSizeChange,
-    canvasSizes,
-    customWidth,
-    customHeight,
-    onCustomWidthChange,
-    onCustomHeightChange,
     margins,
     onMarginsChange,
     scale,
     onScaleChange,
     showGrid,
     onToggleGrid,
-    gridSize
 }) => {
     const [linkMargins, setLinkMargins] = useState(false);
 
@@ -155,13 +132,8 @@ const Toolbar = ({
         }
     };
 
-    const pageSizeOptions = Object.entries(canvasSizes).map(([key, size]) => ({
-        value: key,
-        label: size.label
-    }));
-
     return (
-        <div className="fixed top-20 left-4 flex flex-col gap-2 z-[100] w-[212px] max-h-[calc(100vh-32px)] overflow-y-auto overflow-x-hidden toolbar-scroll">
+        <div className="fixed top-32 left-2 flex flex-col gap-2 z-[100] w-[162px] max-h-[calc(100vh-32px)] overflow-y-auto overflow-x-hidden toolbar-scroll">
             <style>{`
                 .toolbar-scroll::-webkit-scrollbar { width: 4px; }
                 .toolbar-scroll::-webkit-scrollbar-track { background: transparent; }
@@ -260,49 +232,6 @@ const Toolbar = ({
                     border-color: var(--rc-border);
                 }
             `}</style>
-
-            {/* ── Template Name + Category ── */}
-            <PanelSection>
-                <SectionLabel icon={IconFile}>Template</SectionLabel>
-                <div className="space-y-2">
-                    <FloatingInput
-                        label="Template Name"
-                        value={templateName}
-                        onChange={(e) => onTemplateNameChange(e.target.value)}
-                    />
-                    <FloatingSelect
-                        label="Category"
-                        value={templateCategory || 'Other'}
-                        onChange={(e) => onTemplateCategoryChange(e.target.value)}
-                        options={TEMPLATE_CATEGORIES.map(c => ({ value: c, label: c }))}
-                    />
-                </div>
-            </PanelSection>
-
-            {/* ── Page Size ── */}
-            <PanelSection>
-                <SectionLabel icon={IconFile}>Page Size</SectionLabel>
-                <div className="space-y-2">
-                    <FloatingSelect
-                        label="Page Size"
-                        value={canvasSize}
-                        onChange={(e) => onCanvasSizeChange(e.target.value)}
-                        options={pageSizeOptions}
-                    />
-                    <div className="grid grid-cols-2 gap-2">
-                        <FloatingInput
-                            label="Width"
-                            value={customWidth}
-                            onChange={(e) => onCustomWidthChange(e.target.value)}
-                        />
-                        <FloatingInput
-                            label="Height"
-                            value={customHeight}
-                            onChange={(e) => onCustomHeightChange(e.target.value)}
-                        />
-                    </div>
-                </div>
-            </PanelSection>
 
             {/* ── Margins ── */}
             <PanelSection>
@@ -424,27 +353,9 @@ const Toolbar = ({
                         onClick={onSave}
                         disabled={isSaving}
                         icon={<IconSave />}
-                        label={isSaving ? 'Saving...' : 'Save Template'}
+                        label={isSaving ? 'Saving...' : 'Save'}
                         variant="blue"
                     />
-
-                    {templateId && (
-                        <ActionButton
-                            onClick={onUpdate}
-                            disabled={isSaving}
-                            icon={<IconUpload />}
-                            label={isSaving ? 'Updating...' : 'Update Template'}
-                            variant="amber"
-                        />
-                    )}
-
-                    <ActionButton
-                        onClick={() => onLoad(null)}
-                        icon={<IconDownload />}
-                        label="Load Template"
-                        variant="violet"
-                    />
-
                     <ActionButton
                         onClick={onCopyJSON}
                         icon={<IconCopy />}

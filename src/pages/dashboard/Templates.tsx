@@ -31,9 +31,9 @@ const PAGE_SIZE = 12;
 
 const STAT_ITEMS = [
     { key: 'total',    label: 'Total',    icon: <FileText     className="size-4" />, color: 'text-sky-400',     bg: 'bg-sky-400/10'     },
-    { key: 'pending',  label: 'Pending',  icon: <Clock        className="size-4" />, color: 'text-amber-400',   bg: 'bg-amber-400/10'   },
-    { key: 'approved', label: 'Approved', icon: <CheckCircle2 className="size-4" />, color: 'text-emerald-400', bg: 'bg-emerald-400/10' },
-    { key: 'draft',    label: 'Draft',    icon: <Edit3        className="size-4" />, color: 'text-slate-400',   bg: 'bg-slate-400/10'   },
+    { key: 'pending',   label: 'Pending',   icon: <Clock        className="size-4" />, color: 'text-amber-400',   bg: 'bg-amber-400/10'   },
+    { key: 'published', label: 'Published', icon: <CheckCircle2 className="size-4" />, color: 'text-emerald-400', bg: 'bg-emerald-400/10' },
+    { key: 'draft',     label: 'Draft',     icon: <Edit3        className="size-4" />, color: 'text-slate-400',   bg: 'bg-slate-400/10'   },
     { key: 'public',   label: 'Public',   icon: <Globe        className="size-4" />, color: 'text-violet-400',  bg: 'bg-violet-400/10'  },
 ];
 
@@ -231,7 +231,7 @@ export default function Templates() {
         if (showRefresh) setRefreshing(true);
         setPubLoading(true);
         try {
-            const params: any = { status: 'approved', page: pubPage, limit: PAGE_SIZE };
+            const params: any = { status: 'published', page: pubPage, limit: PAGE_SIZE };
             if (search)    params.search   = search;
             if (catFilter) params.category = catFilter;
             const res = await adminService.listAdminTemplates(params);
@@ -306,9 +306,9 @@ export default function Templates() {
     /* ── stat values ─────────────────────────────────────────────────── */
     const statValues: Record<string, number> = {
         total:    stats?.total                ?? 0,
-        pending:  stats?.status?.pending      ?? 0,
-        approved: stats?.status?.approved     ?? 0,
-        draft:    stats?.status?.draft        ?? 0,
+        pending:   stats?.status?.pending   ?? 0,
+        published: stats?.status?.published ?? 0,
+        draft:     stats?.status?.draft     ?? 0,
         public:   stats?.visibility?.public   ?? 0,
     };
 
@@ -535,7 +535,7 @@ export default function Templates() {
                                 className="adm-mono text-[10px] px-1.5 py-0.5 rounded-full"
                                 style={{ background: 'rgba(16,185,129,0.1)', border: '1px solid rgba(16,185,129,0.25)', color: '#34d399' }}
                             >
-                                {stats.status.approved}
+                                {stats.status.published}
                             </span>
                         )}
                     </button>

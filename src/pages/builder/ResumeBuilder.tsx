@@ -4,6 +4,7 @@ import Toolbar from './Toolbar.tsx';
 import EditDrawer from './Drawer.tsx';
 import CanvasSection from './Section.tsx';
 import CanvasElement from './Element.tsx';
+import BuilderTopBar from './BuilderTopBar.tsx';
 import { CANVAS_SIZES } from './constants';
 import { nestedToFlat } from './utils/transformUtils';
 import { useSelectionDrawer } from './hooks/useSelectionDrawer';
@@ -13,19 +14,6 @@ import { useTemplateActions } from './hooks/useTemplateActions';
 import { useLandingTheme } from '@hooks/useLandingTheme.ts';
 import { templateService } from '@src/services/template.service';
 
-/* ─── Icons ─── */
-
-const IconDownload = () => (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" /><polyline points="7 10 12 15 17 10" /><line x1="12" y1="15" x2="12" y2="3" />
-    </svg>
-);
-
-const IconFileText = () => (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" /><polyline points="14 2 14 8 20 8" /><line x1="16" y1="13" x2="8" y2="13" /><line x1="16" y1="17" x2="8" y2="17" /><polyline points="10 9 9 9 8 9" />
-    </svg>
-);
 
 function ResumeBuilder() {
     const { id } = useParams<{ id: string }>();
@@ -35,6 +23,8 @@ function ResumeBuilder() {
     const [templateName, setTemplateName] = useState('Untitled Resume');
     const [templateCategory, setTemplateCategory] = useState('Other');
     const [templateId, setTemplateId] = useState(null);
+    const [templateVisibility, setTemplateVisibility] = useState('private');
+    const [templateStatus, setTemplateStatus] = useState('draft');
     const [canvasSize, setCanvasSize] = useState('A4');
     const [customWidth, setCustomWidth] = useState('210mm');
     const [customHeight, setCustomHeight] = useState('297mm');
@@ -87,10 +77,11 @@ function ResumeBuilder() {
     });
 
     const {
-        isSaving, isExporting, saveTemplate, updateTemplate, loadTemplate, exportToPDF, getTemplateJSON
+        isSaving, isExporting, isPublishing, saveTemplate, updateTemplate, loadTemplate, exportToPDF, getTemplateJSON, publishTemplate
     } = useTemplateActions({
         elements, sections, templateName, templateCategory, canvasSize, customWidth, customHeight, margins, templateId,
-        setElements, setSections, setTemplateName, setTemplateCategory, setTemplateId, setCanvasSize, setCustomWidth, setCustomHeight, setMargins, setSelectedIds
+        setElements, setSections, setTemplateName, setTemplateCategory, setTemplateId, setCanvasSize, setCustomWidth, setCustomHeight, setMargins, setSelectedIds,
+        setTemplateVisibility, setTemplateStatus
     });
 
     // --- Auto-resize element + cascade to parent section ---
@@ -175,6 +166,8 @@ function ResumeBuilder() {
                 setSections(flatSections || []);
                 setTemplateName(template.name);
                 setTemplateCategory(template.category || 'Other');
+                setTemplateVisibility(template.visibility || 'private');
+                setTemplateStatus(template.status || 'draft');
                 setTemplateId(template.id || id);
                 setCanvasSize(settings?.size || 'A4');
                 setCustomWidth(settings?.width || CANVAS_SIZES[settings?.size || 'A4'].width);
@@ -221,8 +214,8 @@ function ResumeBuilder() {
         }
     };
 
-    const handleCustomWidthChange = (val) => { setCustomWidth(val); setCanvasSize('Custom'); };
-    const handleCustomHeightChange = (val) => { setCustomHeight(val); setCanvasSize('Custom'); };
+    // const handleCustomWidthChange = (val) => { setCustomWidth(val); setCanvasSize('Custom'); };
+    // const handleCustomHeightChange = (val) => { setCustomHeight(val); setCanvasSize('Custom'); };
 
     const currentCanvasSize = { width: customWidth, height: customHeight };
     const hasMargins = margins.top > 0 || margins.right > 0 || margins.bottom > 0 || margins.left > 0;
@@ -275,6 +268,26 @@ function ResumeBuilder() {
                 }
             `}</style>
 
+            <BuilderTopBar
+                templateName={templateName}
+                onTemplateNameChange={setTemplateName}
+                templateCategory={templateCategory}
+                onTemplateCategoryChange={setTemplateCategory}
+                canvasSize={canvasSize}
+                onCanvasSizeChange={handleCanvasSizeChange}
+                canvasSizes={CANVAS_SIZES}
+                templateId={templateId}
+                templateVisibility={templateVisibility as any}
+                templateStatus={templateStatus as any}
+                isSaving={isSaving}
+                isExporting={isExporting}
+                isPublishing={isPublishing}
+                onSave={saveTemplate}
+                onUpdate={updateTemplate}
+                onExportPDF={exportToPDF}
+                onPublish={publishTemplate}
+            />
+
             <EditDrawer
                 isOpen={isDrawerOpen}
                 editingElement={editingElement}
@@ -287,36 +300,21 @@ function ResumeBuilder() {
             />
 
             <Toolbar
-                templateName={templateName}
-                onTemplateNameChange={setTemplateName}
-                templateCategory={templateCategory}
-                onTemplateCategoryChange={setTemplateCategory}
                 onAddSection={addSection}
                 onSave={saveTemplate}
-                onUpdate={updateTemplate}
-                templateId={templateId}
-                onLoad={loadTemplate}
                 onCopyJSON={getTemplateJSON}
                 selectedCount={selectedIds.length}
                 isSaving={isSaving}
-                canvasSize={canvasSize}
-                onCanvasSizeChange={handleCanvasSizeChange}
-                canvasSizes={CANVAS_SIZES}
-                customWidth={customWidth}
-                customHeight={customHeight}
-                onCustomWidthChange={handleCustomWidthChange}
-                onCustomHeightChange={handleCustomHeightChange}
                 margins={margins}
                 onMarginsChange={setMargins}
                 scale={scale}
                 onScaleChange={setScale}
                 showGrid={showGrid}
                 onToggleGrid={() => setShowGrid(prev => !prev)}
-                gridSize={gridSize}
             />
 
             {/* ── Canvas Area ── */}
-            <div className="flex justify-center pt-10 pb-16">
+            <div className="flex justify-center pt-[72px] pb-16">
                 <div
                     ref={canvasRef}
                     onDoubleClick={handleCanvasDoubleClick}
@@ -411,23 +409,6 @@ function ResumeBuilder() {
                 </div>
             </div>
 
-            {/* ── Export FAB ── */}
-            <button
-                onClick={exportToPDF}
-                disabled={isExporting}
-                className="fixed bottom-5 left-5 flex items-center gap-2 px-5 py-3 rounded-2xl text-[14px] font-bold text-white
-                    transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0 z-[100] group
-                    disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:translate-y-0"
-                style={{
-                    background: `linear-gradient(135deg, var(--rc-accent, #3b82f6), var(--rc-accent-dark, #1d4ed8))`,
-                    boxShadow: `0 4px 20px color-mix(in srgb, var(--rc-accent, #3b82f6) 45%, transparent), 0 2px 6px rgba(0,0,0,0.15)`,
-                }}
-            >
-                <span className="flex items-center justify-center w-7 h-7 rounded-lg bg-white/20 group-hover:bg-white/28 transition-colors">
-                    <IconFileText />
-                </span>
-                {isExporting ? 'Generating...' : 'Export PDF'}
-            </button>
         </div>
     );
 }

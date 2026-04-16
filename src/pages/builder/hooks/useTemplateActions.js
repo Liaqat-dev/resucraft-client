@@ -5,10 +5,12 @@ import { templateService } from '../../../services/template.service';
 
 export function useTemplateActions({
     elements, sections, templateName, templateCategory, canvasSize, customWidth, customHeight, margins, templateId,
-    setElements, setSections, setTemplateName, setTemplateCategory, setTemplateId, setCanvasSize, setCustomWidth, setCustomHeight, setMargins, setSelectedIds
+    setElements, setSections, setTemplateName, setTemplateCategory, setTemplateId, setCanvasSize, setCustomWidth, setCustomHeight, setMargins, setSelectedIds,
+    setTemplateVisibility, setTemplateStatus
 }) {
     const [isSaving, setIsSaving] = useState(false);
     const [isExporting, setIsExporting] = useState(false);
+    const [isPublishing, setIsPublishing] = useState(false);
 
     const exportToPDF = async () => {
         if (isExporting) return;
@@ -148,6 +150,8 @@ export function useTemplateActions({
                 setSections(flatSections);
                 setTemplateName(templateData.name);
                 if (setTemplateCategory) setTemplateCategory(templateData.category || 'Other');
+                if (setTemplateVisibility) setTemplateVisibility(templateData.visibility || 'private');
+                if (setTemplateStatus) setTemplateStatus(templateData.status || 'draft');
                 setTemplateId(templateData.id || loadId);
                 setCanvasSize(settings?.size || 'A4');
                 setCustomWidth(settings?.width || CANVAS_SIZES[settings?.size || 'A4'].width);
@@ -215,5 +219,22 @@ export function useTemplateActions({
         });
     };
 
-    return { isSaving, isExporting, exportToPDF, saveTemplate, updateTemplate, loadTemplate, getTemplateJSON };
+    const publishTemplate = async () => {
+        if (!templateId) {
+            alert('Save the template first before publishing.');
+            return;
+        }
+        setIsPublishing(true);
+        try {
+            const result = await templateService.publish(templateId);
+            if (setTemplateStatus) setTemplateStatus(result.status);
+            console.log('✅ Template submitted for review');
+        } catch (error) {
+            console.error('Publish error:', error);
+            alert('❌ Failed to submit template for review. ' + error.message);
+        }
+        setIsPublishing(false);
+    };
+
+    return { isSaving, isExporting, isPublishing, exportToPDF, saveTemplate, updateTemplate, loadTemplate, getTemplateJSON, publishTemplate };
 }

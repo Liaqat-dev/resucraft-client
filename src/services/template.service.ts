@@ -18,4 +18,7 @@ export const templateService = {
 
     remove: (id: string) =>
         api.delete(`/templates/${id}`).then(r => r.data),
+
+    publish: (id: string) =>
+        api.put(`/templates/${id}/publish`).then(r => r.data),
 };
