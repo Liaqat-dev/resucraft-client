@@ -1,12 +1,11 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
-import { RootState } from '@src/slices/store';
 import TemplateCard from './TemplateCard.js';
-import { Plus, RefreshCw, Search, X, ChevronRight, Clock, LayoutTemplate, Globe } from 'lucide-react';
+import {  RefreshCw, Search, X, ChevronRight, Clock, LayoutTemplate, Globe } from 'lucide-react';
 import { templateService } from '@src/services/template.service';
 import DeleteToast from '@src/components/custom/toast/deleteToast';
 import {useAuth} from "@hooks/useAuth.ts";
+import {BlankCard} from "@pages/Template/BlankCard.tsx";
 
 const CATEGORIES = ['All', 'Modern', 'Classic', 'Creative', 'Minimal', 'Professional', 'Other'];
 const RECENTS_LIMIT = 4;
@@ -49,28 +48,12 @@ const SectionHeader = ({
     </div>
 );
 
-/* ── Blank card ──────────────────────────────────────────────────── */
-const BlankCard = ({ onClick }: { onClick: () => void }) => (
-    <div className="group cursor-pointer" onClick={onClick}>
-        <div className="relative w-full overflow-hidden rounded-xl bg-gray-50 dark:bg-dark-800 ring-2 ring-dashed ring-gray-200 dark:ring-dark-600 group-hover:ring-primary-400 dark:group-hover:ring-primary-500 transition-all duration-200 flex items-center justify-center"
-            style={{ aspectRatio: '210 / 297' }}>
-            <div className="flex flex-col items-center gap-2.5">
-                <div className="size-11 rounded-full bg-white dark:bg-dark-700 border border-gray-200 dark:border-dark-600 flex items-center justify-center shadow-sm group-hover:bg-primary-50 group-hover:border-primary-200 transition-colors">
-                    <Plus className="size-5 text-gray-400 group-hover:text-primary-500 transition-colors" />
-                </div>
-            </div>
-        </div>
-        <div className="mt-2.5 px-0.5">
-            <p className="text-[13px] font-semibold text-gray-700 dark:text-dark-300 truncate">Blank resume</p>
-            <p className="text-[11px] text-gray-400 dark:text-dark-500 mt-0.5">Start from scratch</p>
-        </div>
-    </div>
-);
+
 
 /* ── Main component ─────────────────────────────────────────────── */
 const TemplatesGallery = () => {
     const navigate = useNavigate();
-    const {user }=useAuth();
+    const {user,isAuthenticated }=useAuth();
 
     const [myTemplates, setMyTemplates]          = useState<any[]>([]);
     const [communityTemplates, setCommunityTemplates] = useState<any[]>([]);
@@ -87,13 +70,15 @@ const TemplatesGallery = () => {
 
         /* my templates */
         setLoadingMine(true);
-        try {
-            const data = await templateService.list();
-            setMyTemplates(data.templates || []);
-        } catch (err: any) {
-            setError(err.message);
-        } finally {
-            setLoadingMine(false);
+        if(isAuthenticated){
+            try {
+                const data = await templateService.list();
+                setMyTemplates(data.templates || []);
+            } catch (err: any) {
+                setError(err.message);
+            } finally {
+                setLoadingMine(false);
+            }
         }
 
         /* all templates → filter out current user's */
@@ -154,28 +139,6 @@ const TemplatesGallery = () => {
     return (
         <div className="min-h-screen bg-white dark:bg-dark-900">
             <div className="max-w-5xl mx-auto px-6 pt-10 pb-16">
-
-                {/* ── Page title ── */}
-                {/*<div className="flex items-start justify-between gap-4 mb-7">*/}
-                {/*    <div>*/}
-                {/*        <h1 className="text-3xl font-extrabold text-gray-900 dark:text-white tracking-tight leading-none">*/}
-                {/*            Templates*/}
-                {/*        </h1>*/}
-                {/*        <p className="text-[13px] text-gray-400 dark:text-dark-500 mt-1.5">*/}
-                {/*            {loading*/}
-                {/*                ? 'Loading…'*/}
-                {/*                : `${myTemplates.length} of yours · ${communityTemplates.length} from community`*/}
-                {/*            }*/}
-                {/*        </p>*/}
-                {/*    </div>*/}
-                {/*    <button*/}
-                {/*        onClick={() => navigate('/builder')}*/}
-                {/*        className="shrink-0 inline-flex items-center gap-2 px-5 py-2.5 bg-primary-500 hover:bg-primary-600 text-white text-sm font-semibold rounded-xl shadow-sm hover:shadow-md active:scale-[.97] transition-all duration-150"*/}
-                {/*    >*/}
-                {/*        <Plus className="size-4" />*/}
-                {/*        Create new*/}
-                {/*    </button>*/}
-                {/*</div>*/}
 
                 {/* ── Search bar ── */}
                 <div className="relative mb-5">
@@ -343,7 +306,7 @@ const TemplatesGallery = () => {
                                         {/* Blank card always first */}
                                         <BlankCard onClick={() => navigate('/builder')} />
 
-                                        {myTemplates.map(t => (
+                                        {isAuthenticated && myTemplates.map(t => (
                                             <TemplateCard key={t._id} template={t} onDelete={handleDelete} isOwn />
                                         ))}
                                     </Grid>

@@ -49,6 +49,7 @@ import FeaturesPage from '@pages/landing/FeaturesPage.tsx'
 import FAQPage from '@pages/landing/FAQPage.tsx'
 import ContactPage from '@pages/landing/ContactPage.tsx'
 import AboutPage from '@pages/landing/AboutPage.tsx'
+import PosterPage from '@pages/landing/PosterPage.tsx'
 import DashboardOverview from '@pages/dashboard/Overview.tsx'
 import DashboardUsers from '@pages/dashboard/Users.tsx'
 import DashboardTemplates from '@pages/dashboard/Templates.tsx'
@@ -139,6 +140,7 @@ const nonAuthRoutes: IRoute[] = [
     {path: "/faq", component: <FAQPage/>},
     {path: "/contact", component: <ContactPage/>},
     {path: "/about", component: <AboutPage/>},
+    {path: "/poster", component: <PosterPage/>},
 
     //  authentication
     {path: "/auth/sign-in", component: <Login/>},

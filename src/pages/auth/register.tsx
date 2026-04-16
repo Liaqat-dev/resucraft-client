@@ -3,9 +3,11 @@ import { useAuth } from '@hooks/useAuth';
 import { useForm, GlobalErrorAlert } from '@hooks/useForm';
 import * as Yup from 'yup';
 import { Mail, Lock, User, Eye, EyeOff, AtSign } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import PasswordStrength from '@src/components/common/passwordStrength.tsx';
+import logo from "@assets/images/main-logo.png";
+import logoWhite from "@assets/images/logo-white.png";
 
 const GOLD = '#C09A3A';
 const DARK = '#0F172A';
@@ -103,24 +105,15 @@ export default function Register() {
 
                         {/* Brand (always visible on mobile, also on desktop for this layout) */}
                         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '2rem' }}>
-                            <div style={{
-                                width: 36, height: 36, borderRadius: 9,
-                                background: `linear-gradient(135deg, ${GOLD}, #8B6914)`,
-                                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                            }}>
-                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round">
-                                    <rect x="4" y="3" width="16" height="18" rx="2" />
-                                    <line x1="8" y1="8" x2="16" y2="8" />
-                                    <line x1="8" y1="12" x2="13" y2="12" />
-                                    <line x1="8" y1="16" x2="11" y2="16" />
-                                </svg>
-                            </div>
-                            <span style={{
-                                fontFamily: "'Cormorant Garamond', serif",
-                                fontSize: '1.45rem', fontWeight: 600, color: DARK,
-                            }}>
-                                ResuCraft
-                            </span>
+                            <Link to="/">
+                                <img
+                                    src={logo}
+                                    alt="logoWhite"
+                                    className="h-14 inline-block "
+                                    height={24}
+
+                                />
+                            </Link>
                         </div>
 
                         {/* Heading */}
@@ -359,25 +352,15 @@ export default function Register() {
 
                     {/* Brand mark */}
                     <div style={{ position: 'relative', zIndex: 10 }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                            <div style={{
-                                width: 38, height: 38, borderRadius: 10,
-                                background: `linear-gradient(135deg, ${GOLD}, #8B6914)`,
-                                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                            }}>
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round">
-                                    <rect x="4" y="3" width="16" height="18" rx="2" />
-                                    <line x1="8" y1="8" x2="16" y2="8" />
-                                    <line x1="8" y1="12" x2="13" y2="12" />
-                                    <line x1="8" y1="16" x2="11" y2="16" />
-                                </svg>
-                            </div>
-                            <span style={{
-                                fontFamily: "'Cormorant Garamond', serif",
-                                fontSize: '1.55rem', fontWeight: 600,
-                                color: '#fff', letterSpacing: '0.04em',
-                            }}>ResuCraft</span>
-                        </div>
+                        <Link to="/">
+                            <img
+                                src={logoWhite}
+                                alt="logoWhite"
+                                className="h-14 inline-block "
+                                height={24}
+
+                            />
+                        </Link>
                     </div>
 
                     {/* Central illustration: 3-step progress card */}
