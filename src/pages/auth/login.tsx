@@ -1,4 +1,4 @@
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useAuth } from '@hooks/useAuth';
 import { useForm, GlobalErrorAlert } from '@hooks/useForm';
 import * as Yup from 'yup';
@@ -22,6 +22,9 @@ export default function Login() {
     }, []);
 
     const navigate = useNavigate();
+    const location = useLocation();
+    // Read the ?redirect= param set by BuilderLayout when token refresh fails
+    const redirectTo = new URLSearchParams(location.search).get('redirect') || '/';
     const { login, googleLogin } = useAuth();
     const [showPassword, setShowPassword] = useState(false);
 
@@ -42,7 +45,8 @@ export default function Login() {
                 toast.error('2FA not yet implemented');
                 return;
             }
-            navigate('/');
+            // Redirect back to the page the user tried to visit
+            navigate(redirectTo, { replace: true });
         },
         onSuccess: () => toast.success('Logged in successfully!'),
         onError: (error: any) => console.error('Login error:', error),
@@ -52,7 +56,7 @@ export default function Login() {
         try {
             await googleLogin(credentialResponse.credential).unwrap();
             toast.success('Logged in with Google!');
-            navigate('/');
+            navigate(redirectTo, { replace: true });
         } catch {
             toast.error('Google login failed');
         }

@@ -4,39 +4,29 @@ import { logout, setRefreshAccessToken } from '@src/slices/auth/reducer.ts';
 
 const BASE_URL = import.meta.env.VITE_REACT_APP_BACKEND_BASE_URL;
 
-// Create Axios instance
 const api = axios.create({
     baseURL: BASE_URL,
-    withCredentials: true,  // ✅ CRITICAL: This sends cookies!
+    withCredentials: true,
     headers: {
         'Content-Type': 'application/json'
     }
 });
 
-// ============================================
 // Token Refresh Queue Management
-// ============================================
 let isRefreshing = false;
 let failedQueue: Array<{
     resolve: (token: string) => void;
     reject: (error: any) => void;
 }> = [];
 
-// ============================================
-// Auth Initialization Gate
-// Prevents concurrent refresh calls during
-// the initial page-load token restore.
-// ============================================
+
 let isAuthInitializing = true;
 let initQueue: Array<{
     resolve: (token: string) => void;
     reject: (error: any) => void;
 }> = [];
 
-/**
- * Called by initializeAuth thunk once the startup refresh completes.
- * Flushes any 401-triggered requests that were queued during init.
- */
+
 export const setAuthInitialized = (token: string | null, error: any = null) => {
     isAuthInitializing = false;
     initQueue.forEach(({ resolve, reject }) => {
@@ -76,7 +66,7 @@ api.interceptors.request.use(
         return config;
     },
     (error) => {
-        console.error('❌ Request Error:', error);
+        console.error('Request Error:', error);
         return Promise.reject(error);
     }
 );
@@ -86,8 +76,6 @@ api.interceptors.request.use(
 // ============================================
 api.interceptors.response.use(
     (response) => {
-        // Update last activity timestamp
-        localStorage.setItem('lastActiveVince', Date.now().toString());
         return response;
     },
     async (error: AxiosError) => {
@@ -228,114 +216,4 @@ export const checkSession = async (): Promise<boolean> => {
     }
 };
 
-/**
- * Manually trigger token refresh
- */
-export const refreshToken = async (): Promise<string | null> => {
-    try {
-        const response = await axios.post(
-            `${BASE_URL}/auth/refresh`,
-            {},
-            { withCredentials: true }
-        );
-
-        const { accessToken } = response.data;
-
-        store.dispatch(
-            setRefreshAccessToken({ accessToken })
-        );
-
-        return accessToken;
-    } catch (error) {
-        console.error('Manual token refresh failed:', error);
-        return null;
-    }
-};
-
-/**
- * Clear all tokens and logout
- */
-export const clearAuth = () => {
-    store.dispatch(logout());
-    localStorage.removeItem('lastActiveVince');
-};
-
 export default api;
-// import axios from "axios";
-// import store from "../slices/store.ts";
-// import {logout, setRefreshAccessToken} from '@src/slices/auth/reducer.ts';
-
-// const BASE_URL = `${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api`;
-
-// // Create Axios instance
-// const api = axios.create({
-//     baseURL: BASE_URL,
-//     withCredentials: true,  // ✅ CRITICAL: This sends cookies!
-//     headers: {
-//         'Content-Type': 'application/json'
-//     }
-// });
-
-// // Request interceptor to add token
-// api.interceptors.request.use(
-//     (config) => {
-//         const state = store.getState();
-//         const token = state.auth?.accessToken;
-
-//         console.log(`${config.method?.toUpperCase()} ${config.url}`);
-
-//         if (token) {
-//             config.headers.Authorization = `Bearer ${token}`;
-//         }
-//         return config;
-//     },
-//     (error) => Promise.reject(error)
-// );
-
-// // Response interceptor to handle token refresh
-// api.interceptors.response.use(
-//     (response) => {
-//         localStorage.setItem('lastActiveVince', Date.now().toString());
-//         return response;
-//     },
-//     async (error) => {
-//         const originalRequest = error.config;
-
-//         // If 401 and we haven't tried to refresh yet
-//         if (
-//             error.response &&
-//             error.response.status === 401 &&
-//             !originalRequest._retry
-//         ) {
-//             originalRequest._retry = true;
-
-//             try {
-//                 // ✅ FIX: Don't send body, refresh token is in cookie
-//                 const res = await axios.post(
-//                     `${BASE_URL}/auth/refresh`,
-//                     {},  // ✅ Empty body - token comes from cookie
-//                     {withCredentials: true}  // ✅ MUST have this to send/receive cookies
-//                 );
-
-//                 // ✅ NEW: Backend now returns new refresh token in cookie automatically
-//                 // We just need to store the new access token
-//                 store.dispatch(
-//                     setRefreshAccessToken({accessToken: res.data.accessToken})
-//                 );
-
-//                 // Retry original request with new token
-//                 originalRequest.headers.Authorization = `Bearer ${res.data.accessToken}`;
-//                 return api(originalRequest);
-//             } catch (refreshError) {
-//                 console.error('Token refresh failed:', refreshError);
-//                 store.dispatch(logout());
-//                 window.location.href = '/auth/sign-in';
-//                 return Promise.reject(refreshError);
-//             }
-//         }
-
-//         return Promise.reject(error);
-//     }
-// );
-
-// export default api;
