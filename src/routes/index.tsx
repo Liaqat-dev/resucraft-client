@@ -1,9 +1,10 @@
 import React from "react";
 import { Route, Routes } from "react-router-dom";
-import {builderRoutes, nonAuthRoutes, routes} from "./allRoutes";
+import {adminRoutes, builderRoutes, nonAuthRoutes, routes} from "./allRoutes";
 import NonLayout from "@src/layout/nonLayout";
 import Layout from "@src/layout/layout";
 import BuilderLayout from "@layout/builderLayout.tsx";
+import DashboardLayout from "@layout/dashboardLayout.tsx";
 
 const Routing = () => {
     function renderRoutes(routes: any[]) {
@@ -45,6 +46,14 @@ const Routing = () => {
                         key={key}
                         path={item.path}
                         element={<BuilderLayout>{item.component}</BuilderLayout>}
+                    />
+                ))}
+
+                {(adminRoutes || []).map((item, key) => (
+                    <Route
+                        key={key}
+                        path={item.path}
+                        element={<DashboardLayout>{item.component}</DashboardLayout>}
                     />
                 ))}
 

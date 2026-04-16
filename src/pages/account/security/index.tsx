@@ -1,7 +1,7 @@
 import React, {ChangeEvent, useEffect, useMemo, useState} from "react";
 import {Eye, EyeOff, KeyRound, Loader2, Lock, Mail, ShieldAlert, Trash2, Upload, User} from "lucide-react";
 import {NextPageWithLayout} from "@dtos/layout";
-import user1 from "@assets/images/avatar/user-18.png";
+import user1 from "@assets/images/avatar/user-1.png";
 import {useSelector} from "react-redux";
 import {RootState} from "@src/slices/store.ts";
 import toast from "react-hot-toast";

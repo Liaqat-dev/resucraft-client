@@ -1,5 +1,5 @@
 import React, { ChangeEvent, useEffect, useRef, useState } from "react";
-import user17 from "@assets/images/avatar/user-17.png";
+import user17 from "@assets/images/avatar/user-1.png";
 import {
   Bell,
   Gem,

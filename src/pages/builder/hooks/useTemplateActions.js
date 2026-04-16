@@ -8,12 +8,20 @@ export function useTemplateActions({
     setElements, setSections, setTemplateName, setTemplateCategory, setTemplateId, setCanvasSize, setCustomWidth, setCustomHeight, setMargins, setSelectedIds
 }) {
     const [isSaving, setIsSaving] = useState(false);
+    const [isExporting, setIsExporting] = useState(false);
 
     const exportToPDF = async () => {
+        if (isExporting) return;
+        setIsExporting(true);
+
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 120_000); // 2 min timeout
+
         try {
             const response = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASE_URL}/pdf/generate-pdf`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
+                signal: controller.signal,
                 body: JSON.stringify({
                     elements,
                     sections,
@@ -24,7 +32,8 @@ export function useTemplateActions({
             });
 
             if (!response.ok) {
-                throw new Error('Failed to generate PDF');
+                const err = await response.json().catch(() => ({}));
+                throw new Error(err.message || `Server error ${response.status}`);
             }
 
             const blob = await response.blob();
@@ -35,12 +44,18 @@ export function useTemplateActions({
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
-            window.URL.revokeObjectURL(url);
-
-            alert('✅ PDF exported successfully!');
+            // Delay revoke so the browser has time to start the download
+            setTimeout(() => window.URL.revokeObjectURL(url), 1000);
         } catch (error) {
             console.error('Export error:', error);
-            alert('❌ Failed to export PDF. Make sure the backend server is running on http://localhost:5000');
+            if (error.name === 'AbortError') {
+                alert('❌ PDF generation timed out. Please try again.');
+            } else {
+                alert(`❌ Failed to export PDF: ${error.message}`);
+            }
+        } finally {
+            clearTimeout(timeoutId);
+            setIsExporting(false);
         }
     };
 
@@ -200,5 +215,5 @@ export function useTemplateActions({
         });
     };
 
-    return { isSaving, exportToPDF, saveTemplate, updateTemplate, loadTemplate, getTemplateJSON };
+    return { isSaving, isExporting, exportToPDF, saveTemplate, updateTemplate, loadTemplate, getTemplateJSON };
 }

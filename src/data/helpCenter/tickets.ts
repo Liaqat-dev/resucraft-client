@@ -1,12 +1,12 @@
-import user2 from "@assets/images/avatar/user-2.png";
-import user3 from "@assets/images/avatar/user-3.png";
-import user4 from "@assets/images/avatar/user-4.png";
-import user5 from "@assets/images/avatar/user-5.png";
-import user6 from "@assets/images/avatar/user-6.png";
-import user7 from "@assets/images/avatar/user-7.png";
-import user8 from "@assets/images/avatar/user-8.png";
-import user15 from "@assets/images/avatar/user-15.png";
-import user18 from "@assets/images/avatar/user-18.png";
+import user2 from "@assets/images/avatar/user-1.png";
+import user3 from "@assets/images/avatar/user-1.png";
+import user4 from "@assets/images/avatar/user-1.png";
+import user5 from "@assets/images/avatar/user-1.png";
+import user6 from "@assets/images/avatar/user-1.png";
+import user7 from "@assets/images/avatar/user-1.png";
+import user8 from "@assets/images/avatar/user-1.png";
+import user15 from "@assets/images/avatar/user-1.png";
+import user18 from "@assets/images/avatar/user-1.png";
 
 const ticketsData = [
   {

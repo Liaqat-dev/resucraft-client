@@ -3,7 +3,7 @@ import React, {useCallback, useEffect, useState} from "react";
 import SimpleBar from "simplebar-react";
 
 import user17 from "@assets/images/avatar/user-1.png";
-import user45 from "@assets/images/avatar/user-4.png";
+import user45 from "@assets/images/avatar/user-1.png";
 
 import {useForm} from "react-hook-form";
 

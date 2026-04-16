@@ -22,6 +22,33 @@ let failedQueue: Array<{
     reject: (error: any) => void;
 }> = [];
 
+// ============================================
+// Auth Initialization Gate
+// Prevents concurrent refresh calls during
+// the initial page-load token restore.
+// ============================================
+let isAuthInitializing = true;
+let initQueue: Array<{
+    resolve: (token: string) => void;
+    reject: (error: any) => void;
+}> = [];
+
+/**
+ * Called by initializeAuth thunk once the startup refresh completes.
+ * Flushes any 401-triggered requests that were queued during init.
+ */
+export const setAuthInitialized = (token: string | null, error: any = null) => {
+    isAuthInitializing = false;
+    initQueue.forEach(({ resolve, reject }) => {
+        if (token) {
+            resolve(token);
+        } else {
+            reject(error ?? new Error('Auth initialization failed'));
+        }
+    });
+    initQueue = [];
+};
+
 const processQueue = (error: any = null, token: string | null = null) => {
     failedQueue.forEach(promise => {
         if (error) {
@@ -78,6 +105,20 @@ api.interceptors.response.use(
         
         if (isAuthEndpoint) {
             return Promise.reject(error);
+        }
+
+        // If auth is still initializing (startup refresh in progress), queue
+        // this request rather than firing a second concurrent refresh.
+        if (isAuthInitializing && !originalRequest._retry) {
+            return new Promise((resolve, reject) => {
+                initQueue.push({
+                    resolve: (token: string) => {
+                        originalRequest.headers.Authorization = `Bearer ${token}`;
+                        resolve(api(originalRequest));
+                    },
+                    reject,
+                });
+            });
         }
 
         // If 401 and we haven't tried to refresh yet

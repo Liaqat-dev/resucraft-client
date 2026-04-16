@@ -2,6 +2,8 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { Github, Linkedin, Mail, Twitter } from "lucide-react";
 import { useLandingTheme } from "@hooks/useLandingTheme";
+import logo from "@assets/images/main-logo.png";
+import logoWhite from "@assets/images/logo-white.png";
 
 const productLinks = [
     { label: "Features", href: "/features" },
@@ -41,22 +43,23 @@ const Footer: React.FC = () => {
                 }}>
                     {/* Brand col */}
                     <div style={{ gridColumn: "span 1" }}>
-                        <Link to="/" style={{ display: "flex", alignItems: "center", gap: "0.65rem", textDecoration: "none", marginBottom: "1rem" }}>
-                            {/*<div style={{*/}
-                            {/*    width: 32, height: 32, borderRadius: 8, flexShrink: 0,*/}
-                            {/*    background: `linear-gradient(135deg, ${theme.accent}, ${theme.accentDark})`,*/}
-                            {/*    display: "flex", alignItems: "center", justifyContent: "center",*/}
-                            {/*}}>*/}
-                            {/*    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round">*/}
-                            {/*        <rect x="4" y="3" width="16" height="18" rx="2" />*/}
-                            {/*        <line x1="8" y1="8" x2="16" y2="8" />*/}
-                            {/*        <line x1="8" y1="12" x2="13" y2="12" />*/}
-                            {/*        <line x1="8" y1="16" x2="11" y2="16" />*/}
-                            {/*    </svg>*/}
-                            {/*</div>*/}
-                            <span className="rc-serif" style={{ fontSize: "1.25rem", fontWeight: 600, color: theme.text, letterSpacing: "0.04em" }}>
-                                ResuCraft
-                            </span>
+                        <Link to="/">
+                            <img
+                                src={logo}
+                                aria-label="Read more about Seminole tax hike"
+                                alt="logo"
+                                className="h-14 group-data-[layout=modern]:hidden inline-block dark:hidden"
+                                height={164}
+
+                            />
+                            <img
+                                src={logoWhite}
+                                aria-label="Read more about Seminole tax hike"
+                                alt="logoWhite"
+                                className="h-14 hidden dark:inline-block group-data-[layout=modern]:hidden"
+                                height={24}
+
+                            />
                         </Link>
                         <p style={{ fontSize: "0.8rem", color: theme.textMuted, lineHeight: 1.7, marginBottom: "1.25rem", maxWidth: 220 }}>
                             AI-powered resume builder designed to get you through ATS filters and land interviews faster.

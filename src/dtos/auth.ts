@@ -1,4 +1,6 @@
 // Auth Types
+export type UserRole = 'user' | 'moderator' | 'admin';
+
 export interface User {
     _id: string;
     name: string;
@@ -6,6 +8,8 @@ export interface User {
     email: string;
     isVerified: boolean;
     provider: 'local' | 'google';
+    role: UserRole;
+    isSuspended?: boolean;
     twoFactorEnabled?: boolean;
     profilePic?: {
         url?: string;
@@ -83,6 +87,8 @@ export interface LoginResponse {
     email: string;
     isVerified: boolean;
     provider: string;
+    role: UserRole;
+    isSuspended?: boolean;
     twoFactorEnabled: boolean;
     needsVerification?: boolean;
     needs2FA?: boolean;

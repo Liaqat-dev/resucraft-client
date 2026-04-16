@@ -87,7 +87,7 @@ function ResumeBuilder() {
     });
 
     const {
-        isSaving, saveTemplate, updateTemplate, loadTemplate, exportToPDF, getTemplateJSON
+        isSaving, isExporting, saveTemplate, updateTemplate, loadTemplate, exportToPDF, getTemplateJSON
     } = useTemplateActions({
         elements, sections, templateName, templateCategory, canvasSize, customWidth, customHeight, margins, templateId,
         setElements, setSections, setTemplateName, setTemplateCategory, setTemplateId, setCanvasSize, setCustomWidth, setCustomHeight, setMargins, setSelectedIds
@@ -414,8 +414,10 @@ function ResumeBuilder() {
             {/* ── Export FAB ── */}
             <button
                 onClick={exportToPDF}
+                disabled={isExporting}
                 className="fixed bottom-5 left-5 flex items-center gap-2 px-5 py-3 rounded-2xl text-[14px] font-bold text-white
-                    transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0 z-[100] group"
+                    transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0 z-[100] group
+                    disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:translate-y-0"
                 style={{
                     background: `linear-gradient(135deg, var(--rc-accent, #3b82f6), var(--rc-accent-dark, #1d4ed8))`,
                     boxShadow: `0 4px 20px color-mix(in srgb, var(--rc-accent, #3b82f6) 45%, transparent), 0 2px 6px rgba(0,0,0,0.15)`,
@@ -424,7 +426,7 @@ function ResumeBuilder() {
                 <span className="flex items-center justify-center w-7 h-7 rounded-lg bg-white/20 group-hover:bg-white/28 transition-colors">
                     <IconFileText />
                 </span>
-                Export PDF
+                {isExporting ? 'Generating...' : 'Export PDF'}
             </button>
         </div>
     );

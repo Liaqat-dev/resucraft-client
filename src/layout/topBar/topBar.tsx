@@ -1,4 +1,4 @@
-import {BellRing, Moon, Search, Settings, Sun,} from "lucide-react";
+import {BellRing, LayoutDashboard, Moon, Search, Settings, Sun,} from "lucide-react";
 import {Link} from "react-router-dom";
 import React, {ChangeEvent, useEffect, useState} from "react";
 import logo from "@assets/images/main-logo.png";
@@ -7,16 +7,12 @@ import ToolsAppsModal from "@src/components/layout/toolsAppsModal.tsx";
 import {useDispatch, useSelector} from "react-redux";
 import {AppDispatch, RootState} from "@src/slices/store.ts";
 import {changeLayoutMode, changeSidebarColor} from "@src/slices/thunk.ts";
-import {Dropdown, DropdownButton, DropdownMenu,} from "@custom/dropdown/dropdown.tsx";
-import user10 from "@assets/images/avatar/user-10.png";
-import user11 from "@assets/images/avatar/user-11.png";
-import user18 from "@assets/images/avatar/user-18.png";
-import SimpleBar from "simplebar-react";
 import SettingsModal from "@src/components/layout/settingsModal.tsx";
 import {LAYOUT_MODE_TYPES, SIDEBAR_COLOR,} from "@constants/layout";
 import {changeSettingModalOpen} from "@src/slices/layout/reducer.ts";
 
 import Profile from "@layout/topBar/profile.tsx";
+import {useAuth} from "@hooks/useAuth.ts";
 
 interface TopBarProps {
     searchMenu: (value: string) => void;
@@ -25,12 +21,12 @@ interface TopBarProps {
 }
 
 const TopBar: React.FC<TopBarProps> = ({
-                                           searchMenu,
-                                           searchText,
+
                                        }) => {
     const {layoutMode, isSettingModalOpen, layoutSidebarColor} = useSelector(
         (state: RootState) => state.Layout,
     );
+    const {user} = useAuth();
     const dispatch = useDispatch<AppDispatch>();
     const [scrolled, setScrolled] = useState(false);
     const [open, setOpen] = useState(false);
@@ -82,38 +78,36 @@ const TopBar: React.FC<TopBarProps> = ({
                                         src={logo}
                                         aria-label="Read more about Seminole tax hike"
                                         alt="logo"
-                                        className="h-6 group-data-[layout=modern]:hidden inline-block dark:hidden"
-                                        height={24}
-                                        width={132}
+                                        className="h-14 group-data-[layout=modern]:hidden inline-block dark:hidden"
+                                        height={164}
+
                                     />
                                     <img
                                         src={logoWhite}
                                         aria-label="Read more about Seminole tax hike"
                                         alt="logoWhite"
-                                        className="h-6 hidden dark:inline-block group-data-[layout=modern]:hidden"
+                                        className="h-14 hidden dark:inline-block group-data-[layout=modern]:hidden"
                                         height={24}
-                                        width={132}
+
                                     />
                                 </Link>
                             </div>
                         </div>
 
-                        {/* Search */}
-                        <div className="relative items-center hidden lg:flex">
-                            <Search
-                                className="absolute size-4 text-topbar top-3 ltr:left-2 rtl:right-2 group-data-[nav-type=pattern]:text-white/75"></Search>
-                            <input
-                                type="search"
-                                className="border-0 w-72 ltr:pl-8 rtl:pr-8 form-input focus:outline-none group-data-[nav-type=pattern]:bg-transparent group-data-[nav-type=pattern]:placeholder:text-white/50 group-data-[nav-type=pattern]:text-white"
-                                placeholder="Search "
-                                value={searchText}
-                                onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                                    searchMenu(e.target.value)
-                                }
-                            />
-                        </div>
 
                         <div className="flex items-center gap-2 ltr:ml-auto rtl:mr-auto">
+                            {/* Admin Dashboard */}
+                            {user?.role === 'admin' && (
+                                <Link
+                                    to="/dashboard"
+                                    className="topbar-link mr-5 hidden md:flex items-center gap-1.5 text-sm font-medium"
+                                    title="Admin Dashboard"
+                                >
+                                    <LayoutDashboard className="size-4"/>
+                                    <span>Dashboard</span>
+                                </Link>
+                            )}
+
                             {/* Settings (Layout modal) */}
                             <button
                                 className="hidden topbar-link md:flex"
@@ -151,120 +145,120 @@ const TopBar: React.FC<TopBarProps> = ({
 
                             {/* Notifications */}
 
-                            <Dropdown
-                                position="right"
-                                trigger="click"
-                                dropdownClassName="dropdown"
-                            >
-                                <DropdownButton colorClass="topbar-link">
-                  <span className="relative">
-                    <BellRing className="size-4"></BellRing>
-                    <div
-                        className="absolute top-0 -mt-1 bg-green-500 rounded-full ltr:-mr-1 rtl:-ml-1 ltr:right-0 rtl:left-0 size-2 animate-ping"></div>
-                    <div
-                        className="absolute top-0 -mt-1 bg-green-500 rounded-full ltr:-mr-1 rtl:-ml-1 ltr:right-0 rtl:left-0 size-2"></div>
-                  </span>
-                                </DropdownButton>
-                                <DropdownMenu menuclass="!w-96">
-                                    <div className="flex items-center gap-3 p-4">
-                                        <h6 className="grow">Notification (4)</h6>
-                                        <Link
-                                            to="#!"
-                                            className="text-sm shrink-0 link link-primary"
-                                        >
-                                            Mark All as read
-                                        </Link>
-                                    </div>
-                                    <div className="py-4 border-t border-gray-200 dark:border-dark-800">
-                                        <SimpleBar>
-                                            <div className="px-3">
-                                                <Link
-                                                    to="#!"
-                                                    className="relative flex gap-3 p-2 transition duration-300 ease-linear rounded-md hover:bg-gray-100 [&.unread]:bg-gray-100 dark:[&.unread]:bg-dark-850 dark:hover:bg-dark-850 unread"
-                                                >
-                                                    <img
-                                                        src={user10}
-                                                        alt="user10Img"
-                                                        className="rounded-full size-7 shrink-0"
-                                                    />
-                                                    <div className="grow">
-                                                        <p className="mb-0.5 text-sm">
-                                                            <span className="font-medium">Donna Berlin</span>{" "}
-                                                            wants to edit ResuCraft Admin & dashboards
-                                                        </p>
-                                                        <p className="text-xs text-gray-500 dark:text-dark-500">
-                                                            5 min ago
-                                                        </p>
-                                                    </div>
-                                                </Link>
-                                                <Link
-                                                    to="#!"
-                                                    className="relative flex gap-3 p-2 transition duration-300 ease-linear rounded-md hover:bg-gray-100 [&.unread]:bg-gray-100 dark:[&.unread]:bg-dark-850 dark:hover:bg-dark-850"
-                                                >
-                                                    <img
-                                                        src={user11}
-                                                        alt="user11Img"
-                                                        className="rounded-full size-7 shrink-0"
-                                                    />
-                                                    <div className="grow">
-                                                        <p className="mb-0.5 text-sm">
-                                                            <span className="font-medium">Liam Clark</span>{" "}
-                                                            commented in domiex
-                                                        </p>
-                                                        <p className="text-xs text-gray-500 dark:text-dark-500">
-                                                            8 min ago
-                                                        </p>
-                                                        <p className="mt-3 text-sm line-clamp-2">
-                                                            " Greetings, I'm making blazor web assembly app /
-                                                            MAUI. Does your template available for this? "
-                                                        </p>
-                                                    </div>
-                                                </Link>
-                                                <Link
-                                                    to="#!"
-                                                    className="relative flex gap-3 p-2 transition duration-300 ease-linear rounded-md hover:bg-gray-100 [&.unread]:bg-gray-100 dark:[&.unread]:bg-dark-850 dark:hover:bg-dark-850"
-                                                >
-                                                    <div
-                                                        className="flex items-center justify-center text-xs text-gray-500 bg-gray-100 rounded-full size-7 shrink-0">
-                                                        LN
-                                                    </div>
-                                                    <div className="grow">
-                                                        <p className="mb-0.5 text-sm">
-                                                            <span className="font-medium">Lucas Nguyen</span>{" "}
-                                                            competed create new components
-                                                        </p>
-                                                        <p className="text-xs text-gray-500 dark:text-dark-500">
-                                                            01:15 PM
-                                                        </p>
-                                                    </div>
-                                                </Link>
-                                                <Link
-                                                    to="#!"
-                                                    className="relative flex gap-3 p-2 transition duration-300 ease-linear rounded-md hover:bg-gray-100 [&.unread]:bg-gray-100 dark:[&.unread]:bg-dark-850 dark:hover:bg-dark-850"
-                                                >
-                                                    <img
-                                                        src={user18}
-                                                        alt="user18Img"
-                                                        className="rounded-full size-7 shrink-0"
-                                                    />
-                                                    <div className="grow">
-                                                        <p className="mb-0.5 text-sm">
-                                                            <span className="font-medium">James Taylor</span>{" "}
-                                                            marked your order.
-                                                        </p>
-                                                        <span className="mb-2 badge badge-primary">
-                              Completed
-                            </span>
-                                                        <p className="text-xs text-gray-500 dark:text-dark-500">
-                                                            03:57 AM
-                                                        </p>
-                                                    </div>
-                                                </Link>
-                                            </div>
-                                        </SimpleBar>
-                                    </div>
-                                </DropdownMenu>
-                            </Dropdown>
+                  {/*          <Dropdown*/}
+                  {/*              position="right"*/}
+                  {/*              trigger="click"*/}
+                  {/*              dropdownClassName="dropdown"*/}
+                  {/*          >*/}
+                  {/*              <DropdownButton colorClass="topbar-link">*/}
+                  {/*<span className="relative">*/}
+                  {/*  <BellRing className="size-4"></BellRing>*/}
+                  {/*  <div*/}
+                  {/*      className="absolute top-0 -mt-1 bg-green-500 rounded-full ltr:-mr-1 rtl:-ml-1 ltr:right-0 rtl:left-0 size-2 animate-ping"></div>*/}
+                  {/*  <div*/}
+                  {/*      className="absolute top-0 -mt-1 bg-green-500 rounded-full ltr:-mr-1 rtl:-ml-1 ltr:right-0 rtl:left-0 size-2"></div>*/}
+                  {/*</span>*/}
+                  {/*              </DropdownButton>*/}
+                  {/*              <DropdownMenu menuclass="!w-96">*/}
+                  {/*                  <div className="flex items-center gap-3 p-4">*/}
+                  {/*                      <h6 className="grow">Notification (4)</h6>*/}
+                  {/*                      <Link*/}
+                  {/*                          to="#!"*/}
+                  {/*                          className="text-sm shrink-0 link link-primary"*/}
+                  {/*                      >*/}
+                  {/*                          Mark All as read*/}
+                  {/*                      </Link>*/}
+                  {/*                  </div>*/}
+                  {/*                  <div className="py-4 border-t border-gray-200 dark:border-dark-800">*/}
+                  {/*                      <SimpleBar>*/}
+                  {/*                          <div className="px-3">*/}
+                  {/*                              <Link*/}
+                  {/*                                  to="#!"*/}
+                  {/*                                  className="relative flex gap-3 p-2 transition duration-300 ease-linear rounded-md hover:bg-gray-100 [&.unread]:bg-gray-100 dark:[&.unread]:bg-dark-850 dark:hover:bg-dark-850 unread"*/}
+                  {/*                              >*/}
+                  {/*                                  <img*/}
+                  {/*                                      src={user10}*/}
+                  {/*                                      alt="user10Img"*/}
+                  {/*                                      className="rounded-full size-7 shrink-0"*/}
+                  {/*                                  />*/}
+                  {/*                                  <div className="grow">*/}
+                  {/*                                      <p className="mb-0.5 text-sm">*/}
+                  {/*                                          <span className="font-medium">Donna Berlin</span>{" "}*/}
+                  {/*                                          wants to edit ResuCraft Admin & dashboards*/}
+                  {/*                                      </p>*/}
+                  {/*                                      <p className="text-xs text-gray-500 dark:text-dark-500">*/}
+                  {/*                                          5 min ago*/}
+                  {/*                                      </p>*/}
+                  {/*                                  </div>*/}
+                  {/*                              </Link>*/}
+                  {/*                              <Link*/}
+                  {/*                                  to="#!"*/}
+                  {/*                                  className="relative flex gap-3 p-2 transition duration-300 ease-linear rounded-md hover:bg-gray-100 [&.unread]:bg-gray-100 dark:[&.unread]:bg-dark-850 dark:hover:bg-dark-850"*/}
+                  {/*                              >*/}
+                  {/*                                  <img*/}
+                  {/*                                      src={user11}*/}
+                  {/*                                      alt="user11Img"*/}
+                  {/*                                      className="rounded-full size-7 shrink-0"*/}
+                  {/*                                  />*/}
+                  {/*                                  <div className="grow">*/}
+                  {/*                                      <p className="mb-0.5 text-sm">*/}
+                  {/*                                          <span className="font-medium">Liam Clark</span>{" "}*/}
+                  {/*                                          commented in domiex*/}
+                  {/*                                      </p>*/}
+                  {/*                                      <p className="text-xs text-gray-500 dark:text-dark-500">*/}
+                  {/*                                          8 min ago*/}
+                  {/*                                      </p>*/}
+                  {/*                                      <p className="mt-3 text-sm line-clamp-2">*/}
+                  {/*                                          " Greetings, I'm making blazor web assembly app /*/}
+                  {/*                                          MAUI. Does your template available for this? "*/}
+                  {/*                                      </p>*/}
+                  {/*                                  </div>*/}
+                  {/*                              </Link>*/}
+                  {/*                              <Link*/}
+                  {/*                                  to="#!"*/}
+                  {/*                                  className="relative flex gap-3 p-2 transition duration-300 ease-linear rounded-md hover:bg-gray-100 [&.unread]:bg-gray-100 dark:[&.unread]:bg-dark-850 dark:hover:bg-dark-850"*/}
+                  {/*                              >*/}
+                  {/*                                  <div*/}
+                  {/*                                      className="flex items-center justify-center text-xs text-gray-500 bg-gray-100 rounded-full size-7 shrink-0">*/}
+                  {/*                                      LN*/}
+                  {/*                                  </div>*/}
+                  {/*                                  <div className="grow">*/}
+                  {/*                                      <p className="mb-0.5 text-sm">*/}
+                  {/*                                          <span className="font-medium">Lucas Nguyen</span>{" "}*/}
+                  {/*                                          competed create new components*/}
+                  {/*                                      </p>*/}
+                  {/*                                      <p className="text-xs text-gray-500 dark:text-dark-500">*/}
+                  {/*                                          01:15 PM*/}
+                  {/*                                      </p>*/}
+                  {/*                                  </div>*/}
+                  {/*                              </Link>*/}
+                  {/*                              <Link*/}
+                  {/*                                  to="#!"*/}
+                  {/*                                  className="relative flex gap-3 p-2 transition duration-300 ease-linear rounded-md hover:bg-gray-100 [&.unread]:bg-gray-100 dark:[&.unread]:bg-dark-850 dark:hover:bg-dark-850"*/}
+                  {/*                              >*/}
+                  {/*                                  <img*/}
+                  {/*                                      src={user18}*/}
+                  {/*                                      alt="user18Img"*/}
+                  {/*                                      className="rounded-full size-7 shrink-0"*/}
+                  {/*                                  />*/}
+                  {/*                                  <div className="grow">*/}
+                  {/*                                      <p className="mb-0.5 text-sm">*/}
+                  {/*                                          <span className="font-medium">James Taylor</span>{" "}*/}
+                  {/*                                          marked your order.*/}
+                  {/*                                      </p>*/}
+                  {/*                                      <span className="mb-2 badge badge-primary">*/}
+                  {/*            Completed*/}
+                  {/*          </span>*/}
+                  {/*                                      <p className="text-xs text-gray-500 dark:text-dark-500">*/}
+                  {/*                                          03:57 AM*/}
+                  {/*                                      </p>*/}
+                  {/*                                  </div>*/}
+                  {/*                              </Link>*/}
+                  {/*                          </div>*/}
+                  {/*                      </SimpleBar>*/}
+                  {/*                  </div>*/}
+                  {/*              </DropdownMenu>*/}
+                  {/*          </Dropdown>*/}
 
                             <Profile/>
 

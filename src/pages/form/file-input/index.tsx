@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import user13 from "@assets/images/avatar/user-13.png";
+import user13 from "@assets/images/avatar/user-1.png";
 import { Upload } from "lucide-react";
 import { NextPageWithLayout } from "@dtos/layout";
 import BreadCrumb from "@src/components/common/breadCrumb";

@@ -13,12 +13,13 @@ import AOS from "aos";
 import LandingNav from "@src/components/landing/LandingNav.tsx";
 import LandingFooter from "@src/components/landing/LandingFooter.tsx";
 import { useLandingTheme } from "@hooks/useLandingTheme";
+import { contactService } from "@services/contact.service";
 
 const contactInfo = [
     {
         icon: <Mail size={18} />,
         label: "Email Us",
-        value: "support@resucraft.app",
+        value: "resucraft94@gmail.com",
         sub: "We reply within 24 hours",
     },
     {
@@ -50,6 +51,7 @@ const ContactPage: React.FC = () => {
     const [form, setForm] = useState({ name: "", email: "", topic: "", message: "" });
     const [loading, setLoading] = useState(false);
     const [submitted, setSubmitted] = useState(false);
+    const [error, setError] = useState("");
 
     useEffect(() => {
         AOS.init({ once: true, duration: 650, easing: "ease-out-cubic", offset: 60 });
@@ -61,9 +63,15 @@ const ContactPage: React.FC = () => {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
-        await new Promise((r) => setTimeout(r, 1500));
-        setLoading(false);
-        setSubmitted(true);
+        setError("");
+        try {
+            await contactService.send(form);
+            setSubmitted(true);
+        } catch (err: any) {
+            setError(err?.response?.data?.message || "Something went wrong. Please try again.");
+        } finally {
+            setLoading(false);
+        }
     };
 
     const fieldStyle: React.CSSProperties = {
@@ -213,7 +221,7 @@ const ContactPage: React.FC = () => {
                                         Thanks for reaching out. We'll get back to you within 24 hours.
                                     </p>
                                     <button
-                                        onClick={() => { setSubmitted(false); setForm({ name: "", email: "", topic: "", message: "" }); }}
+                                        onClick={() => { setSubmitted(false); setError(""); setForm({ name: "", email: "", topic: "", message: "" }); }}
                                         style={{ fontSize: '0.875rem', fontWeight: 600, color: theme.accentLight, background: 'none', border: 'none', cursor: 'pointer', fontFamily: "'DM Sans', sans-serif" }}
                                     >
                                         Send another message
@@ -287,6 +295,12 @@ const ContactPage: React.FC = () => {
                                             required
                                         />
                                     </div>
+
+                                    {error && (
+                                        <p style={{ fontSize: '0.8rem', color: '#ef4444', marginBottom: '-0.25rem' }}>
+                                            {error}
+                                        </p>
+                                    )}
 
                                     <button
                                         type="submit"

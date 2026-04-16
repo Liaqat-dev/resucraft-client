@@ -2,6 +2,7 @@
 import {createAsyncThunk} from '@reduxjs/toolkit';
 import {authService} from '../../services/authService';
 import {login, logout, setRefreshAccessToken, setUser, updateUser} from '@src/slices/auth/reducer.ts';
+import {setAuthInitialized} from '@src/utils/axios_api';
 import {
     ChangePasswordData,
     LoginData,
@@ -24,12 +25,17 @@ export const initializeAuth = createAsyncThunk(
                 accessToken: response.accessToken
             }));
 
-            // Fetch user profilePics
+            // Unblock any API calls that were queued while we were refreshing
+            setAuthInitialized(response.accessToken);
+
+            // Fetch user profile
             const user = await authService.getProfile();
             dispatch(setUser({ user }));
 
             return { user, accessToken: response.accessToken };
         } catch (error: any) {
+            // Unblock queued requests (they will be rejected, not retried)
+            setAuthInitialized(null, error);
             // If refresh fails, user needs to login
             console.log('Auto-refresh failed, user needs to login');
             return rejectWithValue({
@@ -81,6 +87,8 @@ export const loginUser = createAsyncThunk(
                     email: response.email,
                     isVerified: response.isVerified,
                     provider: response.provider as 'local' | 'google',
+                    role: response.role ?? 'user',
+                    isSuspended: response.isSuspended ?? false,
                     twoFactorEnabled: response.twoFactorEnabled
                 }
             }));
@@ -112,6 +120,8 @@ export const googleLogin = createAsyncThunk(
                     email: user.email,
                     isVerified: user.isVerified,
                     provider: 'google',
+                    role: user.role ?? 'user',
+                    isSuspended: user.isSuspended ?? false,
                     twoFactorEnabled: user.twoFactorEnabled || false
                 }
             }));

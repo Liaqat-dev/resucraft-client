@@ -49,6 +49,11 @@ import FeaturesPage from '@pages/landing/FeaturesPage.tsx'
 import FAQPage from '@pages/landing/FAQPage.tsx'
 import ContactPage from '@pages/landing/ContactPage.tsx'
 import AboutPage from '@pages/landing/AboutPage.tsx'
+import DashboardOverview from '@pages/dashboard/Overview.tsx'
+import DashboardUsers from '@pages/dashboard/Users.tsx'
+import DashboardTemplates from '@pages/dashboard/Templates.tsx'
+import DashboardAnalytics from '@pages/dashboard/Analytics.tsx'
+import DashboardMessages from '@pages/dashboard/Messages.tsx'
 
 interface IRoute {
     path: string;
@@ -148,4 +153,12 @@ const builderRoutes: IRoute[] = [
     {path: "/builder/:id", component: <ResumeBuilder/>},
 ]
 
-export {routes, nonAuthRoutes, builderRoutes};
+const adminRoutes: IRoute[] = [
+    { path: '/dashboard',            component: <DashboardOverview /> },
+    { path: '/dashboard/users',      component: <DashboardUsers /> },
+    { path: '/dashboard/templates',  component: <DashboardTemplates /> },
+    { path: '/dashboard/analytics',  component: <DashboardAnalytics /> },
+    { path: '/dashboard/messages',   component: <DashboardMessages /> },
+];
+
+export {routes, nonAuthRoutes, builderRoutes, adminRoutes};

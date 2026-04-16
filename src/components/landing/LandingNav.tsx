@@ -6,6 +6,8 @@ import { useLandingTheme } from "@hooks/useLandingTheme";
 import { changeLayoutMode } from "@src/slices/thunk";
 import { LAYOUT_MODE_TYPES } from "@src/components/constants/layout";
 import { AppDispatch } from "@src/slices/store.ts";
+import logo from "@assets/images/main-logo.png";
+import logoWhite from "@assets/images/logo-white.png";
 
 const navLinks = [
     { label: "Features", href: "/features" },
@@ -100,27 +102,23 @@ const LandingNav: React.FC = () => {
             >
                 <div style={{ maxWidth: "80rem", margin: "0 auto", padding: "0 1.5rem" }}>
                     <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", height: "4rem" }}>
+                        <Link to="/">
+                            <img
+                                src={logo}
+                                aria-label="Read more about Seminole tax hike"
+                                alt="logo"
+                                className="h-14 group-data-[layout=modern]:hidden inline-block dark:hidden"
+                                height={164}
 
-                        {/* Logo */}
-                        <Link to="/welcome" style={{ display: "flex", alignItems: "center", gap: "0.65rem", textDecoration: "none", flexShrink: 0 }}>
-                            <div style={{
-                                width: 34, height: 34, borderRadius: 9, flexShrink: 0,
-                                background: `linear-gradient(135deg, ${theme.accent}, ${theme.accentDark})`,
-                                display: "flex", alignItems: "center", justifyContent: "center",
-                            }}>
-                                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round">
-                                    <rect x="4" y="3" width="16" height="18" rx="2" />
-                                    <line x1="8" y1="8" x2="16" y2="8" />
-                                    <line x1="8" y1="12" x2="13" y2="12" />
-                                    <line x1="8" y1="16" x2="11" y2="16" />
-                                </svg>
-                            </div>
-                            <span className="rc-serif" style={{
-                                fontSize: "1.35rem", fontWeight: 600,
-                                color: theme.text, letterSpacing: "0.04em",
-                            }}>
-                                ResuCraft
-                            </span>
+                            />
+                            <img
+                                src={logoWhite}
+                                aria-label="Read more about Seminole tax hike"
+                                alt="logoWhite"
+                                className="h-14 hidden dark:inline-block group-data-[layout=modern]:hidden"
+                                height={24}
+
+                            />
                         </Link>
 
                         {/* Desktop nav */}

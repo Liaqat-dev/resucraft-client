@@ -19,11 +19,6 @@ function Profile() {
             fetchProfile();
         }
     }, [accessToken]);
-    useEffect(() => {
-        // if (accessToken && !user) {
-        fetchProfile();
-        // }
-    }, []);
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
