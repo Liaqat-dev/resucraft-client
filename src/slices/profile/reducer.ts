@@ -9,6 +9,8 @@ const initialState: ProfileState = {
     experience: [],
     skills: [],
     loading: false,
+    fullProfileLoading: false,
+    fullProfileLoaded: false,
     personalInfoLoaded: false,
     projectsLoading: false,
     certificatesLoading: false,
@@ -29,6 +31,14 @@ const profileSlice = createSlice({
     reducers: {
         setLoading: (state, action: PayloadAction<boolean>) => {
             state.loading = action.payload;
+        },
+
+        setFullProfileLoading: (state, action: PayloadAction<boolean>) => {
+            state.fullProfileLoading = action.payload;
+        },
+
+        setFullProfileLoaded: (state, action: PayloadAction<boolean>) => {
+            state.fullProfileLoaded = action.payload;
         },
 
         setError: (state, action: PayloadAction<string | null>) => {
@@ -166,6 +176,8 @@ const profileSlice = createSlice({
             state.experience = [];
             state.skills = [];
             state.loading = false;
+            state.fullProfileLoading = false;
+            state.fullProfileLoaded = false;
             state.personalInfoLoaded = false;
             state.projectsLoading = false;
             state.certificatesLoading = false;
@@ -184,6 +196,8 @@ const profileSlice = createSlice({
 
 export const {
     setLoading,
+    setFullProfileLoading,
+    setFullProfileLoaded,
     setError,
     setPersonalInfo,
     updatePersonalInfo,

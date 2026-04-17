@@ -12,6 +12,8 @@ export interface ProfileState {
   experience: Experience[];
   skills: Skill[];
   loading: boolean;
+  fullProfileLoading: boolean;
+  fullProfileLoaded: boolean;
   personalInfoLoaded: boolean;
   projectsLoading: boolean;
   certificatesLoading: boolean;

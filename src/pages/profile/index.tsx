@@ -1,14 +1,19 @@
 import {NextPageWithLayout} from "@dtos/layout";
 import {useEffect} from "react";
+import {useDispatch} from "react-redux";
 import {Tab, Tabs} from "@src/components/custom/tabs/tabOutletBased.tsx";
 import CommonAccount from "@src/components/common/commonAccount.tsx";
 import {Award, Briefcase, Eye, GraduationCap, Lightbulb, Monitor, User} from "lucide-react";
+import {fetchFullProfile} from "@src/slices/profile/thunk.ts";
+import type {AppDispatch} from "@src/slices/store.ts";
 
 const Profile: NextPageWithLayout = () => {
+    const dispatch = useDispatch<AppDispatch>();
+
     useEffect(() => {
-        document.title =
-            "User Overview | ResuCraft";
-    }, []);
+        document.title = "User Overview | ResuCraft";
+        dispatch(fetchFullProfile());
+    }, [dispatch]);
 
     return (
         <div className={'container mx-auto'}>

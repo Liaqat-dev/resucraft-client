@@ -8,6 +8,8 @@ import { LAYOUT_MODE_TYPES } from "@src/components/constants/layout";
 import { AppDispatch } from "@src/slices/store.ts";
 import logo from "@assets/images/main-logo.png";
 import logoWhite from "@assets/images/logo-white.png";
+import Profile from "@layout/topBar/profile.tsx";
+import { useAuth } from "@hooks/useAuth.ts";
 
 const navLinks = [
     { label: "Features", href: "/features" },
@@ -23,6 +25,7 @@ const LandingNav: React.FC = () => {
     const location = useLocation();
     const theme = useLandingTheme();
     const dispatch = useDispatch<AppDispatch>();
+    const { user } = useAuth();
 
     const toggleTheme = () => {
         dispatch(changeLayoutMode(
@@ -159,17 +162,7 @@ const LandingNav: React.FC = () => {
                             >
                                 {theme.isDark ? <Sun size={15} /> : <Moon size={15} />}
                             </button>
-                            <Link to="/auth/sign-in" className="rc-nav-signin">Sign in</Link>
-                            <Link to="/" className="rc-btn" style={{ padding: "0.38rem 1rem", fontSize: "0.82rem" }}>
-                                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" style={{ flexShrink: 0, position: "relative", zIndex: 1 }}>
-                                    <rect x="4" y="3" width="16" height="18" rx="2" />
-                                    <line x1="8" y1="8" x2="16" y2="8" />
-                                    <line x1="8" y1="12" x2="13" y2="12" />
-                                    <line x1="8" y1="16" x2="11" y2="16" />
-                                </svg>
-                                <span style={{ position: "relative", zIndex: 1 }}>Start crafting</span>
-                                <span style={{ color: theme.accent, position: "relative", zIndex: 1, fontSize: "0.9rem" }}>↗</span>
-                            </Link>
+                            <Profile />
                         </div>
 
                         {/* Mobile controls */}
@@ -240,18 +233,33 @@ const LandingNav: React.FC = () => {
                             paddingTop: "0.75rem", borderTop: `1px solid ${theme.border}`,
                             display: "flex", flexDirection: "column", gap: "0.5rem", marginTop: "0.25rem",
                         }}>
-                            <Link to="/auth/sign-in" style={{
-                                padding: "0.65rem", textAlign: "center", fontSize: "0.875rem",
-                                fontWeight: 500, borderRadius: 8, border: `1px solid ${theme.border}`,
-                                color: theme.textSub, textDecoration: "none",
-                                fontFamily: "'DM Sans', sans-serif",
-                            }}>
-                                Sign in
-                            </Link>
-                            <Link to="/auth/sign-up" className="rc-btn" style={{ justifyContent: "center" }}>
-                                <span style={{ position: "relative", zIndex: 1 }}>Start crafting</span>
-                                <span style={{ color: theme.accent, position: "relative", zIndex: 1 }}>↗</span>
-                            </Link>
+                            {user ? (
+                                <Link to="/dashboard" style={{
+                                    padding: "0.65rem", textAlign: "center", fontSize: "0.875rem",
+                                    fontWeight: 600, borderRadius: 8,
+                                    background: "linear-gradient(135deg, #0F172A 0%, #1e293b 100%)",
+                                    color: "#fff", textDecoration: "none",
+                                    border: "1px solid #334155",
+                                    fontFamily: "'DM Sans', sans-serif",
+                                }}>
+                                    Go to Dashboard ↗
+                                </Link>
+                            ) : (
+                                <>
+                                    <Link to="/auth/sign-in" style={{
+                                        padding: "0.65rem", textAlign: "center", fontSize: "0.875rem",
+                                        fontWeight: 500, borderRadius: 8, border: `1px solid ${theme.border}`,
+                                        color: theme.textSub, textDecoration: "none",
+                                        fontFamily: "'DM Sans', sans-serif",
+                                    }}>
+                                        Sign in
+                                    </Link>
+                                    <Link to="/auth/sign-up" className="rc-btn" style={{ justifyContent: "center" }}>
+                                        <span style={{ position: "relative", zIndex: 1 }}>Start crafting</span>
+                                        <span style={{ color: theme.accent, position: "relative", zIndex: 1 }}>↗</span>
+                                    </Link>
+                                </>
+                            )}
                         </div>
                     </div>
                 </div>

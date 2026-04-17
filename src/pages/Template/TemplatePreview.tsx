@@ -1,9 +1,12 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { Loader2, Sparkles, AlertTriangle, ArrowLeft, UserCheck, Mic } from 'lucide-react';
+import { useDispatch } from 'react-redux';
 import { useProfileCompletion } from '@hooks/useProfileCompletion';
 import { generateResume } from '@src/services/ai.service';
+import { fetchFullProfile } from '@src/slices/profile/thunk.ts';
 import InterviewModal from '@src/components/interview/InterviewModal';
+import type { AppDispatch } from '@src/slices/store.ts';
 
 // ── Template preview renderer (same logic as TemplateCard) ──────────────────
 
@@ -110,6 +113,7 @@ const PROFILE_THRESHOLD = 50;
 const TemplatePreview = () => {
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
+    const dispatch = useDispatch<AppDispatch>();
     const { percentage, isProfileReady } = useProfileCompletion();
 
     const [template, setTemplate] = useState<any>(null);
@@ -122,6 +126,8 @@ const TemplatePreview = () => {
     const [showInterview, setShowInterview] = useState(false);
 
     useEffect(() => {
+        dispatch(fetchFullProfile());
+
         const fetchTemplate = async () => {
             try {
                 const res = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASE_URL}/templates/${id}`);
@@ -135,7 +141,7 @@ const TemplatePreview = () => {
             }
         };
         if (id) fetchTemplate();
-    }, [id]);
+    }, [id, dispatch]);
 
     const handleGenerate = async () => {
         if (!id || !jobDescription.trim() || jobDescription.trim().length < 20) return;

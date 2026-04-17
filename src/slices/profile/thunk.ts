@@ -9,6 +9,8 @@ import { RootState } from '@src/slices/store.ts';
 import {
     setPersonalInfo,
     updatePersonalInfo,
+    setFullProfileLoading,
+    setFullProfileLoaded,
     setProjectsLoading,
     setProjects,
     addProject,
@@ -318,5 +320,88 @@ export const deleteSkill = createAsyncThunk(
                 message: error.response?.data?.message || 'Failed to delete skill',
             });
         }
+    }
+);
+
+// ── Full Profile (all sections in parallel) ───────────────────────────────────
+
+export const fetchFullProfile = createAsyncThunk(
+    'profile/fetchFullProfile',
+    async (force?: boolean, { dispatch, getState, rejectWithValue }: any = {}) => {
+        const state = (getState() as RootState).profile;
+        if (!force && state.fullProfileLoaded) return null;
+
+        dispatch(setFullProfileLoading(true));
+
+        const [
+            personalInfoResult,
+            educationResult,
+            experienceResult,
+            certificatesResult,
+            projectsResult,
+            skillsResult,
+        ] = await Promise.allSettled([
+            profileService.getPersonalInfo(),
+            educationService.getAll(),
+            experienceService.getExperiences(),
+            certificatesService.getAll(),
+            projectsService.getAll(),
+            skillService.getAll(),
+        ]);
+
+        if (personalInfoResult.status === 'fulfilled') {
+            dispatch(setPersonalInfo(personalInfoResult.value));
+        }
+
+        if (educationResult.status === 'fulfilled') {
+            const educations: Education[] = educationResult.value?.educations ?? [];
+            educations.sort((a, b) => (a.startDate < b.startDate ? 1 : -1));
+            dispatch(setEducation(educations));
+        }
+
+        if (experienceResult.status === 'fulfilled') {
+            dispatch(setExperience(experienceResult.value.experiences));
+        }
+
+        if (certificatesResult.status === 'fulfilled') {
+            dispatch(setCertificates(certificatesResult.value.certificates));
+        }
+
+        if (projectsResult.status === 'fulfilled') {
+            dispatch(setProjects(projectsResult.value.projects));
+        }
+
+        if (skillsResult.status === 'fulfilled') {
+            dispatch(setSkills(skillsResult.value.skills ?? []));
+        }
+
+        const anyFailed = [
+            personalInfoResult,
+            educationResult,
+            experienceResult,
+            certificatesResult,
+            projectsResult,
+            skillsResult,
+        ].some((r) => r.status === 'rejected');
+
+        dispatch(setFullProfileLoading(false));
+        dispatch(setFullProfileLoaded(true));
+
+        if (anyFailed) {
+            const errors = [
+                personalInfoResult,
+                educationResult,
+                experienceResult,
+                certificatesResult,
+                projectsResult,
+                skillsResult,
+            ]
+                .filter((r): r is PromiseRejectedResult => r.status === 'rejected')
+                .map((r) => r.reason?.response?.data?.message ?? r.reason?.message ?? 'Unknown error');
+
+            return rejectWithValue({ message: errors.join('; '), partial: true });
+        }
+
+        return true;
     }
 );
