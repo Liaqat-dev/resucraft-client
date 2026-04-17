@@ -8,6 +8,14 @@ import {useAuth} from "@hooks/useAuth.ts";
 import {BlankCard} from "@pages/Template/BlankCard.tsx";
 
 const CATEGORIES = ['All', 'Modern', 'Classic', 'Creative', 'Minimal', 'Professional', 'Other'];
+
+const STATUS_TABS = [
+    {key: 'all', label: 'All', dot: ''},
+    {key: 'draft', label: 'Draft', dot: 'bg-amber-400'},
+    {key: 'pending', label: 'Pending', dot: 'bg-blue-400'},
+    {key: 'published', label: 'Published', dot: 'bg-emerald-400'},
+] as const;
+type MyStatus = typeof STATUS_TABS[number]['key'];
 const RECENTS_LIMIT = 4;
 
 /* ── Section header ─────────────────────────────────────────────── */
@@ -21,32 +29,37 @@ const SectionHeader = ({
     title: string;
     count?: number;
     action?: { label: string; onClick: () => void };
-}) => (
-    <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center gap-2.5">
-            <div className="size-7 rounded-lg bg-gray-100 dark:bg-dark-800 flex items-center justify-center">
-                {icon}
-            </div>
-            <h2 className="text-[15px] font-bold text-gray-900 dark:text-dark-100 tracking-tight">
-                {title}
-            </h2>
-            {count !== undefined && (
-                <span
-                    className="text-[11px] font-semibold text-gray-400 dark:text-dark-500 bg-gray-100 dark:bg-dark-800 px-1.5 py-0.5 rounded-full">
+}) => (<>
+        <style>{`
+                @import url('https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+                .section-header-mono   { font-family: 'JetBrains Mono', monospace; }
+                `}</style>
+        <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-2.5">
+                <div className="size-8 rounded-lg bg-gray-100 dark:bg-dark-800 flex items-center justify-center">
+                    {icon}
+                </div>
+                <h2 className="text-[24px] section-header-mono font-bold text-gray-900 dark:text-dark-100 tracking-tight">
+                    {title}
+                </h2>
+                {count !== undefined && (
+                    <span
+                        className="text-[15px] section-header-mono font-semibold text-gray-400 dark:text-dark-500 bg-gray-100 dark:bg-dark-800 px-1.5 py-0.5 rounded-full">
                     {count}
                 </span>
+                )}
+            </div>
+            {action && (
+                <button
+                    onClick={action.onClick}
+                    className="inline-flex items-center gap-1 text-[12px] font-semibold text-primary-500 hover:text-primary-600 transition-colors"
+                >
+                    {action.label}
+                    <ChevronRight className="size-3.5"/>
+                </button>
             )}
         </div>
-        {action && (
-            <button
-                onClick={action.onClick}
-                className="inline-flex items-center gap-1 text-[12px] font-semibold text-primary-500 hover:text-primary-600 transition-colors"
-            >
-                {action.label}
-                <ChevronRight className="size-3.5"/>
-            </button>
-        )}
-    </div>
+    </>
 );
 
 
@@ -63,6 +76,7 @@ const TemplatesGallery = () => {
     const [myTemplateError, setMyTemplateError] = useState<string | null>(null);
     const [search, setSearch] = useState('');
     const [activeCategory, setActiveCategory] = useState('All');
+    const [myStatus, setMyStatus] = useState<MyStatus>('all');
 
     useEffect(() => {
         fetchAll();
@@ -135,6 +149,15 @@ const TemplatesGallery = () => {
         return cat === 'All' ? combined.length : combined.filter(t => (t.category || 'Other') === cat).length;
     };
 
+    /** Count for My Templates status tabs */
+    const myStatusCount = (key: MyStatus) =>
+        key === 'all' ? myTemplates.length : myTemplates.filter(t => (t.status || 'draft') === key).length;
+
+    /** Templates visible in My Templates section, filtered by status */
+    const myFiltered = myStatus === 'all'
+        ? myTemplates
+        : myTemplates.filter(t => (t.status || 'draft') === myStatus);
+
     const loading = loadingMine && loadingAll;
 
     /* ── Grid helper ── */
@@ -179,10 +202,9 @@ const TemplatesGallery = () => {
                             <button
                                 key={cat}
                                 onClick={() => setActiveCategory(cat)}
-                                className={`shrink-0 px-4 py-1.5 rounded-full text-[13px] font-semibold transition-all duration-150 ${
-                                    active
-                                        ? 'bg-gray-900 dark:bg-white text-white dark:text-gray-900 shadow-sm'
-                                        : 'bg-gray-100 dark:bg-dark-800 text-gray-600 dark:text-dark-400 hover:bg-gray-200 dark:hover:bg-dark-700'
+                                className={`shrink-0 px-4 py-1.5 rounded-full text-[13px] font-semibold transition-all duration-150 ${active
+                                    ? 'bg-gray-900 dark:bg-white text-white dark:text-gray-900 shadow-sm'
+                                    : 'bg-gray-100 dark:bg-dark-800 text-gray-600 dark:text-dark-400 hover:bg-gray-200 dark:hover:bg-dark-700'
                                 }`}
                             >
                                 {cat}
@@ -324,11 +346,42 @@ const TemplatesGallery = () => {
                                         count={myTemplates.length}
                                         action={{label: 'Create new', onClick: () => navigate('/builder')}}
                                     />
+                                    {/* ── Status filter tabs ── */}
+                                    {myTemplates.length > 0 && (
+                                        <div className="flex items-center gap-2 overflow-x-auto pb-2 mb-5"
+                                             style={{scrollbarWidth: 'none'}}>
+                                            {STATUS_TABS.map(tab => {
+                                                const cnt = myStatusCount(tab.key);
+                                                if (cnt === 0 && tab.key !== 'all') return null;
+                                                const active = myStatus === tab.key;
+                                                return (
+                                                    <button
+                                                        key={tab.key}
+                                                        onClick={() => setMyStatus(tab.key)}
+                                                        className={`shrink-0 inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-[13px] font-semibold transition-all duration-150 ${
+                                                            active
+                                                                ? 'bg-gray-900 dark:bg-white text-white dark:text-gray-900 shadow-sm'
+                                                                : 'bg-gray-100 dark:bg-dark-800 text-gray-600 dark:text-dark-400 hover:bg-gray-200 dark:hover:bg-dark-700'
+                                                        }`}
+                                                    >
+                                                        {tab.dot && (
+                                                            <span
+                                                                className={`size-2 rounded-full shrink-0 ${tab.dot} ${active ? 'opacity-90' : 'opacity-60'}`}/>
+                                                        )}
+                                                        {tab.label}
+                                                        <span
+                                                            className={`text-[11px] ${active ? 'opacity-60' : 'opacity-50'}`}>{cnt}</span>
+                                                    </button>
+                                                );
+                                            })}
+                                        </div>
+                                    )}
+
                                     <Grid>
                                         {/* Blank card always first */}
                                         <BlankCard onClick={() => navigate('/builder')}/>
 
-                                        {isAuthenticated && myTemplates.map(t => (
+                                        {isAuthenticated && myFiltered.map(t => (
                                             <TemplateCard key={t._id} template={t} onDelete={handleDelete} isOwn/>
                                         ))}
                                     </Grid>
@@ -336,6 +389,17 @@ const TemplatesGallery = () => {
                                     {myTemplates.length === 0 && (
                                         <p className="text-[13px] text-gray-400 dark:text-dark-500 mt-4 pl-1">
                                             You haven't created any templates yet — start with a blank resume above.
+                                        </p>
+                                    )}
+                                    {myTemplates.length > 0 && myFiltered.length === 0 && (
+                                        <p className="text-[13px] text-gray-400 dark:text-dark-500 mt-4 pl-1">
+                                            No {myStatus} templates yet.
+                                            <button
+                                                onClick={() => setMyStatus('all')}
+                                                className="ml-2 text-primary-500 hover:text-primary-600 font-semibold transition-colors"
+                                            >
+                                                Clear
+                                            </button>
                                         </p>
                                     )}
                                 </section>

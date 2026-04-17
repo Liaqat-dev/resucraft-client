@@ -25,6 +25,7 @@ import {adminService, AdminUser} from '@src/services/adminService';
 import {useAuth} from '@hooks/useAuth';
 import {getAvatar} from '@src/utils/url_helper';
 import {UserRole} from '@dtos/auth';
+import { StatCardGrid, StatCardItem } from './components/StatCard';
 
 /* ─── tiny helpers ─────────────────────────────────────────────────── */
 function timeAgo(iso?: string | null) {
@@ -58,36 +59,12 @@ const ROLE_META: Record<UserRole, { label: string; icon: React.ReactNode; cls: s
     },
 };
 
-const STAT_ITEMS = [
-    {
-        key: 'total',
-        label: 'Total Users',
-        icon: <UsersIcon className="size-4"/>,
-        color: 'text-sky-400',
-        bg: 'bg-sky-400/10'
-    },
-    {
-        key: 'admin',
-        label: 'Admins',
-        icon: <Crown className="size-4"/>,
-        color: 'text-violet-400',
-        bg: 'bg-violet-400/10'
-    },
-    {
-        key: 'moderator',
-        label: 'Moderators',
-        icon: <Shield className="size-4"/>,
-        color: 'text-amber-400',
-        bg: 'bg-amber-400/10'
-    },
-    {
-        key: 'user',
-        label: 'Members',
-        icon: <UserCheck className="size-4"/>,
-        color: 'text-emerald-400',
-        bg: 'bg-emerald-400/10'
-    },
-    {key: 'suspended', label: 'Suspended', icon: <Ban className="size-4"/>, color: 'text-red-400', bg: 'bg-red-400/10'},
+const STAT_ITEMS: StatCardItem[] = [
+    { key: 'total',     label: 'Total Users',  icon: <UsersIcon  className="size-4"/>, color: 'text-sky-400',     bg: 'bg-sky-400/10'     },
+    { key: 'admin',     label: 'Admins',       icon: <Crown      className="size-4"/>, color: 'text-violet-400', bg: 'bg-violet-400/10'  },
+    { key: 'moderator', label: 'Moderators',   icon: <Shield     className="size-4"/>, color: 'text-amber-400',  bg: 'bg-amber-400/10'   },
+    { key: 'user',      label: 'Members',      icon: <UserCheck  className="size-4"/>, color: 'text-emerald-400',bg: 'bg-emerald-400/10' },
+    { key: 'suspended', label: 'Suspended',    icon: <Ban        className="size-4"/>, color: 'text-red-400',    bg: 'bg-red-400/10'     },
 ];
 
 /* ─── Confirm modal ──────────────────────────────────────────────────── */
@@ -630,20 +607,8 @@ export default function Users() {
                 </div>
 
                 {/* ── Stat cards ───────────────────────────────────── */}
-                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 mb-6">
-                    {STAT_ITEMS.map(s => (
-                        <div key={s.key} className="adm-card  adm-stat-card p-4">
-                            <div className={`inline-flex items-center justify-center size-8 rounded-lg mb-2.5 ${s.bg}`}>
-                                <span className={s.color}>{s.icon}</span>
-                            </div>
-                            <p className="adm-mono text-xl font-medium" style={{color: '#3b3d3e'}}>
-                                {loading ? <span
-                                    className="inline-block w-8 h-5 rounded bg-white/5 animate-pulse"/> : statValues[s.key]}
-                            </p>
-                            <p className="text-xs mt-0.5 text-bold" style={{color: '#475569'}}>{s.label}</p>
-                        </div>
-                    ))}
-                </div>
+                <StatCardGrid items={STAT_ITEMS} values={statValues} loading={loading} />
+
 
                 {/* ── Filters ──────────────────────────────────────── */}
                 <div className="adm-card p-3 mb-4 flex flex-wrap gap-2 items-center">
