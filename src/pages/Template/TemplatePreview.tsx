@@ -124,7 +124,7 @@ const TemplatePreview = () => {
     useEffect(() => {
         const fetchTemplate = async () => {
             try {
-                const res = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASE_URL}templates/${id}`);
+                const res = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASE_URL}/templates/${id}`);
                 if (!res.ok) throw new Error('Failed to fetch template');
                 const data = await res.json();
                 setTemplate(data);
