@@ -666,4 +666,4 @@ const PosterPage: React.FC = () => {
     );
 };
 
-export default PosterPage;
+export default PosterPage1;
