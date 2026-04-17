@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import lguLogo from "@assets/images/lgu-logo.jpeg";
 import logoWhite from "@assets/images/logo (3).png";
+import mock from '@assets/images/mock.png'
 
 /* ─────────────────────────────────────────────────────────────────
    Light theme design tokens
@@ -341,15 +342,8 @@ const PosterInner: React.FC = () => (
 
             {/* ─── 5. UI MOCKUPS ─── */}
             <SectionHead label="Interface Preview" icon={<LayoutTemplate size={11} />} />
-            <div style={{ display: "grid", gridTemplateColumns: "1.1fr 0.9fr", gap: 14, marginBottom: 20 }}>
-                <div>
-                    <p style={{ margin: "0 0 7px", fontSize: 9.5, color: T.textMuted, fontFamily: "'DM Sans', sans-serif", textTransform: "uppercase", letterSpacing: "0.08em", fontWeight: 600, textAlign: "center" }}>Resume Builder</p>
-                    <LaptopMockup />
-                </div>
-                <div style={{ display: "flex", flexDirection: "column" }}>
-                    <p style={{ margin: "0 0 7px", fontSize: 9.5, color: T.textMuted, fontFamily: "'DM Sans', sans-serif", textTransform: "uppercase", letterSpacing: "0.08em", fontWeight: 600, textAlign: "center" }}>Interview Coach</p>
-                    <InterviewMockup />
-                </div>
+            <div >
+               <img src={mock} alt={'dfd'}/>
             </div>
 
             {/* ─── 6. RESUME GENERATION STEPS ─── */}
@@ -462,7 +456,7 @@ const PosterInner: React.FC = () => (
             {/* ─── 8. TECH STACK ─── */}
             <SectionHead label="Technology Stack" icon={<Cpu size={11} />} />
             <div style={{ marginBottom: 20 }}>
-                <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 9 }}>
+                <div style={{ display: "flex",alignItems:'center' ,flexWrap:'wrap', gap: 8, marginBottom: 9 }}>
                     {[
                         { l: "MongoDB", icon: <Database size={10} />, c: T.green },
                         { l: "Express.js", icon: <Server size={10} />, c: T.textSub },
@@ -532,8 +526,7 @@ const PosterInner: React.FC = () => (
 
                 {/* LGU logo + University */}
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 14 }}>
-                    <img src={lguLogo} alt="Lahore Garrison University" style={{ width: 58, height: 58, borderRadius: "50%", objectFit: "cover", border: `2px solid ${T.borderAccent}`, boxShadow: `0 0 16px ${T.accent}22`, flexShrink: 0 }} />
-                    <div style={{ textAlign: "left" }}>
+                      <div style={{ textAlign: "left" }}>
                         <p style={{ margin: 0, fontFamily: "'Cormorant Garamond', serif", fontSize: 21, fontWeight: 700, color: T.text, letterSpacing: "0.03em", lineHeight: 1.15 }}>Lahore Garrison University</p>
                         <p style={{ margin: "3px 0 0", fontFamily: "'DM Sans', sans-serif", fontSize: 9.5, color: T.textMuted, letterSpacing: "0.04em" }}>Department of Computer Science · BS Computer Science · FYP Exhibition 2026</p>
                     </div>
@@ -641,17 +634,6 @@ const PosterPage: React.FC = () => {
             `}</style>
 
             <div className="poster-root">
-                <div className="poster-toolbar">
-                    <div>
-                        <p style={{ margin: 0, fontSize: 18, fontWeight: 800, color: "#0f172a", fontFamily: "'DM Sans', sans-serif" }}>ResuCraft — Panaflex Poster</p>
-                        <p style={{ margin: "3px 0 0", fontSize: 11, fontWeight: 600, color: "#64748b", textTransform: "uppercase", letterSpacing: "0.06em", fontFamily: "'DM Sans', sans-serif" }}>Preview · 2 ft × 5 ft · 1000 × 2500 px</p>
-                    </div>
-                    <button className="poster-btn" onClick={() => window.print()}>
-                        <Download size={14} />
-                        Print / Export
-                    </button>
-                </div>
-
                 <div ref={posterRef} className="poster-frame" style={{ width: POSTER_W, borderRadius: 2, overflow: "hidden", flexShrink: 0 }}>
                     <PosterInner />
                 </div>
