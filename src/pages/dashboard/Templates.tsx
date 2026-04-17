@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import {
     CheckCircle2,
     ChevronLeft,
@@ -24,6 +24,7 @@ import {
     AdminTemplateStats,
 } from '@src/services/adminService';
 import { getAvatar } from '@src/utils/url_helper';
+import {StatCardGrid} from "@pages/dashboard/components/StatCard.tsx";
 
 /* ─── constants ─────────────────────────────────────────────────────── */
 const CATEGORIES = ['Modern', 'Classic', 'Creative', 'Minimal', 'Professional', 'Other'];
@@ -37,16 +38,6 @@ const STAT_ITEMS = [
     { key: 'public',   label: 'Public',   icon: <Globe        className="size-4" />, color: 'text-violet-400',  bg: 'bg-violet-400/10'  },
 ];
 
-/* ─── skeletons ─────────────────────────────────────────────────────── */
-function StatSkeleton() {
-    return (
-        <div className="adm-card adm-stat-card p-4">
-            <div className="size-8 rounded-lg bg-white/5 animate-pulse mb-2.5" />
-            <div className="h-6 w-10 rounded-md bg-white/5 animate-pulse mb-1" />
-            <div className="h-3 w-16 rounded bg-white/5 animate-pulse" />
-        </div>
-    );
-}
 
 function TemplateSkeleton() {
     return (
@@ -174,7 +165,6 @@ function PublishedCard({
 export default function Templates() {
     /* stats */
     const [stats, setStats] = useState<AdminTemplateStats | null>(null);
-    const [statsLoading, setStatsLoading] = useState(true);
 
     /* tab */
     const [tab, setTab] = useState<'pending' | 'published'>('pending');
@@ -210,8 +200,6 @@ export default function Templates() {
             setStats(s);
         } catch {
             /* stats failure is non-critical */
-        } finally {
-            setStatsLoading(false);
         }
     }, []);
 
@@ -485,26 +473,7 @@ export default function Templates() {
                 )}
 
                 {/* ── Stat cards ───────────────────────────────────── */}
-                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 mb-6">
-                    {statsLoading
-                        ? Array.from({ length: 5 }).map((_, i) => <StatSkeleton key={i} />)
-                        : STAT_ITEMS.map((s, i) => (
-                            <div
-                                key={s.key}
-                                className="adm-card adm-stat-card p-4 adm-fade"
-                                style={{ animationDelay: `${i * 40}ms` }}
-                            >
-                                <div className={`inline-flex items-center justify-center size-8 rounded-lg mb-2.5 ${s.bg}`}>
-                                    <span className={s.color}>{s.icon}</span>
-                                </div>
-                                <p className="adm-mono text-xl font-medium" style={{ color: '#3b3d3e' }}>
-                                    {statValues[s.key].toLocaleString()}
-                                </p>
-                                <p className="text-xs mt-0.5" style={{ color: '#475569' }}>{s.label}</p>
-                            </div>
-                        ))
-                    }
-                </div>
+                <StatCardGrid items={STAT_ITEMS} values={statValues} loading={refreshing} />
 
                 {/* ── Tab bar ──────────────────────────────────────── */}
                 <div

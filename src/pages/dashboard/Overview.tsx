@@ -1,74 +1,62 @@
-import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import {useEffect, useState} from 'react';
+import {getAvatar, timeAgo} from "@src/utils/url_helper";
+import {Link} from 'react-router-dom';
 import {
     Activity,
     ArrowRight,
-    BarChart3,
     Ban,
+    BarChart3,
+    CheckCircle2,
+    CircleSlash2,
     Crown,
     FileText,
     Mail,
     RefreshCw,
     Shield,
     ShieldCheck,
-    Users as UsersIcon,
     UserCheck,
-    Zap,
-    CircleSlash2,
+    Users as UsersIcon,
     XCircle,
-    CheckCircle2,
+    Zap,
 } from 'lucide-react';
-import { adminService, AdminStats, AdminUser } from '@src/services/adminService';
-import { getAvatar } from '@src/utils/url_helper';
+import {adminService, AdminStats, AdminUser} from '@src/services/adminService';
+import {StatCardGrid} from "@pages/dashboard/components/StatCard.tsx";
 
-/* ─── helpers ───────────────────────────────────────────────────────── */
-function timeAgo(iso?: string | null) {
-    if (!iso) return '—';
-    const diff = Date.now() - new Date(iso).getTime();
-    const m = Math.floor(diff / 60000);
-    if (m < 1) return 'just now';
-    if (m < 60) return `${m}m ago`;
-    const h = Math.floor(m / 60);
-    if (h < 24) return `${h}h ago`;
-    const d = Math.floor(h / 24);
-    if (d < 30) return `${d}d ago`;
-    return new Date(iso).toLocaleDateString();
-}
 
 /* ─── stat cards config ─────────────────────────────────────────────── */
 const STAT_ITEMS = [
     {
         key: 'total',
         label: 'Total Users',
-        icon: <UsersIcon className="size-4" />,
+        icon: <UsersIcon className="size-4"/>,
         color: 'text-sky-400',
         bg: 'bg-sky-400/10',
     },
     {
         key: 'activeSessions',
         label: 'Active Sessions',
-        icon: <Activity className="size-4" />,
+        icon: <Activity className="size-4"/>,
         color: 'text-emerald-400',
         bg: 'bg-emerald-400/10',
     },
     {
         key: 'admin',
         label: 'Admins',
-        icon: <Crown className="size-4" />,
+        icon: <Crown className="size-4"/>,
         color: 'text-violet-400',
         bg: 'bg-violet-400/10',
     },
     {
         key: 'moderator',
         label: 'Moderators',
-        icon: <Shield className="size-4" />,
+        icon: <Shield className="size-4"/>,
         color: 'text-amber-400',
         bg: 'bg-amber-400/10',
     },
     {
         key: 'suspended',
         label: 'Suspended',
-        icon: <Ban className="size-4" />,
+        icon: <Ban className="size-4"/>,
         color: 'text-red-400',
         bg: 'bg-red-400/10',
     },
@@ -80,7 +68,7 @@ const NAV_CARDS = [
         label: 'Users',
         desc: 'Manage accounts, roles & suspensions',
         path: '/dashboard/users',
-        icon: <UsersIcon className="size-5" />,
+        icon: <UsersIcon className="size-5"/>,
         color: 'text-sky-400',
         bg: 'bg-sky-400/10',
         border: 'rgba(56,189,248,0.2)',
@@ -90,7 +78,7 @@ const NAV_CARDS = [
         label: 'Templates',
         desc: 'Browse & manage resume templates',
         path: '/dashboard/templates',
-        icon: <FileText className="size-5" />,
+        icon: <FileText className="size-5"/>,
         color: 'text-violet-400',
         bg: 'bg-violet-400/10',
         border: 'rgba(167,139,250,0.2)',
@@ -100,7 +88,7 @@ const NAV_CARDS = [
         label: 'Analytics',
         desc: 'Platform metrics & usage trends',
         path: '/dashboard/analytics',
-        icon: <BarChart3 className="size-5" />,
+        icon: <BarChart3 className="size-5"/>,
         color: 'text-emerald-400',
         bg: 'bg-emerald-400/10',
         border: 'rgba(52,211,153,0.2)',
@@ -110,7 +98,7 @@ const NAV_CARDS = [
         label: 'Messages',
         desc: 'Support messages & notifications',
         path: '/dashboard/messages',
-        icon: <Mail className="size-5" />,
+        icon: <Mail className="size-5"/>,
         color: 'text-amber-400',
         bg: 'bg-amber-400/10',
         border: 'rgba(251,191,36,0.2)',
@@ -118,26 +106,16 @@ const NAV_CARDS = [
     },
 ];
 
-/* ─── skeleton ──────────────────────────────────────────────────────── */
-function StatSkeleton() {
-    return (
-        <div className="adm-card adm-stat-card p-4">
-            <div className="size-8 rounded-lg bg-white/5 animate-pulse mb-2.5" />
-            <div className="h-6 w-10 rounded-md bg-white/5 animate-pulse mb-1" />
-            <div className="h-3 w-16 rounded bg-white/5 animate-pulse" />
-        </div>
-    );
-}
 
 function UserRowSkeleton() {
     return (
         <div className="flex items-center gap-3 px-4 py-3 border-b border-white/4">
-            <div className="size-8 rounded-lg bg-white/5 animate-pulse shrink-0" />
+            <div className="size-8 rounded-lg bg-white/5 animate-pulse shrink-0"/>
             <div className="flex-1 min-w-0">
-                <div className="h-3.5 w-28 rounded bg-white/5 animate-pulse mb-1.5" />
-                <div className="h-2.5 w-40 rounded bg-white/5 animate-pulse" />
+                <div className="h-3.5 w-28 rounded bg-white/5 animate-pulse mb-1.5"/>
+                <div className="h-2.5 w-40 rounded bg-white/5 animate-pulse"/>
             </div>
-            <div className="h-3 w-12 rounded bg-white/5 animate-pulse" />
+            <div className="h-3 w-12 rounded bg-white/5 animate-pulse"/>
         </div>
     );
 }
@@ -152,7 +130,7 @@ export default function Overview() {
     const [toast, setToast] = useState<{ msg: string; type: 'ok' | 'err' } | null>(null);
 
     const showToast = (msg: string, type: 'ok' | 'err' = 'ok') => {
-        setToast({ msg, type });
+        setToast({msg, type});
         setTimeout(() => setToast(null), 3500);
     };
 
@@ -163,7 +141,7 @@ export default function Overview() {
         try {
             const [statsData, usersData] = await Promise.all([
                 adminService.getStats(),
-                adminService.listUsers({ page: 1, limit: 6 }),
+                adminService.listUsers({page: 1, limit: 6}),
             ]);
             setStats(statsData);
             setRecentUsers(usersData.users);
@@ -191,9 +169,9 @@ export default function Overview() {
     const memberCount = (stats?.total ?? 0) - (stats?.roles?.admin ?? 0) - (stats?.roles?.moderator ?? 0);
     const healthScore = stats
         ? Math.max(
-              0,
-              Math.round(100 - (stats.suspended / Math.max(stats.total, 1)) * 100)
-          )
+            0,
+            Math.round(100 - (stats.suspended / Math.max(stats.total, 1)) * 100)
+        )
         : null;
 
     return (
@@ -269,17 +247,17 @@ export default function Overview() {
                 }
             `}</style>
 
-            <div className="adm-page min-h-full" style={{ color: '#cbd5e1' }}>
+            <div className="adm-page min-h-full" style={{color: '#cbd5e1'}}>
 
                 {/* ── Toast ───────────────────────────────────────────── */}
                 {toast && (
                     <div
                         className={`fixed top-6 right-6 z-[300] flex items-center gap-2.5 px-4 py-3 rounded-xl shadow-2xl text-sm font-medium ${toast.type === 'ok' ? 'toast-ok text-emerald-200' : 'toast-err text-red-200'}`}
-                        style={{ animation: 'fadeSlideIn 0.25s ease' }}
+                        style={{animation: 'fadeSlideIn 0.25s ease'}}
                     >
                         {toast.type === 'ok'
-                            ? <CheckCircle2 className="size-4 shrink-0" />
-                            : <XCircle className="size-4 shrink-0" />}
+                            ? <CheckCircle2 className="size-4 shrink-0"/>
+                            : <XCircle className="size-4 shrink-0"/>}
                         {toast.msg}
                     </div>
                 )}
@@ -287,12 +265,12 @@ export default function Overview() {
                 {/* ── Header ──────────────────────────────────────────── */}
                 <div className="mb-6 flex items-end gap-4 flex-wrap">
                     <div>
-                        <p className="adm-mono text-[10px] uppercase tracking-[0.2em] mb-1" style={{ color: '#4f6396' }}>
+                        <p className="adm-mono text-[10px] uppercase tracking-[0.2em] mb-1" style={{color: '#4f6396'}}>
                             Admin / Overview
                         </p>
                         <h1
                             className="adm-display text-2xl font-bold"
-                            style={{ color: '#3e4042', letterSpacing: '-0.02em' }}
+                            style={{color: '#3e4042', letterSpacing: '-0.02em'}}
                         >
                             Dashboard
                         </h1>
@@ -308,7 +286,7 @@ export default function Overview() {
                                 color: '#34d399',
                             }}
                         >
-                            <span className="adm-pulse-dot size-1.5 rounded-full bg-emerald-400 inline-block" />
+                            <span className="adm-pulse-dot size-1.5 rounded-full bg-emerald-400 inline-block"/>
                             Live
                         </div>
 
@@ -335,7 +313,7 @@ export default function Overview() {
                                 color: '#94a3b8',
                             }}
                         >
-                            <RefreshCw className={`size-3.5 ${refreshing ? 'animate-spin' : ''}`} />
+                            <RefreshCw className={`size-3.5 ${refreshing ? 'animate-spin' : ''}`}/>
                             Refresh
                         </button>
                     </div>
@@ -351,7 +329,7 @@ export default function Overview() {
                             color: '#f87171',
                         }}
                     >
-                        <XCircle className="size-4 shrink-0" />
+                        <XCircle className="size-4 shrink-0"/>
                         {error}
                         <button
                             onClick={() => fetchData()}
@@ -362,30 +340,7 @@ export default function Overview() {
                     </div>
                 )}
 
-                {/* ── KPI stat cards ───────────────────────────────────── */}
-                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 mb-6">
-                    {loading
-                        ? Array.from({ length: 5 }).map((_, i) => <StatSkeleton key={i} />)
-                        : STAT_ITEMS.map((s, i) => (
-                              <div
-                                  key={s.key}
-                                  className="adm-card adm-stat-card p-4"
-                                  style={{ animationDelay: `${i * 40}ms` }}
-                              >
-                                  <div
-                                      className={`inline-flex items-center justify-center size-8 rounded-lg mb-2.5 ${s.bg}`}
-                                  >
-                                      <span className={s.color}>{s.icon}</span>
-                                  </div>
-                                  <p className="adm-mono text-xl font-medium adm-counter" style={{ color: '#3b3d3e' }}>
-                                      {statValues[s.key].toLocaleString()}
-                                  </p>
-                                  <p className="text-xs mt-0.5" style={{ color: '#475569' }}>
-                                      {s.label}
-                                  </p>
-                              </div>
-                          ))}
-                </div>
+                <StatCardGrid items={STAT_ITEMS} values={statValues} loading={loading}/>
 
                 {/* ── Body: two-column ─────────────────────────────────── */}
                 <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
@@ -398,15 +353,15 @@ export default function Overview() {
                             {/* card header */}
                             <div
                                 className="flex items-center justify-between px-4 py-3"
-                                style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}
+                                style={{borderBottom: '1px solid rgba(255,255,255,0.05)'}}
                             >
                                 <div className="flex items-center gap-2">
                                     <div className="flex items-center justify-center size-6 rounded-md bg-sky-400/10">
-                                        <UsersIcon className="size-3.5 text-sky-400" />
+                                        <UsersIcon className="size-3.5 text-sky-400"/>
                                     </div>
                                     <span
                                         className="adm-display text-sm font-semibold"
-                                        style={{ color: '#94a3b8' }}
+                                        style={{color: '#94a3b8'}}
                                     >
                                         Recent Signups
                                     </span>
@@ -414,117 +369,118 @@ export default function Overview() {
                                 <Link
                                     to="/dashboard/users"
                                     className="adm-mono text-[10px] uppercase tracking-widest flex items-center gap-1 transition-colors"
-                                    style={{ color: '#4f6396' }}
+                                    style={{color: '#4f6396'}}
                                     onMouseEnter={e => (e.currentTarget.style.color = '#818cf8')}
                                     onMouseLeave={e => (e.currentTarget.style.color = '#4f6396')}
                                 >
-                                    View all <ArrowRight className="size-3" />
+                                    View all <ArrowRight className="size-3"/>
                                 </Link>
                             </div>
 
                             {/* user rows */}
                             {loading
-                                ? Array.from({ length: 5 }).map((_, i) => <UserRowSkeleton key={i} />)
+                                ? Array.from({length: 5}).map((_, i) => <UserRowSkeleton key={i}/>)
                                 : recentUsers.length === 0
-                                ? (
-                                    <div className="flex flex-col items-center justify-center py-14 gap-2">
-                                        <UsersIcon className="size-8" style={{ color: '#1e293b' }} />
-                                        <p className="text-sm" style={{ color: '#475569' }}>No users yet</p>
-                                    </div>
-                                )
-                                : recentUsers.map((u, i) => (
-                                    <div
-                                        key={u._id}
-                                        className="adm-user-row flex items-center gap-3 px-4 py-3 border-b border-white/[0.03]"
-                                        style={{ animationDelay: `${i * 35}ms` }}
-                                    >
-                                        {/* avatar */}
-                                        <img
-                                            src={u.profilePic?.url || getAvatar(u.username)}
-                                            alt={u.username}
-                                            className="size-8 rounded-lg object-cover shrink-0"
-                                            style={{ border: '1px solid rgba(255,255,255,0.08)' }}
-                                        />
-
-                                        {/* name + email */}
-                                        <div className="flex-1 min-w-0">
-                                            <p
-                                                className="text-sm font-medium truncate"
-                                                style={{ color: '#e2e8f0' }}
-                                            >
-                                                {u.username}
-                                            </p>
-                                            <p
-                                                className="adm-mono text-xs truncate"
-                                                style={{ color: '#475569' }}
-                                            >
-                                                {u.email}
-                                            </p>
+                                    ? (
+                                        <div className="flex flex-col items-center justify-center py-14 gap-2">
+                                            <UsersIcon className="size-8" style={{color: '#1e293b'}}/>
+                                            <p className="text-sm" style={{color: '#475569'}}>No users yet</p>
                                         </div>
-
-                                        {/* role badge */}
-                                        <span
-                                            className="adm-mono text-[10px] px-2 py-0.5 rounded-full shrink-0"
-                                            style={{
-                                                background:
-                                                    u.role === 'admin'
-                                                        ? 'rgba(139,92,246,0.12)'
-                                                        : u.role === 'moderator'
-                                                        ? 'rgba(245,158,11,0.12)'
-                                                        : 'rgba(100,116,139,0.12)',
-                                                border:
-                                                    u.role === 'admin'
-                                                        ? '1px solid rgba(139,92,246,0.25)'
-                                                        : u.role === 'moderator'
-                                                        ? '1px solid rgba(245,158,11,0.25)'
-                                                        : '1px solid rgba(100,116,139,0.2)',
-                                                color:
-                                                    u.role === 'admin'
-                                                        ? '#a78bfa'
-                                                        : u.role === 'moderator'
-                                                        ? '#fbbf24'
-                                                        : '#64748b',
-                                            }}
+                                    )
+                                    : recentUsers.map((u, i) => (
+                                        <div
+                                            key={u._id}
+                                            className="adm-user-row flex items-center gap-3 px-4 py-3 border-b border-white/[0.03]"
+                                            style={{animationDelay: `${i * 35}ms`}}
                                         >
+                                            {/* avatar */}
+                                            <img
+                                                src={u.profilePic?.url || getAvatar(u.username)}
+                                                alt={u.username}
+                                                className="size-8 rounded-lg object-cover shrink-0"
+                                                style={{border: '1px solid rgba(255,255,255,0.08)'}}
+                                            />
+
+                                            {/* name + email */}
+                                            <div className="flex-1 min-w-0">
+                                                <p
+                                                    className="text-sm font-medium truncate"
+                                                    style={{color: '#e2e8f0'}}
+                                                >
+                                                    {u.username}
+                                                </p>
+                                                <p
+                                                    className="adm-mono text-xs truncate"
+                                                    style={{color: '#475569'}}
+                                                >
+                                                    {u.email}
+                                                </p>
+                                            </div>
+
+                                            {/* role badge */}
+                                            <span
+                                                className="adm-mono text-[10px] px-2 py-0.5 rounded-full shrink-0"
+                                                style={{
+                                                    background:
+                                                        u.role === 'admin'
+                                                            ? 'rgba(139,92,246,0.12)'
+                                                            : u.role === 'moderator'
+                                                                ? 'rgba(245,158,11,0.12)'
+                                                                : 'rgba(100,116,139,0.12)',
+                                                    border:
+                                                        u.role === 'admin'
+                                                            ? '1px solid rgba(139,92,246,0.25)'
+                                                            : u.role === 'moderator'
+                                                                ? '1px solid rgba(245,158,11,0.25)'
+                                                                : '1px solid rgba(100,116,139,0.2)',
+                                                    color:
+                                                        u.role === 'admin'
+                                                            ? '#a78bfa'
+                                                            : u.role === 'moderator'
+                                                                ? '#fbbf24'
+                                                                : '#64748b',
+                                                }}
+                                            >
                                             {u.role}
                                         </span>
 
-                                        {/* status dot */}
-                                        {u.isSuspended ? (
-                                            <span title="Suspended">
-                                                <Ban className="size-3.5 text-amber-400 shrink-0" />
+                                            {/* status dot */}
+                                            {u.isSuspended ? (
+                                                <span title="Suspended">
+                                                <Ban className="size-3.5 text-amber-400 shrink-0"/>
                                             </span>
-                                        ) : u.isVerified ? (
-                                            <span title="Verified">
-                                                <ShieldCheck className="size-3.5 text-emerald-400 shrink-0" />
+                                            ) : u.isVerified ? (
+                                                <span title="Verified">
+                                                <ShieldCheck className="size-3.5 text-emerald-400 shrink-0"/>
                                             </span>
-                                        ) : (
-                                            <span title="Unverified">
-                                                <CircleSlash2 className="size-3.5 shrink-0" style={{ color: '#334155' }} />
+                                            ) : (
+                                                <span title="Unverified">
+                                                <CircleSlash2 className="size-3.5 shrink-0" style={{color: '#334155'}}/>
                                             </span>
-                                        )}
+                                            )}
 
-                                        {/* joined */}
-                                        <span
-                                            className="adm-mono text-xs shrink-0 hidden sm:block"
-                                            style={{ color: '#334155', minWidth: '52px', textAlign: 'right' }}
-                                        >
+                                            {/* joined */}
+                                            <span
+                                                className="adm-mono text-xs shrink-0 hidden sm:block"
+                                                style={{color: '#334155', minWidth: '52px', textAlign: 'right'}}
+                                            >
                                             {timeAgo(u.createdAt)}
                                         </span>
-                                    </div>
-                                ))
+                                        </div>
+                                    ))
                             }
                         </div>
 
                         {/* Platform health */}
                         {!loading && stats && (
-                            <div className="adm-card p-4" style={{ animation: 'fadeSlideIn 0.3s ease 0.15s both' }}>
+                            <div className="adm-card p-4" style={{animation: 'fadeSlideIn 0.3s ease 0.15s both'}}>
                                 <div className="flex items-center justify-between mb-4">
                                     <div className="flex items-center gap-2">
-                                        <div className="flex items-center justify-center size-6 rounded-md bg-emerald-400/10">
-                                            <Zap className="size-3.5 text-emerald-400" />
+                                        <div
+                                            className="flex items-center justify-center size-6 rounded-md bg-emerald-400/10">
+                                            <Zap className="size-3.5 text-emerald-400"/>
                                         </div>
-                                        <span className="adm-display text-sm font-semibold" style={{ color: '#94a3b8' }}>
+                                        <span className="adm-display text-sm font-semibold" style={{color: '#94a3b8'}}>
                                             Platform Health
                                         </span>
                                     </div>
@@ -541,7 +497,7 @@ export default function Overview() {
                                 {/* health bar */}
                                 <div
                                     className="h-1.5 rounded-full mb-4 overflow-hidden"
-                                    style={{ background: 'rgba(255,255,255,0.05)' }}
+                                    style={{background: 'rgba(255,255,255,0.05)'}}
                                 >
                                     <div
                                         className="adm-health-bar-fill h-full rounded-full"
@@ -551,8 +507,8 @@ export default function Overview() {
                                                 (healthScore ?? 100) >= 90
                                                     ? 'linear-gradient(90deg, #10b981, #34d399)'
                                                     : (healthScore ?? 100) >= 70
-                                                    ? 'linear-gradient(90deg, #f59e0b, #fbbf24)'
-                                                    : 'linear-gradient(90deg, #ef4444, #f87171)',
+                                                        ? 'linear-gradient(90deg, #f59e0b, #fbbf24)'
+                                                        : 'linear-gradient(90deg, #ef4444, #f87171)',
                                         }}
                                     />
                                 </div>
@@ -565,33 +521,33 @@ export default function Overview() {
                                             value: memberCount,
                                             color: 'text-sky-400',
                                             bg: 'bg-sky-400/8',
-                                            icon: <UserCheck className="size-3" />,
+                                            icon: <UserCheck className="size-3"/>,
                                         },
                                         {
                                             label: 'Sessions',
                                             value: stats.activeSessions,
                                             color: 'text-emerald-400',
                                             bg: 'bg-emerald-400/8',
-                                            icon: <Activity className="size-3" />,
+                                            icon: <Activity className="size-3"/>,
                                         },
                                         {
                                             label: 'Suspended',
                                             value: stats.suspended,
                                             color: 'text-red-400',
                                             bg: 'bg-red-400/8',
-                                            icon: <Ban className="size-3" />,
+                                            icon: <Ban className="size-3"/>,
                                         },
                                     ].map(item => (
                                         <div
                                             key={item.label}
                                             className={`flex flex-col items-center justify-center gap-1 rounded-xl py-3 ${item.bg}`}
-                                            style={{ border: '1px solid rgba(255,255,255,0.04)' }}
+                                            style={{border: '1px solid rgba(255,255,255,0.04)'}}
                                         >
                                             <span className={`${item.color}`}>{item.icon}</span>
                                             <span className={`adm-mono text-base font-medium ${item.color}`}>
                                                 {item.value.toLocaleString()}
                                             </span>
-                                            <span className="text-[10px]" style={{ color: '#475569' }}>
+                                            <span className="text-[10px]" style={{color: '#475569'}}>
                                                 {item.label}
                                             </span>
                                         </div>
@@ -605,9 +561,9 @@ export default function Overview() {
                     <div className="lg:col-span-2 flex flex-col gap-3">
                         <div className="flex items-center gap-2 mb-1">
                             <div className="flex items-center justify-center size-6 rounded-md bg-indigo-400/10">
-                                <ArrowRight className="size-3.5 text-indigo-400" />
+                                <ArrowRight className="size-3.5 text-indigo-400"/>
                             </div>
-                            <span className="adm-display text-sm font-semibold" style={{ color: '#94a3b8' }}>
+                            <span className="adm-display text-sm font-semibold" style={{color: '#94a3b8'}}>
                                 Quick Navigation
                             </span>
                         </div>
@@ -643,11 +599,11 @@ export default function Overview() {
                                 <div className="flex-1 min-w-0">
                                     <p
                                         className="adm-display text-sm font-semibold"
-                                        style={{ color: '#94a3b8' }}
+                                        style={{color: '#94a3b8'}}
                                     >
                                         {card.label}
                                     </p>
-                                    <p className="text-xs mt-0.5 truncate" style={{ color: '#475569' }}>
+                                    <p className="text-xs mt-0.5 truncate" style={{color: '#475569'}}>
                                         {card.desc}
                                     </p>
                                 </div>
@@ -662,35 +618,35 @@ export default function Overview() {
                         {/* System info footer card */}
                         <div
                             className="adm-card p-4 mt-1"
-                            style={{ animation: 'fadeSlideIn 0.3s ease 0.2s both' }}
+                            style={{animation: 'fadeSlideIn 0.3s ease 0.2s both'}}
                         >
                             <p
                                 className="adm-mono text-[10px] uppercase tracking-widest mb-3"
-                                style={{ color: '#334155' }}
+                                style={{color: '#334155'}}
                             >
                                 System
                             </p>
                             <div className="flex flex-col gap-2">
                                 {[
-                                    { label: 'API Status', value: 'Operational', ok: true },
-                                    { label: 'Auth Service', value: 'Operational', ok: true },
-                                    { label: 'Database', value: 'Connected', ok: true },
+                                    {label: 'API Status', value: 'Operational', ok: true},
+                                    {label: 'Auth Service', value: 'Operational', ok: true},
+                                    {label: 'Database', value: 'Connected', ok: true},
                                 ].map(row => (
                                     <div
                                         key={row.label}
                                         className="flex items-center justify-between"
-                                        style={{ borderBottom: '1px solid rgba(255,255,255,0.03)', paddingBottom: '6px' }}
+                                        style={{borderBottom: '1px solid rgba(255,255,255,0.03)', paddingBottom: '6px'}}
                                     >
-                                        <span className="text-xs" style={{ color: '#475569' }}>
+                                        <span className="text-xs" style={{color: '#475569'}}>
                                             {row.label}
                                         </span>
                                         <span
                                             className="adm-mono text-[10px] flex items-center gap-1"
-                                            style={{ color: row.ok ? '#34d399' : '#f87171' }}
+                                            style={{color: row.ok ? '#34d399' : '#f87171'}}
                                         >
                                             <span
                                                 className="adm-pulse-dot size-1.5 rounded-full inline-block"
-                                                style={{ background: row.ok ? '#34d399' : '#f87171' }}
+                                                style={{background: row.ok ? '#34d399' : '#f87171'}}
                                             />
                                             {row.value}
                                         </span>
