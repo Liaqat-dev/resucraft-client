@@ -1,10 +1,10 @@
-import {useEffect, useRef, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import {Link} from "react-router-dom";
 import {useAuth} from "@hooks/useAuth.ts";
 import {Modal} from "@src/components/custom/modal/modal2.tsx";
 import UpdateToast from "@custom/toast/updateToast.tsx";
 import ErrorToast from "@custom/toast/errorToast.tsx";
-import {LogOut, Verified} from "lucide-react";
+import { LogOut, Verified} from "lucide-react";
 import {getAvatar} from "@src/utils/url_helper.ts";
 
 function Profile() {
@@ -163,6 +163,16 @@ function Profile() {
                                 </p>
                             </div>
                         </div>
+                        {user?.role === 'admin' && (
+                            <Link
+                                onClick={handleClose}
+                                to="/dashboard"
+                                className="flex items-center gap-2 w-full px-4 py-2.5 text-sm hover:bg-gray-50 dark:hover:bg-dark-850"
+                            >
+                                <i className="align-baseline ltr:mr-1 rtl:ml-1 ri-dashboard-2-line"></i>
+                               Dashboard
+                            </Link>
+                        )}
                         <Link
                             onClick={handleClose}
                             to="/profile"
@@ -180,6 +190,8 @@ function Profile() {
                             Settings & Security
                         </Link>
 
+
+
                         <button
                             onClick={() => {
                                 handleClose();
@@ -192,7 +204,7 @@ function Profile() {
                         </button>
                         <Link
                             onClick={handleClose}
-                            to="/help-center"
+                            to="/contact"
                             className="flex items-center gap-2 w-full px-4 py-2.5 text-sm hover:bg-gray-50 dark:hover:bg-dark-850"
                         >
                             <i className="align-baseline ltr:mr-1 rtl:ml-1 ri-customer-service-2-line"></i>

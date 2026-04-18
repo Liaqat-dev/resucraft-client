@@ -87,6 +87,7 @@ export const loginUser = createAsyncThunk(
                     email: response.email,
                     isVerified: response.isVerified,
                     provider: response.provider as 'local' | 'google',
+                    profilePic: response.profilePic,
                     role: response.role ?? 'user',
                     isSuspended: response.isSuspended ?? false,
                     twoFactorEnabled: response.twoFactorEnabled
@@ -120,6 +121,7 @@ export const googleLogin = createAsyncThunk(
                     email: user.email,
                     isVerified: user.isVerified,
                     provider: 'google',
+                    profilePic: user.profilePic,
                     role: user.role ?? 'user',
                     isSuspended: user.isSuspended ?? false,
                     twoFactorEnabled: user.twoFactorEnabled || false

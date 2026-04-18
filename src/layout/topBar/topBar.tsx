@@ -90,16 +90,7 @@ const TopBar: React.FC = () => {
 
                         <div className="flex items-center gap-2 ltr:ml-auto rtl:mr-auto">
                             {/* Admin Dashboard */}
-                            {user?.role === 'admin' && (
-                                <Link
-                                    to="/dashboard"
-                                    className="topbar-link mr-5 hidden md:flex items-center gap-1.5 text-sm font-medium"
-                                    title="Admin Dashboard"
-                                >
-                                    <LayoutDashboard className="size-4"/>
-                                    <span>Dashboard</span>
-                                </Link>
-                            )}
+
 
                             {/* Settings (Layout modal) */}
                             <button
