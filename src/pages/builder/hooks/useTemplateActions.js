@@ -2,12 +2,15 @@ import { useState } from 'react';
 import { flatToNested, nestedToFlat } from '../utils/transformUtils';
 import { CANVAS_SIZES } from '../constants';
 import { templateService } from '../../../services/template.service';
+import { resumeService } from '../../../services/resume.service';
 
 export function useTemplateActions({
     elements, sections, templateName, templateCategory, canvasSize, customWidth, customHeight, margins, templateId,
     setElements, setSections, setTemplateName, setTemplateCategory, setTemplateId, setCanvasSize, setCustomWidth, setCustomHeight, setMargins, setSelectedIds,
-    setTemplateVisibility, setTemplateStatus
+    setTemplateVisibility, setTemplateStatus,
+    mode = 'template',
 }) {
+    const service = mode === 'resume' ? resumeService : templateService;
     const [isSaving, setIsSaving] = useState(false);
     const [isExporting, setIsExporting] = useState(false);
     const [isPublishing, setIsPublishing] = useState(false);
@@ -86,9 +89,9 @@ export function useTemplateActions({
         };
 
         try {
-            const result = await templateService.save(templateData);
+            const result = await service.save(templateData);
             setTemplateId(result.id);
-            console.log(`✅ Template saved successfully!\nID: ${result.id}`);
+            console.log(`✅ ${mode === 'resume' ? 'Resume' : 'Template'} saved successfully!\nID: ${result.id}`);
         } catch (error) {
             console.error('Save error:', error);
             const localTemplateId = 'template-' + Date.now();
@@ -124,11 +127,11 @@ export function useTemplateActions({
         };
 
         try {
-            await templateService.update(templateId, templateData);
-            console.log(`✅ Template updated successfully!`);
+            await service.update(templateId, templateData);
+            console.log(`✅ ${mode === 'resume' ? 'Resume' : 'Template'} updated successfully!`);
         } catch (error) {
             console.error('Update error:', error);
-            alert('❌ Failed to update template. ' + error.message);
+            alert(`❌ Failed to update ${mode === 'resume' ? 'resume' : 'template'}. ` + error.message);
         }
 
         setIsSaving(false);
@@ -136,7 +139,7 @@ export function useTemplateActions({
 
     const loadTemplate = async (loadId) => {
         try {
-            const templateData = await templateService.get(loadId);
+            const templateData = await service.get(loadId);
 
             if (templateData) {
 
@@ -220,6 +223,7 @@ export function useTemplateActions({
     };
 
     const publishTemplate = async () => {
+        if (mode === 'resume') return;
         if (!templateId) {
             alert('Save the template first before publishing.');
             return;

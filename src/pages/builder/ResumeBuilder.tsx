@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useLocation } from 'react-router-dom';
 import Toolbar from './Toolbar.tsx';
 import EditDrawer from './Drawer.tsx';
 import CanvasSection from './Section.tsx';
@@ -13,10 +13,13 @@ import { useSectionActions } from './hooks/useSectionActions';
 import { useTemplateActions } from './hooks/useTemplateActions';
 import { useLandingTheme } from '@hooks/useLandingTheme.ts';
 import { templateService } from '@src/services/template.service';
+import { resumeService } from '@src/services/resume.service';
 
 
 function ResumeBuilder() {
     const { id } = useParams<{ id: string }>();
+    const location = useLocation();
+    const mode = location.pathname.startsWith('/edit/') ? 'resume' : 'template';
     const [sections, setSections] = useState([]);
     const [elements, setElements] = useState([]);
     const [selectedIds, setSelectedIds] = useState([]);
@@ -81,7 +84,8 @@ function ResumeBuilder() {
     } = useTemplateActions({
         elements, sections, templateName, templateCategory, canvasSize, customWidth, customHeight, margins, templateId,
         setElements, setSections, setTemplateName, setTemplateCategory, setTemplateId, setCanvasSize, setCustomWidth, setCustomHeight, setMargins, setSelectedIds,
-        setTemplateVisibility, setTemplateStatus
+        setTemplateVisibility, setTemplateStatus,
+        mode,
     });
 
     // --- Auto-resize element + cascade to parent section ---
@@ -159,15 +163,16 @@ function ResumeBuilder() {
 
     useEffect(() => {
         if (id) {
-            templateService.get(id).then(template => {
+            const loader = mode === 'resume' ? resumeService.get(id) : templateService.get(id);
+            loader.then(template => {
                 const settings = template.data.canvasSettings;
                 const { elements: flatElements, sections: flatSections } = nestedToFlat(template.data, settings);
                 setElements(flatElements || []);
                 setSections(flatSections || []);
                 setTemplateName(template.name);
                 setTemplateCategory(template.category || 'Other');
-                setTemplateVisibility(template.visibility || 'private');
-                setTemplateStatus(template.status || 'draft');
+                setTemplateVisibility((template as any).visibility || 'private');
+                setTemplateStatus((template as any).status || 'draft');
                 setTemplateId(template.id || id);
                 setCanvasSize(settings?.size || 'A4');
                 setCustomWidth(settings?.width || CANVAS_SIZES[settings?.size || 'A4'].width);
@@ -175,7 +180,7 @@ function ResumeBuilder() {
                 if (settings?.margins) setMargins(settings.margins);
                 setSelectedIds([]);
             }).catch(err => {
-                console.error('Error loading template:', err);
+                console.error(`Error loading ${mode}:`, err);
             });
         }
     }, [id]);
@@ -286,6 +291,7 @@ function ResumeBuilder() {
                 onUpdate={updateTemplate}
                 onExportPDF={exportToPDF}
                 onPublish={publishTemplate}
+                mode={mode}
             />
 
             <EditDrawer

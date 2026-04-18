@@ -193,6 +193,7 @@ interface BuilderTopBarProps {
     onUpdate: () => void;
     onExportPDF: () => void;
     onPublish: () => void;
+    mode?: 'template' | 'resume';
 }
 
 const BuilderTopBar = ({
@@ -212,6 +213,7 @@ const BuilderTopBar = ({
     onUpdate,
     onExportPDF,
     onPublish,
+    mode = 'template',
 }: BuilderTopBarProps) => {
     const isPublished = templateStatus === 'published';
     const isPending = templateStatus === 'pending';
@@ -346,7 +348,7 @@ const BuilderTopBar = ({
                 <InlineInput
                     value={templateName}
                     onChange={onTemplateNameChange}
-                    placeholder="Template name"
+                    placeholder={mode === 'resume' ? 'Resume name' : 'Template name'}
                     width="170px"
                 />
                 <div className="btb-divider" />
@@ -405,21 +407,24 @@ const BuilderTopBar = ({
                         variant="secondary"
                     />
 
-                    <div className="btb-divider" />
-
-                    {isPublished ? (
-                        <TopBarButton onClick={() => {}} disabled icon={<IconCheck />} label="Published" variant="success" />
-                    ) : isPending ? (
-                        <TopBarButton onClick={() => {}} disabled icon={<IconClock />} label="Pending Review" variant="success" />
-                    ) : (
-                        <TopBarButton
-                            onClick={onPublish}
-                            disabled={isPublishing || !templateId}
-                            loading={isPublishing}
-                            icon={isPublishing ? <Spinner /> : <IconPublish />}
-                            label="Publish"
-                            variant="success"
-                        />
+                    {mode === 'template' && (
+                        <>
+                            <div className="btb-divider" />
+                            {isPublished ? (
+                                <TopBarButton onClick={() => {}} disabled icon={<IconCheck />} label="Published" variant="success" />
+                            ) : isPending ? (
+                                <TopBarButton onClick={() => {}} disabled icon={<IconClock />} label="Pending Review" variant="success" />
+                            ) : (
+                                <TopBarButton
+                                    onClick={onPublish}
+                                    disabled={isPublishing || !templateId}
+                                    loading={isPublishing}
+                                    icon={isPublishing ? <Spinner /> : <IconPublish />}
+                                    label="Publish"
+                                    variant="success"
+                                />
+                            )}
+                        </>
                     )}
                 </div>
             </div>
