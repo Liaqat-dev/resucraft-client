@@ -243,7 +243,7 @@ const ContactPage: React.FC = () => {
                                                 type="text"
                                                 value={form.name}
                                                 onChange={(e) => set("name", e.target.value)}
-                                                placeholder="Liaqat Ali"
+                                                placeholder="Alishba Liaqat "
                                                 style={fieldStyle}
                                                 onFocus={handleFocus}
                                                 onBlur={handleBlur}
