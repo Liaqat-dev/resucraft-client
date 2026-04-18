@@ -154,6 +154,10 @@ const builderRoutes: IRoute[] = [
     {path: "/builder", component: <ResumeBuilder/>},
     {path: "/builder/:id", component: <ResumeBuilder/>},
 ]
+const resumeEditorRoutes: IRoute[] = [
+    // {path: "/edit", component: <ResumeBuilder/>},
+    {path: "/edit/:id", component: <ResumeBuilder/>},
+]
 
 const adminRoutes: IRoute[] = [
     { path: '/dashboard',            component: <DashboardOverview /> },
@@ -163,4 +167,4 @@ const adminRoutes: IRoute[] = [
     { path: '/dashboard/messages',   component: <DashboardMessages /> },
 ];
 
-export {routes, nonAuthRoutes, builderRoutes, adminRoutes};
+export {routes, nonAuthRoutes, builderRoutes,resumeEditorRoutes, adminRoutes};

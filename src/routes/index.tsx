@@ -1,10 +1,11 @@
 import React from "react";
 import { Route, Routes } from "react-router-dom";
-import {adminRoutes, builderRoutes, nonAuthRoutes, routes} from "./allRoutes";
+import {adminRoutes, builderRoutes, nonAuthRoutes, resumeEditorRoutes, routes} from "./allRoutes";
 import NonLayout from "@src/layout/nonLayout";
 import Layout from "@src/layout/layout";
 import BuilderLayout from "@layout/builderLayout.tsx";
 import DashboardLayout from "@layout/dashboardLayout.tsx";
+import ResumeEditorLayout from "@layout/resumeEditorLayout.tsx";
 
 const Routing = () => {
     function renderRoutes(routes: any[]) {
@@ -48,6 +49,14 @@ const Routing = () => {
                         element={<BuilderLayout>{item.component}</BuilderLayout>}
                     />
                 ))}
+                {(resumeEditorRoutes || []).map((item, key) => (
+                    <Route
+                        key={key}
+                        path={item.path}
+                        element={<ResumeEditorLayout>{item.component}</ResumeEditorLayout>}
+                    />
+                ))}
+
 
                 {(adminRoutes || []).map((item, key) => (
                     <Route
