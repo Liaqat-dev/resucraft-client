@@ -20,19 +20,20 @@ const Profile: NextPageWithLayout = () => {
             <CommonAccount/>
 
             <Tabs
-                ulProps="pb-2 overflow-x-auto tabs-pills lg:pb-0"
+                ulProps="flex flex-nowrap overflow-x-auto pb-2 tabs-pills lg:pb-0 scrollbar-2"
                 activeTabClass="active"
                 contentProps="mt-5"
                 otherClass="nav-item text-gray-500 dark:text-dark-500 [&.active]:bg-primary-500 [&.active]:text-primary-50"
                 spanProps="align-middle whitespace-nowrap"
             >
                 <Tab
-                    icon={<Eye className="inline-block size-4 ltr:mr-2 rtl:ml-2"/>}
+                    icon={<Eye className="inline-block size-4 mr-1 "/>}
                     label="Overview"
+
                     path="/profile/overview"
                 ></Tab>
                 <Tab
-                    icon={<User className="inline-block size-4 ltr:mr-2 rtl:ml-2"/>}
+                    icon={<User className="inline-block size-4 mr-1"/>}
                     label="Personal Info"
                     path="/profile/personal-info"
                 >
@@ -40,7 +41,7 @@ const Profile: NextPageWithLayout = () => {
                 </Tab>
                 <Tab
                     icon={
-                        <GraduationCap className="inline-block size-4 ltr:mr-2 rtl:ml-2"/>
+                        <GraduationCap className="inline-block size-4 mr-1"/>
                     }
                     label="Education"
                     path="/profile/education"
@@ -50,7 +51,7 @@ const Profile: NextPageWithLayout = () => {
 
                 <Tab
                     icon={
-                        <Briefcase className="inline-block size-4 ltr:mr-2 rtl:ml-2"/>
+                        <Briefcase className="inline-block size-4 mr-1"/>
                     }
                     label="Experience"
                     path="/profile/experience"
@@ -58,14 +59,14 @@ const Profile: NextPageWithLayout = () => {
                     <div>Experience Content</div>
                 </Tab>
                 <Tab
-                    icon={<Lightbulb className="inline-block size-4 ltr:mr-2 rtl:ml-2"/>}
+                    icon={<Lightbulb className="inline-block size-4 mr-1"/>}
                     label="Skills"
                     path="/profile/skills"
                 >
                     <div>Skills Content</div>
                 </Tab>
                 <Tab
-                    icon={<Monitor className="inline-block size-4 ltr:mr-2 rtl:ml-2"/>}
+                    icon={<Monitor className="inline-block size-4 mr-1"/>}
                     label="Projects"
                     path="/profile/projects"
                 >
@@ -73,7 +74,7 @@ const Profile: NextPageWithLayout = () => {
                 </Tab>
                 <Tab
                     icon={
-                        <Award className="inline-block size-4 mr-2"/>
+                        <Award className="inline-block size-4 mr-1"/>
                     }
                     label="Certificates"
                     path="/profile/certificates"

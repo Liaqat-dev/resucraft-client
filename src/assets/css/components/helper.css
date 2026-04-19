@@ -47,4 +47,29 @@
   .list-roman {
     list-style-type: upper-roman;
   }
+
+  .scrollbar-none {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
+
+  .scrollbar-2 {
+    scrollbar-width: thin;
+  }
+  .scrollbar-2::-webkit-scrollbar {
+    height: 2px;
+  }
+  .scrollbar-2::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .scrollbar-2::-webkit-scrollbar-thumb {
+    background: #d1d5db;
+    border-radius: 999px;
+  }
+  [data-mode="dark"] .scrollbar-2::-webkit-scrollbar-thumb {
+    background: #374151;
+  }
 }

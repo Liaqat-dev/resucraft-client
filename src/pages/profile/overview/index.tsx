@@ -151,37 +151,6 @@ const UserProfileOverView: React.FC = () => {
                             )}
                         </div>
                     </div>
-
-                    {/* Badges */}
-                    <div className="card">
-                        <div className="card-header flex items-center gap-3">
-                            <div className="size-8 rounded-md bg-amber-50 dark:bg-amber-500/10 flex items-center justify-center shrink-0">
-                                <GraduationCap size={15} className="text-amber-600 dark:text-amber-400"/>
-                            </div>
-                            <h6 className="text-base font-semibold text-gray-800 dark:text-dark-100">
-                                Badges
-                            </h6>
-                        </div>
-                        <div className="card-body flex items-center gap-3 flex-wrap">
-                            {[
-                                {src: newImage, id: "badge-new", label: "New User"},
-                                {src: qualityImage, id: "badge-verified", label: "Verified"},
-                                {src: highQualityImage, id: "badge-quality", label: "High Quality"},
-                                {src: rewardImage, id: "badge-reward", label: "Reward"},
-                            ].map(({src, id, label}) => (
-                                <div key={id}>
-                                    <img
-                                        src={src}
-                                        alt={label}
-                                        className="size-8"
-                                        data-tooltip-id={id}
-                                        data-tooltip-content={label}
-                                    />
-                                    <Tooltip id={id}/>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
                 </div>
 
                 {/* ── Right main ──────────────────────────────────────── */}

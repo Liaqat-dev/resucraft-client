@@ -17,7 +17,7 @@ const Account: NextPageWithLayout = () => {
             <CommonAccount/>
 
             <Tabs
-                ulProps="pb-2 overflow-x-auto tabs-pills lg:pb-0"
+                ulProps="flex flex-nowrap overflow-x-auto pb-2 tabs-pills lg:pb-0 scrollbar-2"
                 activeTabClass="active"
                 contentProps="mt-5"
                 otherClass="nav-item text-gray-500 dark:text-dark-500 [&.active]:bg-primary-500 [&.active]:text-primary-50"

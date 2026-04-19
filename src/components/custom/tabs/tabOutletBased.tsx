@@ -4,6 +4,7 @@ import { Outlet, useLocation, useNavigate } from "react-router-dom";
 interface TabsProps {
   children: React.ReactNode;
   ulProps?: string;
+  ulStyle?: React.CSSProperties;
   activeTabClass?: string;
   inactiveTabClass?: string;
   otherClass?: string;
@@ -28,6 +29,7 @@ interface TabProps {
 const Tabs: React.FC<TabsProps> = ({
   children,
   ulProps = "",
+  ulStyle,
   activeTabClass = "",
   inactiveTabClass = "",
   otherClass = "",
@@ -77,21 +79,21 @@ const Tabs: React.FC<TabsProps> = ({
 
   return (
     <>
-      <ul className={`${ulProps}`}>
+      <ul className={`${ulProps}`} style={ulStyle}>
         {tabs.map((tab, index) => {
           const isActive = index === activeIndex;
           return (
             <li
               key={index}
               onClick={() => handleTabClick(index, tab.props.path,tab.props.state)}
-              className={`${liprops} select-none`}
+              className={`${liprops} select-none `}
               style={{ cursor: tab.props.path ? "pointer" : "default" }}
             >
               <span
-                className={`${isActive ? activeTabClass : inactiveTabClass} ${otherClass}`}
+                className={`inline-flex flex-nowrap items-center ${isActive ? activeTabClass : inactiveTabClass} ${otherClass}`}
               >
                 {tab.props.icon}
-                <span className={`${spanProps}`}>{tab.props.label}</span>
+                <span  className={`${spanProps}`}>{tab.props.label}</span>
               </span>
             </li>
           );
