@@ -16,9 +16,9 @@ const productLinks = [
 const resourceLinks = [
     { label: "FAQ", href: "/faq" },
     { label: "Contact Us", href: "/contact" },
-    { label: "Help Center", href: "/help-center" },
+    { label: "Help Center", href: "/contact" },
     { label: "About Us", href: "/about" },
-    { label: "Privacy Policy", href: "/page/privacy-policy" },
+    { label: "Privacy Policy", href: "/privacy-policy" },
 ];
 
 const socialLinks = [
@@ -46,7 +46,6 @@ const Footer: React.FC = () => {
                         <Link to="/">
                             <img
                                 src={logo}
-                                aria-label="Read more about Seminole tax hike"
                                 alt="logo"
                                 className="h-14 group-data-[layout=modern]:hidden inline-block dark:hidden"
                                 height={164}
@@ -54,7 +53,6 @@ const Footer: React.FC = () => {
                             />
                             <img
                                 src={logoWhite}
-                                aria-label="Read more about Seminole tax hike"
                                 alt="logoWhite"
                                 className="h-14 hidden dark:inline-block group-data-[layout=modern]:hidden"
                                 height={24}

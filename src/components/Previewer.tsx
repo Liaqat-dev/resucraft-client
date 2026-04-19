@@ -26,7 +26,7 @@ const nestedToFlat = (nestedData: any) => {
 
 // ── Renderer ─────────────────────────────────────────────────────────────────
 
-const TemplateRenderer = ({ data, scale }: { data: any; scale: number }) => {
+export const TemplateRenderer = ({ data, scale }: { data: any; scale: number }) => {
     const { elements, sections } = nestedToFlat(data || {});
 
     const getBulletMarker = (style: string, index: number): string => {

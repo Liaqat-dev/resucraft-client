@@ -61,12 +61,18 @@ const TemplatePreview = () => {
             setGenerating(false);
         }
     };
+    const [previewWidth, setPreviewWidth] = useState(() => Math.min(495, window.innerWidth - 60));
+    useEffect(() => {
+        const onResize = () => setPreviewWidth(Math.min(495, window.innerWidth - 60));
+        window.addEventListener('resize', onResize);
+        return () => window.removeEventListener('resize', onResize);
+    }, []);
 
     const profileReady = isProfileReady(PROFILE_THRESHOLD);
     const jobDescOk = jobDescription.trim().length >= 20;
 
     return (
-        <div className="min-h-screen px-6 py-8">
+        <div className="min-h-screen px-3 py-4">
             <div className="max-w-7xl mx-auto">
 
                 {/* Back button */}
@@ -89,16 +95,15 @@ const TemplatePreview = () => {
                         <p className="text-red-500 text-xs">{fetchError}</p>
                     </div>
                 ) : (
-                    <div className="flex flex-col  gap-8 items-start">
+                    <div className="flex flex-col lg:flex-row  gap-4 flex-wrap items-center">
 
                         {/* Template Preview */}
                         <div className="flex-shrink-0">
-                            <h2 className="text-lg font-semibold text-gray-800 mb-3">{template?.name}</h2>
-                            <Previewer data={template?.data} width={400} />
+                            <Previewer data={template?.data} width={previewWidth} />
                         </div>
 
                         {/* Action Panel */}
-                        <div className="flex-1 min-w-0 lg:max-w-md">
+                        <div className="flex-1 min-w-0 max-w-[500px]">
                             <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6 space-y-6">
 
                                 <div>

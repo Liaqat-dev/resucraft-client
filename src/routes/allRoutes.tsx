@@ -18,8 +18,6 @@ import AccountSessions from "@pages/account/sessions";
 import UserPage from "@pages/profile";
 import Certificates from "@pages/profile/certificates";
 import Projects from "@pages/profile/projects";
-import PricingPage from "@pages/page/pricing";
-import Faq from "@pages/page/faq";
 import Maintenance from "@pages/page/maintenance";
 import PrivacyPolicy from "@pages/page/privacyPolicy";
 import PageNotFoundError from "@pages/page/404";
@@ -82,12 +80,7 @@ const routes: IRoute[] = [
         {path: "/form/clipboard", component: <Clipboards/>},
         {path: "form/wizard-basic", component: <WizardBasic/>},
 
-        //page
-
-        {path: "/page/pricing", component: <PricingPage/>},
-        {path: "/page/faq", component: <Faq/>},
-
-        {path: "/page/privacy-policy", component: <PrivacyPolicy/>},
+        {path: "/privacy-policy", component: <PrivacyPolicy/>},
 
 
         {

@@ -57,7 +57,7 @@ const Layout = ({children}: LayoutProps) => {
         if (window.innerWidth >= 768) {
             timer = setTimeout(() => {
                 dispatch(changeSettingModalOpen(false));
-            }, 500); // Delay to show modal after a short timeout
+            }, 100); // Delay to show modal after a short timeout
         }
         // Cleanup the timeout if the component is unmounted or the effect is cleaned up
         return () => {
