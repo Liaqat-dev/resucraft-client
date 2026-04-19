@@ -87,7 +87,7 @@ const Layout = ({children}: LayoutProps) => {
             <div
                 className="relative min-h-screen  group-data-[layout=boxed]:rounded-md">
                 <div className="
-                page-wrapper
+
                 !container !mx-auto pt-[calc(theme('spacing.topbar')_*_1.1)]
                 ">
                     {" "}
