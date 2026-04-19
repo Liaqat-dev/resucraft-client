@@ -43,6 +43,99 @@ function CanvasElement({ element, isSelected, onMouseDown, isDragging, onContent
         }
     };
 
+    const getBulletMarker = (style, index) => {
+        const toRoman = (n) => {
+            const vals = [1000,900,500,400,100,90,50,40,10,9,5,4,1];
+            const syms = ['M','CM','D','CD','C','XC','L','XL','X','IX','V','IV','I'];
+            let r = '';
+            vals.forEach((v, i) => { while (n >= v) { r += syms[i]; n -= v; } });
+            return r.toLowerCase();
+        };
+        switch (style) {
+            case 'disc':     return '\u2022';
+            case 'circle':   return '\u25CB';
+            case 'square':   return '\u25A0';
+            case 'dash':     return '\u2013';
+            case 'numbered': return `${index + 1}.`;
+            case 'roman':    return `${toRoman(index + 1)}.`;
+            case 'none':     return '';
+            default:         return '\u2022';
+        }
+    };
+
+    // ── Bullets Rendering ──
+    if (element.type === 'bullets') {
+        const bulletItems = element.bulletItems || [];
+        const columns = element.columns || 1;
+        const bulletStyle = element.bulletStyle || 'disc';
+
+        return (
+            <div
+                onMouseDown={(e) => onMouseDown(e, element.id)}
+                style={{
+                    position: 'absolute',
+                    left: element.x,
+                    top: element.y,
+                    width: element.width,
+                    height: element.height,
+                    cursor: isDragging ? 'grabbing' : 'move',
+                    padding: '6px 8px',
+                    border: isSelected
+                        ? '1.5px solid var(--rc-accent, #3b82f6)'
+                        : '1px dashed rgba(14, 165, 233, 0.3)',
+                    borderRadius: '2px',
+                    boxSizing: 'border-box',
+                    userSelect: 'none',
+                    backgroundColor: isSelected ? 'color-mix(in srgb, var(--rc-accent, #3b82f6) 3%, transparent)' : 'transparent',
+                    boxShadow: isSelected ? '0 0 0 3px color-mix(in srgb, var(--rc-accent, #3b82f6) 12%, transparent)' : 'none',
+                    zIndex: isSelected ? 100 : 10,
+                    transition: isSelected ? 'none' : 'border-color 0.15s, box-shadow 0.15s',
+                    overflow: 'hidden',
+                }}
+            >
+                <div
+                    style={{
+                        display: 'grid',
+                        gridTemplateColumns: `repeat(${columns}, 1fr)`,
+                        gap: '3px 12px',
+                    }}
+                >
+                    {bulletItems.map((item, index) => (
+                        <div
+                            key={index}
+                            style={{
+                                display: 'flex',
+                                alignItems: 'flex-start',
+                                gap: '5px',
+                                fontSize: `${element.fontSize || 12}px`,
+                                fontWeight: element.fontWeight || 'normal',
+                                fontFamily: element.fontFamily || 'Times New Roman',
+                                color: element.color || '#000000',
+                                lineHeight: element.lineHeight || 1.5,
+                            }}
+                        >
+                            <span style={{ flexShrink: 0, minWidth: '14px', marginTop: '1px' }}>
+                                {getBulletMarker(bulletStyle, index)}
+                            </span>
+                            <span style={{ wordBreak: 'break-word' }}>{item}</span>
+                        </div>
+                    ))}
+                </div>
+                {isSelected && isSingleSelection && (
+                    <>
+                        {['nw', 'n', 'ne', 'e', 'se', 's', 'sw', 'w'].map(pos => (
+                            <ResizeHandle
+                                key={pos}
+                                position={pos}
+                                onMouseDown={(e) => onResizeMouseDown(e, element.id, pos, false)}
+                            />
+                        ))}
+                    </>
+                )}
+            </div>
+        );
+    }
+
     // ── Line Break Rendering ──
     if (element.type === 'line-break') {
         const thickness      = element.lineBreakThickness || 1;

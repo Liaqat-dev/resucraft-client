@@ -29,6 +29,26 @@ const nestedToFlat = (nestedData: any) => {
 const TemplateRenderer = ({ data, scale }: { data: any; scale: number }) => {
     const { elements, sections } = nestedToFlat(data || {});
 
+    const getBulletMarker = (style: string, index: number): string => {
+        const toRoman = (n: number): string => {
+            const vals = [1000,900,500,400,100,90,50,40,10,9,5,4,1];
+            const syms = ['M','CM','D','CD','C','XC','L','XL','X','IX','V','IV','I'];
+            let r = '';
+            vals.forEach((v, i) => { while (n >= v) { r += syms[i]; n -= v; } });
+            return r.toLowerCase();
+        };
+        switch (style) {
+            case 'disc':     return '\u2022';
+            case 'circle':   return '\u25CB';
+            case 'square':   return '\u25A0';
+            case 'dash':     return '\u2013';
+            case 'numbered': return `${index + 1}.`;
+            case 'roman':    return `${toRoman(index + 1)}.`;
+            case 'none':     return '';
+            default:         return '\u2022';
+        }
+    };
+
     const renderContent = (el: any) => {
         if (el.type === 'line-break') {
             return (
@@ -37,6 +57,38 @@ const TemplateRenderer = ({ data, scale }: { data: any; scale: number }) => {
                     height: 0,
                     borderTop: `${Math.max(1, (el.lineBreakThickness || 1) * scale)}px ${el.lineBreakStyle || 'solid'} ${el.lineBreakColor || '#d1d5db'}`,
                 }} />
+            );
+        }
+        if (el.type === 'bullets') {
+            const items: string[] = el.bulletItems || [];
+            const columns: number = el.columns || 1;
+            const bulletStyle: string = el.bulletStyle || 'disc';
+            return (
+                <div style={{
+                    display: 'grid',
+                    gridTemplateColumns: `repeat(${columns}, 1fr)`,
+                    gap: `${3 * scale}px ${12 * scale}px`,
+                    width: '100%',
+                }}>
+                    {items.map((item, i) => (
+                        <div key={i} style={{
+                            display: 'flex',
+                            alignItems: 'flex-start',
+                            gap: `${5 * scale}px`,
+                            fontSize: `${(el.fontSize || 12) * scale}px`,
+                            fontWeight: el.fontWeight || 'normal',
+                            fontFamily: el.fontFamily || 'Arial',
+                            color: el.color || '#000000',
+                            lineHeight: el.lineHeight || 1.5,
+                            wordBreak: 'break-word' as const,
+                        }}>
+                            <span style={{ flexShrink: 0, minWidth: `${14 * scale}px`, marginTop: `${1 * scale}px` }}>
+                                {getBulletMarker(bulletStyle, i)}
+                            </span>
+                            <span>{item}</span>
+                        </div>
+                    ))}
+                </div>
             );
         }
         return el.content;
@@ -48,8 +100,11 @@ const TemplateRenderer = ({ data, scale }: { data: any; scale: number }) => {
         top: `${el.y * scale}px`,
         width: `${el.width * scale}px`,
         height: `${el.height * scale}px`,
+        // overflow: 'hidden' as const,
         ...(el.type === 'line-break' ? {
             display: 'flex', alignItems: 'center', justifyContent: 'center',
+        } : el.type === 'bullets' ? {
+            boxSizing: 'border-box' as const,
         } : {
             fontSize: `${(el.fontSize || 16) * scale}px`,
             fontWeight: el.fontWeight || 'normal',
@@ -57,7 +112,6 @@ const TemplateRenderer = ({ data, scale }: { data: any; scale: number }) => {
             color: el.color || '#000000',
             textAlign: (el.textAlign || 'left') as any,
             lineHeight: el.lineHeight || 1.5,
-            // overflow: 'hidden',
             whiteSpace: 'pre-wrap' as const,
             wordWrap: 'break-word' as const,
         }),

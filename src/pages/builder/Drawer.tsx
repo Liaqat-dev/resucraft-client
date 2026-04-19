@@ -317,6 +317,7 @@ const EditDrawer = ({
         if (selectedHeaderSection) return { text: 'STYLE', color: 'bg-violet-100 text-violet-700' };
         if (editingElement?.isSection) return { text: editingElement.type === 'subsection' ? 'SUB' : 'SEC', color: 'bg-emerald-100 text-emerald-700' };
         if (editingElement?.type === 'line-break') return { text: 'LINE', color: 'bg-amber-100 text-amber-700' };
+        if (editingElement?.type === 'bullets') return { text: 'BULLETS', color: 'bg-sky-100 text-sky-700' };
         return { text: editingElement?.type?.toUpperCase() || 'EL', color: 'bg-blue-100 text-blue-700' };
     };
 
@@ -377,7 +378,9 @@ const EditDrawer = ({
                     ) : !editingElement.isSection ? (
                         editingElement.type === 'line-break'
                             ? <LineBreakFields element={editingElement} onChange={handleChange} />
-                            : <ElementFields element={editingElement} onChange={handleChange} />
+                            : editingElement.type === 'bullets'
+                                ? <BulletsFields element={editingElement} onChange={handleChange} />
+                                : <ElementFields element={editingElement} onChange={handleChange} />
                     ) : (
                         <SectionFields section={editingElement} onChange={handleChange} />
                     )}
@@ -513,6 +516,177 @@ const ElementFields = ({ element, onChange }) => (
         </AccordionSection>
     </>
 );
+
+/* ─── Bullets Fields ─── */
+
+const IconBulletsDrawer = () => (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <circle cx="4" cy="6" r="1.5" fill="currentColor" stroke="none"/>
+        <line x1="8" y1="6" x2="21" y2="6" />
+        <circle cx="4" cy="12" r="1.5" fill="currentColor" stroke="none"/>
+        <line x1="8" y1="12" x2="21" y2="12" />
+        <circle cx="4" cy="18" r="1.5" fill="currentColor" stroke="none"/>
+        <line x1="8" y1="18" x2="15" y2="18" />
+    </svg>
+);
+
+const IconGridCols = () => (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <rect x="3" y="3" width="18" height="18" rx="2"/>
+        <line x1="9" y1="3" x2="9" y2="21"/>
+        <line x1="15" y1="3" x2="15" y2="21"/>
+    </svg>
+);
+
+const BulletsFields = ({ element, onChange }) => {
+    const items = element.bulletItems || [];
+
+    const updateItem = (index, value) => {
+        const updated = [...items];
+        updated[index] = value;
+        onChange('bulletItems', updated);
+    };
+
+    const addItem = () => {
+        onChange('bulletItems', [...items, `Item ${items.length + 1}`]);
+    };
+
+    const removeItem = (index) => {
+        const updated = items.filter((_, i) => i !== index);
+        onChange('bulletItems', updated);
+    };
+
+    return (
+        <>
+            <AccordionSection icon={IconBulletsDrawer} title="Bullets" defaultOpen>
+                <FloatingTextarea
+                    label="AI Description"
+                    value={element.ai_description || ''}
+                    onChange={(e) => onChange('ai_description', e.target.value)}
+                    rows={2}
+                />
+
+                <FloatingSelect
+                    label="Bullet Style"
+                    value={element.bulletStyle || 'disc'}
+                    onChange={(e) => onChange('bulletStyle', e.target.value)}
+                    options={[
+                        { value: 'disc', label: '• Disc' },
+                        { value: 'circle', label: '○ Circle' },
+                        { value: 'square', label: '■ Square' },
+                        { value: 'dash', label: '– Dash' },
+                        { value: 'numbered', label: '1. Numbered' },
+                        { value: 'roman', label: 'i. Roman' },
+                        { value: 'none', label: 'None' },
+                    ]}
+                />
+
+                <div>
+                    <div className="flex items-center justify-between mb-1.5">
+                        <label className="dr-label text-[11px] font-semibold uppercase tracking-wide">Columns</label>
+                        <span className="dr-val-badge text-[12px] font-bold tabular-nums px-1.5 py-0.5 rounded-md">
+                            {element.columns || 1}
+                        </span>
+                    </div>
+                    <div className="flex gap-1.5">
+                        {[1, 2, 3, 4].map(col => (
+                            <button
+                                key={col}
+                                type="button"
+                                onClick={() => onChange('columns', col)}
+                                className={`flex-1 flex items-center justify-center py-2 rounded-lg border text-[13px] font-semibold transition-all duration-150 ${(element.columns || 1) === col ? 'dr-align-active' : 'dr-align-inactive'}`}
+                            >
+                                {col}
+                            </button>
+                        ))}
+                    </div>
+                </div>
+            </AccordionSection>
+
+            <AccordionSection icon={IconGridCols} title="Items" defaultOpen>
+                <div className="space-y-2">
+                    {items.map((item, index) => (
+                        <div key={index} className="flex items-center gap-2">
+                            <span className="dr-label text-[11px] font-bold tabular-nums w-5 text-center flex-shrink-0">{index + 1}</span>
+                            <input
+                                type="text"
+                                value={item}
+                                onChange={(e) => updateItem(index, e.target.value)}
+                                className="flex-1 px-2.5 py-1.5 text-[12px] rounded-lg border outline-none transition-all"
+                                style={{
+                                    background: 'var(--rc-bg-alt)',
+                                    border: '1px solid var(--rc-border)',
+                                    color: 'var(--rc-text)',
+                                }}
+                                onFocus={(e) => { e.currentTarget.style.borderColor = 'var(--rc-accent)'; }}
+                                onBlur={(e) => { e.currentTarget.style.borderColor = 'var(--rc-border)'; }}
+                            />
+                            <button
+                                type="button"
+                                onClick={() => removeItem(index)}
+                                className="flex items-center justify-center w-6 h-6 rounded-md text-red-400 hover:text-red-600 hover:bg-red-50 transition-all flex-shrink-0"
+                                title="Remove item"
+                            >
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                            </button>
+                        </div>
+                    ))}
+                    <button
+                        type="button"
+                        onClick={addItem}
+                        className="w-full flex items-center justify-center gap-1.5 py-2 rounded-lg border text-[12px] font-semibold transition-all duration-150"
+                        style={{
+                            background: 'var(--rc-bg-alt)',
+                            border: '1px dashed var(--rc-border)',
+                            color: 'var(--rc-text-sub)',
+                        }}
+                        onMouseOver={(e) => { (e.currentTarget as HTMLButtonElement).style.borderColor = 'var(--rc-accent)'; (e.currentTarget as HTMLButtonElement).style.color = 'var(--rc-accent)'; }}
+                        onMouseOut={(e) => { (e.currentTarget as HTMLButtonElement).style.borderColor = 'var(--rc-border)'; (e.currentTarget as HTMLButtonElement).style.color = 'var(--rc-text-sub)'; }}
+                    >
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                        Add Item
+                    </button>
+                </div>
+            </AccordionSection>
+
+            <AccordionSection icon={IconType} title="Typography" defaultOpen={false}>
+                <FloatingSelect
+                    label="Font Family"
+                    value={element.fontFamily || 'Times New Roman'}
+                    onChange={(e) => onChange('fontFamily', e.target.value)}
+                    options={fontFamilyOptions}
+                />
+                <div className="grid grid-cols-2 gap-3">
+                    <SliderField
+                        label="Font Size"
+                        value={element.fontSize || 12}
+                        min={8} max={48} unit="px"
+                        onChange={(v) => onChange('fontSize', parseInt(v))}
+                    />
+                    <FloatingSelect
+                        label="Font Weight"
+                        value={element.fontWeight || 'normal'}
+                        onChange={(e) => onChange('fontWeight', e.target.value)}
+                        options={fontWeightOptions}
+                    />
+                </div>
+                <SliderField
+                    label="Line Height"
+                    value={element.lineHeight || 1.5}
+                    min={0.8} max={3} step={0.1}
+                    onChange={(v) => onChange('lineHeight', parseFloat(v))}
+                />
+            </AccordionSection>
+
+            <AccordionSection icon={IconPalette} title="Color" defaultOpen={false}>
+                <ColorSwatches
+                    value={element.color || '#000000'}
+                    onChange={(val) => onChange('color', val)}
+                />
+            </AccordionSection>
+        </>
+    );
+};
 
 /* ─── Line Break Fields ─── */
 

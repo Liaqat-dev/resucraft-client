@@ -174,6 +174,33 @@ export function useSectionActions({
             if (requiredHeight > section.height) {
                 updateSection(section.id, { height: requiredHeight });
             }
+
+        } else if (section.contentType === 'bullets') {
+            const newElement = {
+                id: Date.now().toString(),
+                type: 'bullets',
+                ai_description: 'Bullet list block',
+                bulletItems: ['Item 1', 'Item 2', 'Item 3'],
+                bulletStyle: 'disc',
+                columns: 1,
+                x: nextX,
+                y: nextY,
+                width: Math.min(section.width - 40, 500),
+                height: 80,
+                fontSize: 12,
+                fontWeight: 'normal',
+                fontFamily: 'Times New Roman',
+                color: '#000000',
+                lineHeight: 1.5,
+                parentSection: section.id
+            };
+            setElements(prev => [...prev, newElement]);
+            setSelectedIds([newElement.id]);
+
+            const requiredHeight = (nextY - section.y) + newElement.height + 20;
+            if (requiredHeight > section.height) {
+                updateSection(section.id, { height: requiredHeight });
+            }
         }
     };
 

@@ -34,6 +34,17 @@ const IconMinus = () => (
     </svg>
 );
 
+const IconBullets = () => (
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <circle cx="4" cy="6" r="1.5" fill="currentColor" stroke="none"/>
+        <line x1="8" y1="6" x2="21" y2="6" />
+        <circle cx="4" cy="12" r="1.5" fill="currentColor" stroke="none"/>
+        <line x1="8" y1="12" x2="21" y2="12" />
+        <circle cx="4" cy="18" r="1.5" fill="currentColor" stroke="none"/>
+        <line x1="8" y1="18" x2="15" y2="18" />
+    </svg>
+);
+
 const IconInbox = () => (
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
         <polyline points="22 12 16 12 14 15 10 15 8 12 2 12" />
@@ -92,6 +103,13 @@ const CanvasSection = ({
         e.stopPropagation();
         onContentTypeChange(section.id, 'line-break');
         onAddContent({ ...section, contentType: 'line-break' });
+        setMenuOpen(false);
+    };
+
+    const handleAddBullets = (e) => {
+        e.stopPropagation();
+        onContentTypeChange(section.id, 'bullets');
+        onAddContent({ ...section, contentType: 'bullets' });
         setMenuOpen(false);
     };
 
@@ -344,6 +362,13 @@ const CanvasSection = ({
                                     onClick={handleAddLineBreak}
                                     color="#f59e0b"
                                     bg="#fffbeb"
+                                />
+                                <MenuItem
+                                    icon={<IconBullets />}
+                                    label="Add Bullets"
+                                    onClick={handleAddBullets}
+                                    color="#0ea5e9"
+                                    bg="#f0f9ff"
                                 />
                                 {!isSubsection && (
                                     <>
