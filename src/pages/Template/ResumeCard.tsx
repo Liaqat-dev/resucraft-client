@@ -1,4 +1,5 @@
 import { Pencil, Trash2, Eye, FileText } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { TemplateRenderer } from '@src/components/Previewer';
 import {timeAgoTemplates as timeAgo} from "@src/utils/url_helper.ts";
@@ -14,15 +15,25 @@ const ResumeCard = ({ resume, onDelete }: ResumeCardProps) => {
     const resumeId = resume._id ?? resume.id;
     const { data } = resume;
 
+    const containerRef = useRef<HTMLDivElement>(null);
+    const [containerW, setContainerW] = useState(0);
+
+    useEffect(() => {
+        const el = containerRef.current;
+        if (!el) return;
+        const ro = new ResizeObserver(([entry]) => setContainerW(entry.contentRect.width));
+        ro.observe(el);
+        return () => ro.disconnect();
+    }, []);
+
     const A4_W = 210, A4_H = 297;
-    const PREVIEW_W = 230;
-    const PREVIEW_H = PREVIEW_W * (A4_H / A4_W);
+    const previewW = containerW || 0;
 
     const canvasW = data?.canvasSettings?.width
         ? parseFloat(data.canvasSettings.width) * 96 / 25.4
         : A4_W * 96 / 25.4;
 
-    const scale = PREVIEW_W / canvasW;
+    const scale = previewW / canvasW;
 
     const hasContent = (data?.sections?.length ?? 0) > 0 || (data?.elements?.length ?? 0) > 0;
 
@@ -31,13 +42,14 @@ const ResumeCard = ({ resume, onDelete }: ResumeCardProps) => {
 
             {/* ── Thumbnail ── */}
             <div
+                ref={containerRef}
                 className="relative w-full overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-gray-200 dark:ring-dark-700 group-hover/card:ring-2 group-hover/card:ring-primary-400 group-hover/card:shadow-lg group-hover/card:shadow-primary-500/10 transition-all duration-200"
                 style={{ aspectRatio: '210 / 297' }}
                 onClick={() => navigate(`/preview/${resumeId}`)}
             >
                 {/* Resume content preview */}
                 {hasContent ? (
-                    <div style={{ width: PREVIEW_W, height: PREVIEW_H, position: 'relative', pointerEvents: 'none' }}>
+                    <div style={{ width: previewW, height: previewW * (A4_H / A4_W), position: 'relative', pointerEvents: 'none' }}>
                         <TemplateRenderer data={data} scale={scale} />
                     </div>
                 ) : (

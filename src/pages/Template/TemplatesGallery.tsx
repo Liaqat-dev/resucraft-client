@@ -40,12 +40,12 @@ const SectionHeader = ({
                 <div className="size-8 rounded-lg bg-gray-100 dark:bg-dark-800 flex items-center justify-center">
                     {icon}
                 </div>
-                <h2 className="text-[24px] section-header-mono font-bold text-gray-900 dark:text-dark-100 tracking-tight">
+                <h2 className="text-[16px] md:text-[22px] section-header-mono font-bold text-gray-900 dark:text-dark-100 tracking-tight">
                     {title}
                 </h2>
                 {count !== undefined && (
                     <span
-                        className="text-[15px] section-header-mono font-semibold text-gray-400 dark:text-dark-500 bg-gray-100 dark:bg-dark-800 px-1.5 py-0.5 rounded-full">
+                        className="text-[8px] md:text-[11px] section-header-mono font-semibold text-gray-400 dark:text-dark-500 bg-gray-100 dark:bg-dark-800 px-1.5 py-0.5 rounded-full">
                     {count}
                 </span>
                 )}
@@ -354,7 +354,7 @@ const TemplatesGallery = () => {
                                             icon={<FileText className="size-3.5 text-gray-500 dark:text-dark-400"/>}
                                             title="My Resumes"
                                             count={loadingResumes ? undefined : resumes.length}
-                                            action={{label: 'New resume', onClick: () => navigate('/edit/new')}}
+                                            // action={{label: 'New resume', onClick: () => navigate('/edit/new')}}
                                         />
                                         {loadingResumes ? (
                                             <div className="flex items-center gap-3 py-8 text-gray-400 dark:text-dark-500">
@@ -378,7 +378,7 @@ const TemplatesGallery = () => {
                                 {/* 2. My Templates */}
                                 <section>
                                     <SectionHeader
-                                        icon={<LayoutTemplate className="size-3.5 text-gray-500 dark:text-dark-400"/>}
+                                        icon={<LayoutTemplate className="size-3.5  text-gray-500 dark:text-dark-400"/>}
                                         title="My Templates"
                                         count={myTemplates.length}
                                         action={{label: 'Create new', onClick: () => navigate('/builder')}}

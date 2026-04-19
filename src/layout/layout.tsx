@@ -85,7 +85,7 @@ const Layout = ({children}: LayoutProps) => {
             <title>{"ResuCraft"}</title>
             <TopBar/>
             <div
-                className="relative min-h-screen group-data-[layout=boxed]:bg-white group-data-[layout=boxed]:rounded-md">
+                className="relative min-h-screen  group-data-[layout=boxed]:rounded-md">
                 <div className="
                 page-wrapper
                 !container !mx-auto pt-[calc(theme('spacing.topbar')_*_1.1)]
