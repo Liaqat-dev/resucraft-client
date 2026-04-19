@@ -369,16 +369,6 @@ const BuilderTopBar = ({
                     width="90px"
                 />
 
-                <div className="btb-divider" />
-
-                {/* Page size */}
-                <InlineSelect
-                    value={canvasSize}
-                    onChange={onCanvasSizeChange}
-                    options={pageSizeOptions}
-                    width="140px"
-                />
-
                 {/* Spacer */}
                 <div className="flex-1" />
 
@@ -403,17 +393,6 @@ const BuilderTopBar = ({
                             variant="amber"
                         />
                     )}
-
-                    <div className="btb-divider" />
-
-                    <TopBarButton
-                        onClick={onExportPDF}
-                        disabled={isExporting}
-                        loading={isExporting}
-                        icon={isExporting ? <Spinner /> : <IconPDF />}
-                        label="Export PDF"
-                        variant="secondary"
-                    />
 
                     {mode === 'resume' && templateId && (
                         <>

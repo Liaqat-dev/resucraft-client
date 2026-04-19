@@ -1,4 +1,4 @@
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
 import SpeechRecognition, { useSpeechRecognition } from "react-speech-recognition";
 
 export interface UseSpeechFillReturn {
@@ -10,33 +10,30 @@ export interface UseSpeechFillReturn {
     resetTranscript: () => void;
 }
 
-/**
- * Thin wrapper around react-speech-recognition.
- *
- * Usage in a component:
- *   const { supported, listening, transcript, startListening, stopListening, resetTranscript } = useSpeechFill();
- *   const [activeField, setActiveField] = useState<string | null>(null);
- *
- *   // When mic stops → apply transcript to whichever field was active
- *   useEffect(() => {
- *     if (!listening && activeField && transcript) {
- *       applyTranscriptToField(activeField, transcript);
- *       setActiveField(null);
- *       resetTranscript();
- *     }
- *   }, [listening]);
- */
 export function useSpeechFill(): UseSpeechFillReturn {
     const {
         transcript,
         listening,
         resetTranscript,
         browserSupportsSpeechRecognition,
-    } = useSpeechRecognition();
+    } = useSpeechRecognition({ commands: [] });
+
+    console.log("[useSpeechFill] supported:", browserSupportsSpeechRecognition, "| SpeechRecognition API:", !!(window.SpeechRecognition || (window as any).webkitSpeechRecognition));
+
+    useEffect(() => {
+        const sr: any = window.SpeechRecognition || (window as any).webkitSpeechRecognition;
+        if (!sr) return;
+        const instance = new sr();
+        instance.onerror = (e: any) => console.error("[SpeechRecognition] onerror:", e.error, e);
+        instance.onstart = () => console.log("[SpeechRecognition] started");
+        instance.onend = () => console.log("[SpeechRecognition] ended");
+        return () => { try { instance.abort(); } catch {} };
+    }, []);
 
     const startListening = useCallback(() => {
         resetTranscript();
-        void SpeechRecognition.startListening({ continuous: false, language: "en-US" });
+        void SpeechRecognition.startListening({ continuous: false, language: "en-US" })
+            .catch((err: unknown) => console.error("[useSpeechFill] startListening error:", err));
     }, [resetTranscript]);
 
     const stopListening = useCallback(() => {
