@@ -1,8 +1,10 @@
 import {useEffect, useState} from 'react';
 import {useNavigate} from 'react-router-dom';
 import TemplateCard from './TemplateCard.js';
-import {ChevronRight, Clock, Globe, LayoutTemplate, RefreshCw, Search, X} from 'lucide-react';
+import ResumeCard from './ResumeCard.tsx';
+import {ChevronRight, FileText, Globe, LayoutTemplate, RefreshCw, Search, X} from 'lucide-react';
 import {templateService} from '@src/services/template.service';
+import {resumeService} from '@src/services/resume.service';
 import DeleteToast from '@src/components/custom/toast/deleteToast';
 import {useAuth} from "@hooks/useAuth.ts";
 import {BlankCard} from "@pages/Template/BlankCard.tsx";
@@ -16,7 +18,6 @@ const STATUS_TABS = [
     {key: 'published', label: 'Published', dot: 'bg-emerald-400'},
 ] as const;
 type MyStatus = typeof STATUS_TABS[number]['key'];
-const RECENTS_LIMIT = 4;
 
 /* ── Section header ─────────────────────────────────────────────── */
 const SectionHeader = ({
@@ -70,8 +71,10 @@ const TemplatesGallery = () => {
 
     const [myTemplates, setMyTemplates] = useState<any[]>([]);
     const [communityTemplates, setCommunityTemplates] = useState<any[]>([]);
+    const [resumes, setResumes] = useState<any[]>([]);
     const [loadingMine, setLoadingMine] = useState(true);
     const [loadingAll, setLoadingAll] = useState(true);
+    const [loadingResumes, setLoadingResumes] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [myTemplateError, setMyTemplateError] = useState<string | null>(null);
     const [search, setSearch] = useState('');
@@ -83,7 +86,8 @@ const TemplatesGallery = () => {
     }, []);
     useEffect(() => {
         setMyTemplateError(null);
-        fetchMine()
+        fetchMine();
+        fetchResumes();
     }, [isAuthenticated]);
 
     const fetchMine = async () => {
@@ -99,6 +103,32 @@ const TemplatesGallery = () => {
             }
         }
     }
+
+    const fetchResumes = async () => {
+        if (!isAuthenticated) {
+            setLoadingResumes(false);
+            return;
+        }
+        setLoadingResumes(true);
+        try {
+            const data = await resumeService.list();
+            setResumes(Array.isArray(data) ? data : []);
+        } catch {
+            setResumes([]);
+        } finally {
+            setLoadingResumes(false);
+        }
+    };
+
+    const handleDeleteResume = async (resumeId: string) => {
+        try {
+            await resumeService.remove(resumeId);
+            setResumes(prev => prev.filter(r => (r._id ?? r.id) !== resumeId));
+            DeleteToast('Resume deleted');
+        } catch (err) {
+            console.error(err);
+        }
+    };
 
     const fetchAll = async () => {
         setError(null);
@@ -130,8 +160,6 @@ const TemplatesGallery = () => {
     };
 
     /* ── Derived data ── */
-    const recents = myTemplates.slice(0, RECENTS_LIMIT);  // already sorted desc by API
-
     const isFiltering = search !== '' || activeCategory !== 'All';
 
     const applyFilter = (list: any[]) =>
@@ -158,7 +186,7 @@ const TemplatesGallery = () => {
         ? myTemplates
         : myTemplates.filter(t => (t.status || 'draft') === myStatus);
 
-    const loading = loadingMine && loadingAll;
+    const loading = loadingMine && loadingAll && loadingResumes;
 
     /* ── Grid helper ── */
     const Grid = ({children}: { children: React.ReactNode }) => (
@@ -319,22 +347,31 @@ const TemplatesGallery = () => {
                         {!isFiltering && (
                             <div className="space-y-12">
 
-                                {/* 1. Recents */}
-                                {recents.length > 0 && (
+                                {/* 1. My Resumes */}
+                                {isAuthenticated && (loadingResumes || resumes.length > 0) && (
                                     <section>
                                         <SectionHeader
-                                            icon={<Clock className="size-3.5 text-gray-500 dark:text-dark-400"/>}
-                                            title="Recents"
-                                            count={recents.length}
+                                            icon={<FileText className="size-3.5 text-gray-500 dark:text-dark-400"/>}
+                                            title="My Resumes"
+                                            count={loadingResumes ? undefined : resumes.length}
+                                            action={{label: 'New resume', onClick: () => navigate('/edit/new')}}
                                         />
-                                        <Grid>
-                                            {/* Blank card always first */}
-                                            {recents.map(t => (
-                                                <div key={t._id} className=" shrink-0 ">
-                                                    <TemplateCard template={t} onDelete={handleDelete} isOwn/>
-                                                </div>
-                                            ))}
-                                        </Grid>
+                                        {loadingResumes ? (
+                                            <div className="flex items-center gap-3 py-8 text-gray-400 dark:text-dark-500">
+                                                <div className="size-5 rounded-full border-2 border-gray-200 border-t-indigo-500 animate-spin"/>
+                                                <span className="text-[13px]">Loading resumes…</span>
+                                            </div>
+                                        ) : (
+                                            <Grid>
+                                                {resumes.map(r => (
+                                                    <ResumeCard
+                                                        key={r._id ?? r.id}
+                                                        resume={r}
+                                                        onDelete={handleDeleteResume}
+                                                    />
+                                                ))}
+                                            </Grid>
+                                        )}
                                     </section>
                                 )}
 

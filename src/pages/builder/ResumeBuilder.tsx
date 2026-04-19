@@ -291,6 +291,7 @@ function ResumeBuilder() {
                 onUpdate={updateTemplate}
                 onExportPDF={exportToPDF}
                 onPublish={publishTemplate}
+                onPreview={() => window.open(`/preview/${templateId}`, '_blank')}
                 mode={mode}
             />
 

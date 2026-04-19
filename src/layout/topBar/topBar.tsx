@@ -1,4 +1,4 @@
-import {LayoutDashboard, Moon, Settings, Sun,} from "lucide-react";
+import {Moon, Settings, Sun,} from "lucide-react";
 import {Link} from "react-router-dom";
 import React, {useEffect, useState} from "react";
 import logo from "@assets/images/main-logo.png";
@@ -12,14 +12,12 @@ import {LAYOUT_MODE_TYPES,} from "@constants/layout";
 import {changeSettingModalOpen} from "@src/slices/layout/reducer.ts";
 
 import Profile from "@layout/topBar/profile.tsx";
-import {useAuth} from "@hooks/useAuth.ts";
 
 
 const TopBar: React.FC = () => {
     const {layoutMode, isSettingModalOpen} = useSelector(
         (state: RootState) => state.Layout,
     );
-    const {user} = useAuth();
     const dispatch = useDispatch<AppDispatch>();
     const [scrolled, setScrolled] = useState(false);
     const [open, setOpen] = useState(false);

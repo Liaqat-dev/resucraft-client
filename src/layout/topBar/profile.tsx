@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import {Link} from "react-router-dom";
 import {useAuth} from "@hooks/useAuth.ts";
 import {Modal} from "@src/components/custom/modal/modal2.tsx";

@@ -13,19 +13,15 @@ import {ReactNode} from "react";
 import AccountSecurity from "@pages/account/security";
 import SkillsPage from "@pages/profile/skills/skillsPage.tsx";
 import PersonalInfoPage from "@pages/profile/personalInfo/personalInfoPage.tsx";
-import AccountNotification from "@pages/account/notification";
 import AccountStatements from "@pages/account/logs";
 import AccountSessions from "@pages/account/sessions";
 import UserPage from "@pages/profile";
 import Certificates from "@pages/profile/certificates";
 import Projects from "@pages/profile/projects";
 import PricingPage from "@pages/page/pricing";
-import PricingAdmin from "@pages/page/pricingAdmin";
 import Faq from "@pages/page/faq";
-import ComingSoon from "@pages/page/comingSoon";
 import Maintenance from "@pages/page/maintenance";
 import PrivacyPolicy from "@pages/page/privacyPolicy";
-import HelpCenter from "@pages/page/helpCenter";
 import PageNotFoundError from "@pages/page/404";
 import FiveZeroZero from "@pages/page/500";
 import Login from "@pages/auth/login.tsx";
@@ -89,11 +85,9 @@ const routes: IRoute[] = [
         //page
 
         {path: "/page/pricing", component: <PricingPage/>},
-        {path: "/page/pricing-admin", component: <PricingAdmin/>},
         {path: "/page/faq", component: <Faq/>},
 
         {path: "/page/privacy-policy", component: <PrivacyPolicy/>},
-        {path: "/help-center", component: <HelpCenter/>},
 
 
         {
@@ -120,7 +114,6 @@ const routes: IRoute[] = [
                 [
                     {index: true, element: <Navigate to="security" replace/>},
                     {path: "security", component: <AccountSecurity/>},
-                    {path: "notification", component: <AccountNotification/>},
                     {path: "sessions", component: <AccountSessions/>},
                     {path: "logs", component: <AccountStatements/>},
                 ]
@@ -129,7 +122,6 @@ const routes: IRoute[] = [
 ;
 
 const nonAuthRoutes: IRoute[] = [
-    {path: "/page/coming-soon", component: <ComingSoon/>},
     {path: "/page/maintenance", component: <Maintenance/>},
     {path: "/page/404", component: <PageNotFoundError/>},
     {path: "/page/500", component: <FiveZeroZero/>},
@@ -154,9 +146,12 @@ const builderRoutes: IRoute[] = [
     {path: "/builder", component: <ResumeBuilder/>},
     {path: "/builder/:id", component: <ResumeBuilder/>},
 ]
+import ResumePreview from '@pages/builder/ResumePreview.tsx'
+
 const resumeEditorRoutes: IRoute[] = [
     // {path: "/edit", component: <ResumeBuilder/>},
     {path: "/edit/:id", component: <ResumeBuilder/>},
+    {path: "/preview/:id", component: <ResumePreview/>},
 ]
 
 const adminRoutes: IRoute[] = [

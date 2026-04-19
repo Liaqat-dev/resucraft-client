@@ -16,6 +16,12 @@ const IconUpdate = () => (
         <path d="M20.49 15a9 9 0 11-2.12-9.36L23 10" />
     </svg>
 );
+const IconEye = () => (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+        <circle cx="12" cy="12" r="3" />
+    </svg>
+);
 
 const IconPDF = () => (
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -193,6 +199,7 @@ interface BuilderTopBarProps {
     onUpdate: () => void;
     onExportPDF: () => void;
     onPublish: () => void;
+    onPreview?: () => void;
     mode?: 'template' | 'resume';
 }
 
@@ -213,6 +220,7 @@ const BuilderTopBar = ({
     onUpdate,
     onExportPDF,
     onPublish,
+    onPreview,
     mode = 'template',
 }: BuilderTopBarProps) => {
     const isPublished = templateStatus === 'published';
@@ -406,6 +414,19 @@ const BuilderTopBar = ({
                         label="Export PDF"
                         variant="secondary"
                     />
+
+                    {mode === 'resume' && templateId && (
+                        <>
+                            <div className="btb-divider" />
+                            <TopBarButton
+                                onClick={onPreview || (() => {})}
+                                disabled={!templateId}
+                                icon={<IconEye />}
+                                label="Preview"
+                                variant="secondary"
+                            />
+                        </>
+                    )}
 
                     {mode === 'template' && (
                         <>
