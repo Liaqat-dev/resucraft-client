@@ -2,7 +2,6 @@ import "simplebar-react/dist/simplebar.min.css";
 import "@assets/css/tailwind.css";
 import "@assets/css/icons.css";
 import "@assets/css/fonts/fonts.css";
-import "./assets/css/plugins.css";
 
 import React, {useEffect} from "react";
 import {getPreviousStorageData} from "./slices/layout/utils"; // Adjust the path if needed

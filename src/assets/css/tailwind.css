@@ -32,8 +32,6 @@ File: tailwind scss files
 @import "plugins/quill.css";
 @import "plugins/select.css";
 @import "plugins/tippy.css";
-/* @import 'plugins/nouislider.css'; */
-@import "plugins/swiper.css";
 
 @custom-variant dark (&:where([data-mode=dark], [data-mode=dark] *));
 

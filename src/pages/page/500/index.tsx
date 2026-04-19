@@ -1,26 +1,11 @@
 import React, { useEffect, useRef } from "react";
 import error from "@assets/images/others/500.png";
 import { Home } from "lucide-react";
-import VanillaTilt from "vanilla-tilt";
 import { NextPageWithLayout } from "@dtos/layout";
 import { Link } from "react-router-dom";
 
 const FiveZeroZero: NextPageWithLayout = () => {
-  const tiltRef = useRef(null);
 
-  useEffect(() => {
-    document.title = "500 | ResuCraft";
-  }, []);
-
-  useEffect(() => {
-    if (tiltRef.current) {
-      VanillaTilt.init(tiltRef.current, {
-        max: 25,
-        speed: 400,
-        "full-page-listening": true,
-      });
-    }
-  }, []);
 
   return (
     <React.Fragment>
@@ -28,7 +13,7 @@ const FiveZeroZero: NextPageWithLayout = () => {
         <div className="container">
           <div className="grid grid-cols-12">
             <div className="col-span-12 text-center xl:col-span-8 xl:col-start-3">
-              <div className="relative inline-block" ref={tiltRef}>
+              <div className="relative inline-block" >
                 <img
                   src={error}
                   alt="errorImg"
