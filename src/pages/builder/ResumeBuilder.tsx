@@ -31,7 +31,7 @@ function ResumeBuilder() {
     const [canvasSize, setCanvasSize] = useState('A4');
     const [customWidth, setCustomWidth] = useState('210mm');
     const [customHeight, setCustomHeight] = useState('297mm');
-    const [margins, setMargins] = useState({ top: 1, right: 1, bottom: 1, left: 1 });
+    const [margins, setMargins] = useState({ top: 0.5, right: 0.5, bottom: 0.5, left: 0.5 });
     const [scale, setScale] = useState(1);
     const [showGrid, setShowGrid] = useState(true);
     const [gridSize] = useState(4);

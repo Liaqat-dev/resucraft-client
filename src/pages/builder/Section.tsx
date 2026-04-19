@@ -92,12 +92,6 @@ const CanvasSection = ({
         setMenuOpen(false);
     };
 
-    const handleAddListItem = (e) => {
-        e.stopPropagation();
-        onContentTypeChange(section.id, 'list-items');
-        onAddContent({ ...section, contentType: 'list-items' });
-        setMenuOpen(false);
-    };
 
     const handleAddLineBreak = (e) => {
         e.stopPropagation();
@@ -326,7 +320,7 @@ const CanvasSection = ({
                             zIndex:9999999,
                             position: 'absolute',
                             bottom: 38,
-                            right: 0,
+                            left:0 ,
                             backgroundColor: 'white',
                             borderRadius: '10px',
                             boxShadow: '0 8px 32px rgba(0,0,0,0.13), 0 0 0 1px rgba(0,0,0,0.04)',
@@ -348,13 +342,6 @@ const CanvasSection = ({
                                     onClick={handleAddText}
                                     color="#3b82f6"
                                     bg="#eff6ff"
-                                />
-                                <MenuItem
-                                    icon={<IconList />}
-                                    label="Add List Item"
-                                    onClick={handleAddListItem}
-                                    color="#8b5cf6"
-                                    bg="#f5f3ff"
                                 />
                                 <MenuItem
                                     icon={<IconMinus />}

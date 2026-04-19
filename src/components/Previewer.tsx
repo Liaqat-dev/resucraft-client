@@ -112,6 +112,7 @@ export const TemplateRenderer = ({ data, scale }: { data: any; scale: number }) 
             color: el.color || '#000000',
             textAlign: (el.textAlign || 'left') as any,
             lineHeight: el.lineHeight || 1.5,
+            textDecoration: el.underline ? 'underline' : 'none',
             whiteSpace: 'pre-wrap' as const,
             wordWrap: 'break-word' as const,
         }),
@@ -124,7 +125,7 @@ export const TemplateRenderer = ({ data, scale }: { data: any; scale: number }) 
                 return (
                     <div key={section.id} style={{ position: 'absolute', left: `${section.x * scale}px`, top: `${section.y * scale}px`, width: `${section.width * scale}px`, height: `${section.height * scale}px`, boxSizing: 'border-box' }}>
                         {section.title && section.headerVisible !== false && (
-                            <div style={{ fontSize: `${(section.headerFontSize || 18) * scale}px`, fontWeight: section.headerFontWeight || '700', fontFamily: section.headerFontFamily || 'Arial', color: section.headerColor || '#1f2937', marginBottom: `${1 * scale}px` }}>
+                            <div style={{ fontSize: `${(section.headerFontSize || 18) * scale}px`, fontWeight: section.headerFontWeight || '700', fontFamily: section.headerFontFamily || 'Arial', color: section.headerColor || '#1f2937', textDecoration: section.headerUnderline ? 'underline' : 'none', marginBottom: `${1 * scale}px` }}>
                                 {section.title}
                             </div>
                         )}

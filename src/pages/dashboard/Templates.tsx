@@ -1,6 +1,7 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import {
     CheckCircle2,
+    ChevronDown,
     ChevronLeft,
     ChevronRight,
     ChevronsUpDown,
@@ -9,6 +10,7 @@ import {
     FileText,
     Filter,
     Globe,
+    EyeOff,
     RefreshCw,
     Search,
     ThumbsDown,
@@ -25,6 +27,7 @@ import {
 } from '@src/services/adminService';
 import { getAvatar } from '@src/utils/url_helper';
 import {StatCardGrid} from "@pages/dashboard/components/StatCard.tsx";
+import { useAuth } from '@hooks/useAuth';
 
 /* ─── constants ─────────────────────────────────────────────────────── */
 const CATEGORIES = ['Modern', 'Classic', 'Creative', 'Minimal', 'Professional', 'Other'];
@@ -134,28 +137,118 @@ function PendingCard({
 /* ─── published card ────────────────────────────────────────────────── */
 function PublishedCard({
     template,
+    onUnpublish,
     onDelete,
+    isAdmin,
+    busy,
 }: {
     template: AdminTemplate;
+    onUnpublish: (id: string, targetStatus: 'draft' | 'pending') => void;
     onDelete: (id: string) => void;
+    isAdmin: boolean;
+    busy: boolean;
 }) {
+    const [dropOpen, setDropOpen] = useState(false);
+    const dropRef = useRef<HTMLDivElement>(null);
+
+    /* close dropdown on outside click */
+    useEffect(() => {
+        if (!dropOpen) return;
+        const handler = (e: MouseEvent) => {
+            if (dropRef.current && !dropRef.current.contains(e.target as Node)) {
+                setDropOpen(false);
+            }
+        };
+        document.addEventListener('mousedown', handler);
+        return () => document.removeEventListener('mousedown', handler);
+    }, [dropOpen]);
+
     return (
         <div style={{ width: '230px', flexShrink: 0 }}>
             <TemplateCard template={template} isOwn={false} />
+
+            {/* submitter + action icons row */}
             <div className="mt-1.5 flex items-center justify-between gap-2 px-0.5">
                 <SubmitterChip userId={template.userId} />
-                <button
-                    onClick={() => {
-                        if (window.confirm(`Delete "${template.name}"?`)) onDelete(template._id);
-                    }}
-                    className="shrink-0 p-1 rounded-md transition-colors"
-                    style={{ color: '#334155' }}
-                    onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = '#f87171'; }}
-                    onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = '#334155'; }}
-                    title="Delete template"
-                >
-                    <Trash2 className="size-3.5" />
-                </button>
+                <div className="flex items-center gap-0.5 shrink-0">
+                    {/* Unpublish dropdown */}
+                    <div className="relative" ref={dropRef}>
+                        <button
+                            disabled={busy}
+                            onClick={() => setDropOpen(o => !o)}
+                            className="flex items-center gap-0.5 p-1 rounded-md transition-colors disabled:opacity-40"
+                            style={{ color: '#334155' }}
+                            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = '#fbbf24'; }}
+                            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = '#334155'; }}
+                            title="Unpublish template"
+                        >
+                            <EyeOff className="size-3.5" />
+                            <ChevronDown className="size-2.5" />
+                        </button>
+
+                        {dropOpen && (
+                            <div
+                                className="absolute right-0 mt-1 rounded-lg overflow-hidden z-50 adm-fade"
+                                style={{
+                                    background: '#0f172a',
+                                    border: '1px solid rgba(255,255,255,0.08)',
+                                    boxShadow: '0 8px 24px rgba(0,0,0,0.5)',
+                                    minWidth: '148px',
+                                    bottom: 'calc(100% + 4px)',
+                                }}
+                            >
+                                <div className="px-2.5 py-1.5 border-b" style={{ borderColor: 'rgba(255,255,255,0.06)' }}>
+                                    <span className="adm-mono text-[9px] uppercase tracking-widest" style={{ color: '#334155' }}>
+                                        Move to
+                                    </span>
+                                </div>
+                                <button
+                                    onClick={() => {
+                                        setDropOpen(false);
+                                        onUnpublish(template._id, 'draft');
+                                    }}
+                                    className="w-full flex items-center gap-2 px-3 py-2 text-xs text-left transition-colors"
+                                    style={{ color: '#94a3b8' }}
+                                    onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,0.05)'; }}
+                                    onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'transparent'; }}
+                                >
+                                    <Edit3 className="size-3 shrink-0 text-slate-500" />
+                                    Draft
+                                </button>
+                                <button
+                                    onClick={() => {
+                                        setDropOpen(false);
+                                        onUnpublish(template._id, 'pending');
+                                    }}
+                                    className="w-full flex items-center gap-2 px-3 py-2 text-xs text-left transition-colors"
+                                    style={{ color: '#94a3b8' }}
+                                    onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,0.05)'; }}
+                                    onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'transparent'; }}
+                                >
+                                    <Clock className="size-3 shrink-0 text-amber-500" />
+                                    Pending
+                                </button>
+                            </div>
+                        )}
+                    </div>
+
+                    {/* Delete — admin only */}
+                    {isAdmin && (
+                        <button
+                            disabled={busy}
+                            onClick={() => {
+                                if (window.confirm(`Permanently delete "${template.name}"?`)) onDelete(template._id);
+                            }}
+                            className="p-1 rounded-md transition-colors disabled:opacity-40"
+                            style={{ color: '#334155' }}
+                            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = '#f87171'; }}
+                            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = '#334155'; }}
+                            title="Delete template"
+                        >
+                            <Trash2 className="size-3.5" />
+                        </button>
+                    )}
+                </div>
             </div>
         </div>
     );
@@ -163,6 +256,9 @@ function PublishedCard({
 
 /* ─── main component ────────────────────────────────────────────────── */
 export default function Templates() {
+    const { user } = useAuth();
+    const isAdmin = user?.role === 'admin';
+
     /* stats */
     const [stats, setStats] = useState<AdminTemplateStats | null>(null);
 
@@ -173,6 +269,7 @@ export default function Templates() {
     const [pending, setPending] = useState<AdminTemplate[]>([]);
     const [pendingLoading, setPendingLoading] = useState(true);
     const [actionBusy, setActionBusy] = useState(false);
+    const [pubActionBusy, setPubActionBusy] = useState(false);
 
     /* published */
     const [published, setPublished] = useState<AdminTemplate[]>([]);
@@ -280,7 +377,22 @@ export default function Templates() {
         }
     };
 
+    const handleUnpublish = async (id: string, targetStatus: 'draft' | 'pending') => {
+        setPubActionBusy(true);
+        try {
+            const res = await adminService.unpublishTemplate(id, targetStatus);
+            showToast(res.message);
+            setPublished(prev => prev.filter(t => t._id !== id));
+            fetchStats();
+        } catch (e: any) {
+            showToast(e?.response?.data?.message || 'Unpublish failed', 'err');
+        } finally {
+            setPubActionBusy(false);
+        }
+    };
+
     const handleDelete = async (id: string) => {
+        setPubActionBusy(true);
         try {
             const res = await adminService.deleteAdminTemplate(id);
             showToast(res.message);
@@ -288,6 +400,8 @@ export default function Templates() {
             fetchStats();
         } catch (e: any) {
             showToast(e?.response?.data?.message || 'Delete failed', 'err');
+        } finally {
+            setPubActionBusy(false);
         }
     };
 
@@ -622,7 +736,13 @@ export default function Templates() {
                             <div className="flex flex-wrap gap-4">
                                 {published.map((t, i) => (
                                     <div key={t._id} className="adm-fade" style={{ animationDelay: `${i * 25}ms` }}>
-                                        <PublishedCard template={t} onDelete={handleDelete} />
+                                        <PublishedCard
+                                            template={t}
+                                            onUnpublish={handleUnpublish}
+                                            onDelete={handleDelete}
+                                            isAdmin={isAdmin}
+                                            busy={pubActionBusy}
+                                        />
                                     </div>
                                 ))}
                             </div>

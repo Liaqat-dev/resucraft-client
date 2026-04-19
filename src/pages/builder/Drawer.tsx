@@ -415,11 +415,11 @@ const EditDrawer = ({
 const ElementFields = ({ element, onChange }) => (
     <>
         <AccordionSection icon={IconEdit} title="Content" defaultOpen>
-            <FloatingInput
-                label="Element Name"
-                value={element.name || ''}
-                onChange={(e) => onChange('name', e.target.value)}
-            />
+            {/*<FloatingInput*/}
+            {/*    label="Element Name"*/}
+            {/*    value={element.name || ''}*/}
+            {/*    onChange={(e) => onChange('name', e.target.value)}*/}
+            {/*/>*/}
             <FloatingTextarea
                 label="AI Description"
                 value={element.ai_description || ''}
@@ -432,26 +432,26 @@ const ElementFields = ({ element, onChange }) => (
                 onChange={(e) => onChange('content', e.target.value)}
                 rows={3}
             />
-            {element.type === 'list-item' && (
-                <FloatingSelect
-                    label="Bullet Type"
-                    value={element.bulletType || 'disc'}
-                    onChange={(e) => onChange('bulletType', e.target.value)}
-                    options={[
-                        { value: 'disc', label: 'Disc' },
-                        { value: 'circle', label: 'Circle' },
-                        { value: 'square', label: 'Square' },
-                        { value: 'numbered', label: 'Numbered' },
-                        { value: 'roman', label: 'Roman' },
-                    ]}
-                />
-            )}
-            <FloatingTextarea
-                label="Description (optional)"
-                value={element.description || ''}
-                onChange={(e) => onChange('description', e.target.value)}
-                rows={2}
-            />
+            {/*{element.type === 'list-item' && (*/}
+            {/*    <FloatingSelect*/}
+            {/*        label="Bullet Type"*/}
+            {/*        value={element.bulletType || 'disc'}*/}
+            {/*        onChange={(e) => onChange('bulletType', e.target.value)}*/}
+            {/*        options={[*/}
+            {/*            { value: 'disc', label: 'Disc' },*/}
+            {/*            { value: 'circle', label: 'Circle' },*/}
+            {/*            { value: 'square', label: 'Square' },*/}
+            {/*            { value: 'numbered', label: 'Numbered' },*/}
+            {/*            { value: 'roman', label: 'Roman' },*/}
+            {/*        ]}*/}
+            {/*    />*/}
+            {/*)}*/}
+            {/*<FloatingTextarea*/}
+            {/*    label="Description (optional)"*/}
+            {/*    value={element.description || ''}*/}
+            {/*    onChange={(e) => onChange('description', e.target.value)}*/}
+            {/*    rows={2}*/}
+            {/*/>*/}
         </AccordionSection>
 
         <AccordionSection icon={IconType} title="Typography" defaultOpen={false}>
@@ -693,11 +693,11 @@ const BulletsFields = ({ element, onChange }) => {
 const LineBreakFields = ({ element, onChange }) => (
     <>
         <AccordionSection icon={IconDivider} title="Line Break" defaultOpen>
-            <FloatingInput
-                label="Element Name"
-                value={element.name || ''}
-                onChange={(e) => onChange('name', e.target.value)}
-            />
+            {/*<FloatingInput*/}
+            {/*    label="Element Name"*/}
+            {/*    value={element.name || ''}*/}
+            {/*    onChange={(e) => onChange('name', e.target.value)}*/}
+            {/*/>*/}
             <FloatingTextarea
                 label="AI Description"
                 value={element.ai_description || ''}

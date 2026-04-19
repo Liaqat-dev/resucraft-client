@@ -110,7 +110,7 @@ export function useSectionActions({
                 fontFamily: 'Times New Roman',
                 color: '#000000',
                 textAlign: 'left',
-                lineHeight: 0.8,
+                lineHeight: 1.5,
                 parentSection: section.id
             };
             setElements(prev => [...prev, newElement]);

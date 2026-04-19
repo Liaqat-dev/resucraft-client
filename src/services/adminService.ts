@@ -138,6 +138,11 @@ export const adminService = {
         return res.data;
     },
 
+    async unpublishTemplate(id: string, targetStatus: 'draft' | 'pending' = 'draft'): Promise<{ message: string }> {
+        const res = await api.patch(`/admin/templates/${id}/unpublish`, { targetStatus });
+        return res.data;
+    },
+
     async deleteAdminTemplate(id: string): Promise<{ message: string }> {
         const res = await api.delete(`/admin/templates/${id}`);
         return res.data;
