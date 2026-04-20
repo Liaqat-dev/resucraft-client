@@ -415,11 +415,11 @@ const EditDrawer = ({
 const ElementFields = ({ element, onChange }) => (
     <>
         <AccordionSection icon={IconEdit} title="Content" defaultOpen>
-            {/*<FloatingInput*/}
-            {/*    label="Element Name"*/}
-            {/*    value={element.name || ''}*/}
-            {/*    onChange={(e) => onChange('name', e.target.value)}*/}
-            {/*/>*/}
+            <FloatingInput
+                label="Element Name"
+                value={element.name || ''}
+                onChange={(e) => onChange('name', e.target.value)}
+            />
             <FloatingTextarea
                 label="AI Description"
                 value={element.ai_description || ''}

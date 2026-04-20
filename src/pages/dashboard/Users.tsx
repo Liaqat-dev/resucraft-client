@@ -107,9 +107,11 @@ function ActionMenu({
 
             {open && (
                 <div
+
                     className="absolute right-0 z-50 w-48 rounded-xl overflow-hidden shadow-2xl"
                     style={{
-                        top: 'calc(100% + 4px)',
+                        bottom: 'calc(100% + 4px)',
+                        zIndex: 99999,
                         background: 'linear-gradient(135deg, #1a1f2e 0%, #141824 100%)',
                         border: '1px solid rgba(255,255,255,0.08)',
                         backdropFilter: 'blur(12px)',
@@ -687,7 +689,7 @@ export default function Users() {
                 </div>
 
                 {/* ── Table ────────────────────────────────────────── */}
-                <div className="adm-card overflow-hidden">
+                <div className="adm-card ">
                     {error ? (
                         <div className="flex flex-col items-center justify-center py-20 gap-3">
                             <XCircle className="size-10 text-red-500/50"/>
@@ -698,7 +700,7 @@ export default function Users() {
                             </button>
                         </div>
                     ) : (
-                        <div className="overflow-x-auto">
+                        <div className="overflow-x-auto rounded-2xl">
                             <table className="w-full border-collapse">
                                 <thead>
                                 <tr style={{

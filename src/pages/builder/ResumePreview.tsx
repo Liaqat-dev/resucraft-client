@@ -1,8 +1,9 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Printer, ZoomIn, ZoomOut, Maximize2 } from 'lucide-react';
+import { ArrowLeft, Printer, ZoomIn, ZoomOut, Maximize2, BarChart2 } from 'lucide-react';
 import { resumeService } from '@src/services/resume.service';
 import Previewer from '@src/components/Previewer';
+import AtsScoreModal from '@src/components/ats/AtsScoreModal';
 
 const ZOOM_STEPS = [0.5, 0.75, 1, 1.25, 1.5, 2];
 const MAX_W = 800;
@@ -15,8 +16,8 @@ const ResumePreview = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [zoom, setZoom] = useState(1);
+    const [showAts, setShowAts] = useState(false);
 
-    // Callback ref — fires when the element mounts/unmounts, not just on first render
     const [containerW, setContainerW] = useState(0);
     const roRef = useRef<ResizeObserver | null>(null);
     const containerRef = useCallback((el: HTMLDivElement | null) => {
@@ -99,6 +100,17 @@ const ResumePreview = () => {
                         </button>
                     </div>
 
+                    {/* ATS Score button — only shown once resume is loaded */}
+                    {resume?.data && (
+                        <button
+                            onClick={() => setShowAts(true)}
+                            className="inline-flex items-center gap-1.5 text-sm font-semibold bg-indigo-600 hover:bg-indigo-700 px-3 py-1.5 rounded-lg shadow-sm transition-colors text-white"
+                        >
+                            <BarChart2 className="size-4" />
+                            ATS Score
+                        </button>
+                    )}
+
                     <button
                         onClick={() => window.print()}
                         className="inline-flex items-center gap-1.5 text-sm font-semibold bg-white border border-gray-200 px-3 py-1.5 rounded-lg shadow-sm hover:bg-gray-50 transition-colors text-gray-700"
@@ -121,7 +133,6 @@ const ResumePreview = () => {
                     <p className="text-red-500 text-xs">{error}</p>
                 </div>
             ) : (
-                // Outer div: caps width + allows horizontal scroll when zoomed in
                 <div ref={containerRef} className="w-full max-w-[800px] overflow-x-auto">
                     <div className="preview-canvas bg-white shadow-xl rounded-lg overflow-hidden border border-gray-200" style={{ width: previewerW }}>
                         <Previewer data={resume?.data} width={previewerW} />
@@ -147,6 +158,14 @@ const ResumePreview = () => {
                     }
                 }
             `}</style>
+
+            {/* ATS Score Modal */}
+            {showAts && resume?.data && (
+                <AtsScoreModal
+                    resumeData={resume.data}
+                    onClose={() => setShowAts(false)}
+                />
+            )}
         </div>
     );
 };

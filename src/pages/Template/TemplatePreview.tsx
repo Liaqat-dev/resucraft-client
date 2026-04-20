@@ -53,7 +53,7 @@ const TemplatePreview = () => {
         try {
             const result = await generateResume(id, jobDescription.trim());
             localStorage.setItem('templateToLoad', JSON.stringify(result.filledTemplate));
-            navigate('/builder');
+            navigate(`/edit/${result.resume._id}`);
         } catch (err: any) {
             const msg = err?.response?.data?.message || err.message || 'Generation failed';
             setGenError(msg);
