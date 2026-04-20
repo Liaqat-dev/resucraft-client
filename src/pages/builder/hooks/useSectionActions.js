@@ -179,6 +179,7 @@ export function useSectionActions({
             const newElement = {
                 id: Date.now().toString(),
                 type: 'bullets',
+                name: '',
                 ai_description: 'Bullet list block',
                 bulletItems: ['Item 1', 'Item 2', 'Item 3'],
                 bulletStyle: 'disc',

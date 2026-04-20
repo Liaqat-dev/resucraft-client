@@ -559,6 +559,11 @@ const BulletsFields = ({ element, onChange }) => {
     return (
         <>
             <AccordionSection icon={IconBulletsDrawer} title="Bullets" defaultOpen>
+                <FloatingInput
+                    label="Element Name"
+                    value={element.name || ''}
+                    onChange={(e) => onChange('name', e.target.value)}
+                />
                 <FloatingTextarea
                     label="AI Description"
                     value={element.ai_description || ''}

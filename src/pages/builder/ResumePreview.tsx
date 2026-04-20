@@ -52,7 +52,7 @@ const ResumePreview = () => {
     const canZoomOut = zoomIdx > 0;
 
     return (
-        <div className="min-h-screen px-6 py-8 bg-gray-50 flex flex-col items-center">
+        <div className="min-h-screen px-6 py-8 bg-primary flex flex-col items-center">
 
             {/* ── Controls ── */}
             <div className="w-full max-w-[800px] flex items-center justify-between mb-6 preview-controls">
