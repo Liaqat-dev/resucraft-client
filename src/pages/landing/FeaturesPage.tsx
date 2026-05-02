@@ -205,7 +205,7 @@ const FeaturesPage: React.FC = () => {
                         ResuCraft packs AI, ATS optimization, drag-and-drop design, and interview
                         prep into one streamlined platform.
                     </p>
-                    <Link to="/auth/sign-up" className="rc-btn">
+                    <Link to="/" className="rc-btn">
                         Start Free — No Card Needed <span style={{ color: theme.accentLight, position: 'relative', zIndex: 1 }}>↗</span>
                     </Link>
                 </div>
