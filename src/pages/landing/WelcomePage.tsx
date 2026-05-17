@@ -54,8 +54,8 @@ const features = [
     },
     {
         icon: <MessageSquare size={22}/>,
-        title: "Interview Prep",
-        desc: "Automatically generates technical, behavioral, and scenario-based interview questions tailored to the job role.",
+        title: "Mock Interview Prep",
+        desc: "Automatically generates technical, behavioral, and scenario-based interview questions tailored to the job role and user profile.",
         accent: "bg-amber-50 dark:bg-amber-500/10 text-amber-600 dark:text-amber-400",
     },
     {

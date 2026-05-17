@@ -148,9 +148,9 @@ const TemplateReviews: React.FC<TemplateReviewsProps> = ({ templateId }) => {
                 </div>
                 
                 {stats.totalReviews > 0 && (
-                    <div className="flex items-center gap-4 bg-white p-4 rounded-xl border border-gray-100 shadow-sm">
+                    <div className="flex items-center gap-4 p-4 rounded-xl border border-gray-100 shadow-sm">
                         <div className="text-center">
-                            <div className="text-3xl font-bold text-gray-900">{stats.averageRating}</div>
+                            <div className="text-3xl font-bold ">{stats.averageRating}</div>
                             <div className="flex items-center gap-0.5 mt-1">
                                 {[1, 2, 3, 4, 5].map((star) => (
                                     <Star 
@@ -162,7 +162,7 @@ const TemplateReviews: React.FC<TemplateReviewsProps> = ({ templateId }) => {
                         </div>
                         <div className="h-10 w-px bg-gray-100" />
                         <div className="text-sm text-gray-500">
-                            <span className="font-bold text-gray-900 block">{stats.totalReviews}</span>
+                            <span className="font-bold  block">{stats.totalReviews}</span>
                             Total Reviews
                         </div>
                     </div>
@@ -172,7 +172,7 @@ const TemplateReviews: React.FC<TemplateReviewsProps> = ({ templateId }) => {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 {/* Review Form */}
                 <div className="lg:col-span-1">
-                    <div className="bg-white rounded-2xl border border-gray-200 p-6 sticky top-4">
+                    <div className=" rounded-2xl border border-gray-200 p-6 sticky top-4">
                         <h3 className="text-lg font-bold text-gray-900 mb-4">
                             {myReview ? 'Edit your review' : 'Leave a review'}
                         </h3>
@@ -266,10 +266,10 @@ const TemplateReviews: React.FC<TemplateReviewsProps> = ({ templateId }) => {
                         <>
                             <div className="space-y-4">
                                 {reviews.map((review) => (
-                                    <div key={review._id} className="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm transition-all hover:shadow-md hover:border-gray-200">
+                                    <div key={review._id} className="card rounded-2xl border border-gray-100 p-6 shadow-sm transition-all hover:shadow-md hover:border-gray-200">
                                         <div className="flex items-start justify-between gap-4">
                                             <div className="flex items-center gap-3">
-                                                <div className="size-10 rounded-full bg-primary-50 border border-primary-100 flex items-center justify-center overflow-hidden flex-shrink-0">
+                                                <div className="size-10 rounded-full  border border-primary-100 flex items-center justify-center overflow-hidden flex-shrink-0">
                                                     {review.user.profilePic ? (
                                                         <img src={review.user.profilePic} alt={review.user.username} className="w-full h-full object-cover" />
                                                     ) : (
@@ -277,7 +277,7 @@ const TemplateReviews: React.FC<TemplateReviewsProps> = ({ templateId }) => {
                                                     )}
                                                 </div>
                                                 <div>
-                                                    <div className="font-bold text-gray-900 text-sm">{review.user.username}</div>
+                                                    <div className="font-bold text-gray-500 text-sm">{review.user.username}</div>
                                                     <div className="text-xs text-gray-400">{new Date(review.createdAt).toLocaleDateString()}</div>
                                                 </div>
                                             </div>
@@ -288,7 +288,7 @@ const TemplateReviews: React.FC<TemplateReviewsProps> = ({ templateId }) => {
                                         </div>
                                         
                                         {review.reviewText && (
-                                            <p className="mt-4 text-gray-600 text-sm leading-relaxed">
+                                            <p className="mt-4  text-sm leading-relaxed">
                                                 {review.reviewText}
                                             </p>
                                         )}

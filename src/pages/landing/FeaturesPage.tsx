@@ -131,14 +131,13 @@ const featuresData: FeatureDetailProps[] = [
     {
         icon: <MessageSquare />,
         badge: "Interview Prep",
-        title: "Interview Question Generator",
-        description: "Stop guessing what interviewers will ask. Our AI analyzes the job description and your resume to generate relevant, role-specific interview questions.",
+        title: "Mock Interview ",
+        description: "Stop guessing what interviewers will ask. Our AI analyzes the job description and and profile to generate relevant, role-specific interview questions.",
         bullets: [
             "Technical questions tailored to your tech stack",
             "Behavioral STAR-method question prompts",
             "Scenario-based situational questions",
             "Question categorization by difficulty and topic",
-            "Downloadable question bank for offline preparation",
         ],
         accent: "bg-gradient-to-br from-amber-600 to-amber-800",
         badgeCls: "bg-amber-50 dark:bg-amber-500/10 text-amber-600 dark:text-amber-400",
