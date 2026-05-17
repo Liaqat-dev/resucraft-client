@@ -1,13 +1,19 @@
 import {useEffect, useState} from 'react';
-import {useNavigate} from 'react-router-dom';
+import {useNavigate, useLocation} from 'react-router-dom';
 import TemplateCard from './TemplateCard.js';
 import ResumeCard from './ResumeCard.tsx';
-import {ChevronRight, FileText, Globe, LayoutTemplate, RefreshCw, Search, X} from 'lucide-react';
+import {ChevronRight, FileText, Globe, LayoutTemplate, RefreshCw, Search, X, Pencil, Trash2, User2, Clock} from 'lucide-react';
 import {templateService} from '@src/services/template.service';
 import {resumeService} from '@src/services/resume.service';
+import {authService} from '@src/services/authService';
 import DeleteToast from '@src/components/custom/toast/deleteToast';
 import {useAuth} from "@hooks/useAuth.ts";
 import {BlankCard} from "@pages/Template/BlankCard.tsx";
+import {Modal} from "@src/components/custom/modal/modal";
+import Previewer from "@src/components/Previewer";
+import {timeAgoTemplates as timeAgo} from "@src/utils/url_helper.ts";
+import { getTemplateReviews, ReviewStats } from '@src/services/reviewService';
+import { Star } from 'lucide-react';
 
 const CATEGORIES = ['All', 'Modern', 'Classic', 'Creative', 'Minimal', 'Professional', 'Other'];
 
@@ -67,7 +73,9 @@ const SectionHeader = ({
 /* ── Main component ─────────────────────────────────────────────── */
 const TemplatesGallery = () => {
     const navigate = useNavigate();
+    const location = useLocation();
     const {user, isAuthenticated} = useAuth();
+    const [previewWidth, setPreviewWidth] = useState(() => Math.min(495, window.innerWidth - 100));
 
     const [myTemplates, setMyTemplates] = useState<any[]>([]);
     const [communityTemplates, setCommunityTemplates] = useState<any[]>([]);
@@ -80,6 +88,83 @@ const TemplatesGallery = () => {
     const [search, setSearch] = useState('');
     const [activeCategory, setActiveCategory] = useState('All');
     const [myStatus, setMyStatus] = useState<MyStatus>('all');
+
+    const [selectedTemplate, setSelectedTemplate] = useState<any | null>(null);
+    const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+    const [ownerInfo, setOwnerInfo] = useState<{user_name: string, userprofile: string | null} | null>(null);
+    const [loadingOwner, setLoadingOwner] = useState(false);
+    const [reviewStats, setReviewStats] = useState<ReviewStats | null>(null);
+    const [loadingStats, setLoadingStats] = useState(false);
+
+    useEffect(() => {
+        if (selectedTemplate) {
+            if (selectedTemplate.userId) fetchOwnerInfo(selectedTemplate.userId);
+            if (selectedTemplate._id) fetchReviewStats(selectedTemplate._id);
+        } else {
+            setOwnerInfo(null);
+            setReviewStats(null);
+        }
+    }, [selectedTemplate]);
+
+    const fetchReviewStats = async (templateId: string) => {
+        setLoadingStats(true);
+        try {
+            const data = await getTemplateReviews(templateId, 1, 1);
+            setReviewStats({
+                averageRating: data.averageRating,
+                totalReviews: data.totalReviews
+            });
+        } catch (err) {
+            console.error("Error fetching review stats:", err);
+        } finally {
+            setLoadingStats(false);
+        }
+    };
+
+    const fetchOwnerInfo = async (userId: string) => {
+        setLoadingOwner(true);
+        try {
+            const data = await authService.getUserInfo(userId);
+            if (data.success) {
+                setOwnerInfo(data.user);
+            }
+        } catch (err) {
+            console.error("Error fetching owner info:", err);
+            setOwnerInfo(null);
+        } finally {
+            setLoadingOwner(false);
+        }
+    };
+
+    const handleTemplateClick = (template: any) => {
+        setSelectedTemplate(template);
+        setIsPreviewOpen(true);
+    };
+
+    useEffect(() => {
+        const onResize = () => setPreviewWidth(Math.min(495, window.innerWidth - 60));
+        window.addEventListener('resize', onResize);
+        return () => window.removeEventListener('resize', onResize);
+    }, []);
+
+    const handleUseTemplate = async (template: any) => {
+        if (!isAuthenticated) {
+            navigate('/auth/sign-in', { state: { from: location.pathname } });
+            return;
+        }
+        try {
+            // const newResumeData = {
+            //     name: `My ${template.name}`,
+            //     data: template.data,
+            //     category: template.category,
+            // };
+            // const result = await resumeService.save(newResumeData);
+            navigate(`/templates/${template._id}/preview`);
+        } catch (err) {
+            console.error("Error using template:", err);
+        }
+    };
+
 
     useEffect(() => {
         fetchAll();
@@ -317,8 +402,7 @@ const TemplatesGallery = () => {
                                                 />
                                                 <Grid>
                                                     {filteredMine.map(t => (
-                                                        <TemplateCard key={t._id} template={t} onDelete={handleDelete}
-                                                                      isOwn/>
+                                                        <TemplateCard key={t._id} template={t} onDelete={handleDelete} onClick={handleTemplateClick} isOwn/>
                                                     ))}
                                                 </Grid>
                                             </div>
@@ -333,7 +417,7 @@ const TemplatesGallery = () => {
                                                 />
                                                 <Grid>
                                                     {filteredCommunity.map(t => (
-                                                        <TemplateCard key={t._id} template={t} isOwn={false}/>
+                                                        <TemplateCard key={t._id} template={t} isOwn={false} onClick={handleTemplateClick}/>
                                                     ))}
                                                 </Grid>
                                             </div>
@@ -419,7 +503,7 @@ const TemplatesGallery = () => {
                                         <BlankCard onClick={() => navigate('/builder')}/>
 
                                         {isAuthenticated && myFiltered.map(t => (
-                                            <TemplateCard key={t._id} template={t} onDelete={handleDelete} isOwn/>
+                                            <TemplateCard key={t._id} template={t} onDelete={handleDelete} onClick={handleTemplateClick} isOwn/>
                                         ))}
                                     </Grid>
 
@@ -460,7 +544,7 @@ const TemplatesGallery = () => {
                                         ) : (
                                             <Grid>
                                                 {communityTemplates.map(t => (
-                                                    <TemplateCard key={t._id} template={t} isOwn={false}/>
+                                                    <TemplateCard key={t._id} template={t} isOwn={false} onClick={handleTemplateClick}/>
                                                 ))}
                                             </Grid>
                                         )}
@@ -471,6 +555,131 @@ const TemplatesGallery = () => {
                     </>
                 )}
             </div>
+
+            <Modal
+                isOpen={isPreviewOpen}
+                onClose={() => setIsPreviewOpen(false)}
+                size="modal-2xl"
+                title="Template Preview"
+                content={
+                    selectedTemplate && (
+                        <div className="flex flex-col lg:flex-row gap-8 p-2 min-h-[500px]">
+                            {/* Left Column: Preview */}
+                            {/*<div className="lg:w-2/3 bg-gray-50 dark:bg-dark-800 rounded-xl p-8 flex justify-center items-start overflow-y-auto max-h-[70vh] border border-gray-100 dark:border-dark-700 shadow-inner">*/}
+                            {/*    <ResponsivePreviewer data={selectedTemplate.data} />*/}
+                            {/*</div>*/}
+                            <Previewer data={selectedTemplate.data} width={previewWidth}/>
+
+                            {/* Right Column: Details & Action */}
+                            <div className="lg:w-1/3 flex flex-col justify-between py-4">
+                                <div>
+                                    <h2 className="text-lg font-extrabold text-gray-900 dark:text-dark-100 mb-2 tracking-tight" style={{ fontFamily: "'JetBrains Mono', monospace" }}>
+                                        {selectedTemplate.name}
+                                    </h2>
+                                    
+                                    <div className="flex items-center gap-2 mb-4">
+                                        <div className="flex items-center gap-0.5">
+                                            {[1, 2, 3, 4, 5].map((star) => (
+                                                <Star
+                                                    key={star}
+                                                    className={`size-3.5 ${reviewStats && star <= Math.round(reviewStats.averageRating) ? 'fill-amber-400 text-amber-400' : 'text-gray-300'}`}
+                                                />
+                                            ))}
+                                        </div>
+                                        {loadingStats ? (
+                                            <span className="text-[10px] text-gray-400 animate-pulse">Loading ratings...</span>
+                                        ) : reviewStats && reviewStats.totalReviews > 0 ? (
+                                            <span className="text-[11px] font-bold text-gray-500">
+                                                {reviewStats.averageRating} ({reviewStats.totalReviews})
+                                            </span>
+                                        ) : (
+                                            <span className="text-[11px] font-medium text-gray-400">No reviews</span>
+                                        )}
+                                    </div>
+
+                                    <div className="space-y-4">
+                                        <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-dark-800 rounded-xl border border-gray-100 dark:border-dark-700">
+                                            <div className="size-10 rounded-full bg-gray-200 dark:bg-dark-700 overflow-hidden flex-shrink-0">
+                                                {ownerInfo?.userprofile ? (
+                                                    <img src={ownerInfo.userprofile} alt={ownerInfo.user_name} className="size-full object-cover" />
+                                                ) : (
+                                                    <div className="size-full flex items-center justify-center text-gray-400">
+                                                        <User2 className="size-5" />
+                                                    </div>
+                                                )}
+                                            </div>
+                                            <div className="min-w-0">
+                                                <p className="text-[11px] font-bold text-gray-400 dark:text-dark-500 uppercase tracking-wider">Created By</p>
+                                                <p className="text-sm font-semibold text-gray-700 dark:text-dark-300 truncate">
+                                                    {loadingOwner ? 'Loading...' : ownerInfo?.user_name || 'Unknown User'}
+                                                </p>
+                                            </div>
+                                        </div>
+
+                                        <div className="flex items-center gap-2 text-gray-500 dark:text-dark-400 px-1">
+                                            <Clock className="size-3.5" />
+                                            <span className="text-[12px] font-medium">
+                                                Last updated {timeAgo(selectedTemplate.updatedAt)}
+                                            </span>
+                                        </div>
+
+                                        <div>
+                                            <label className="text-[11px] font-bold text-gray-400 dark:text-dark-500 uppercase tracking-wider">Category</label>
+                                            <p className="text-[15px] font-semibold text-gray-700 dark:text-dark-300">
+                                                {selectedTemplate.category || 'Other'}
+                                            </p>
+                                        </div>
+                                        {selectedTemplate.description && (
+                                            <div>
+                                                <label className="text-[11px] font-bold text-gray-400 dark:text-dark-500 uppercase tracking-wider">Description</label>
+                                                <p className="text-sm text-gray-600 dark:text-dark-400 leading-relaxed">
+                                                    {selectedTemplate.description}
+                                                </p>
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+
+                                <div className="pt-8 space-y-3">
+                                    {user?._id === selectedTemplate.userId && (
+                                        <div className="flex gap-2">
+                                            <button
+                                                onClick={() => navigate(`/builder/${selectedTemplate._id}`)}
+                                                className="flex-1 py-4 bg-white border-2 border-primary-500 text-primary-600 hover:bg-primary-50 font-bold rounded-xl transition-all duration-200 flex items-center justify-center gap-2"
+                                            >
+                                                <Pencil className="size-5" />
+                                                Edit template
+                                            </button>
+                                            <button
+                                                onClick={() => {
+                                                    if (window.confirm('Are you sure you want to delete this template?')) {
+                                                        handleDelete(selectedTemplate._id);
+                                                        setIsPreviewOpen(false);
+                                                    }
+                                                }}
+                                                className="px-4 py-4 bg-red-50 border-2 border-red-200 text-red-600 hover:bg-red-100 hover:border-red-500 font-bold rounded-xl transition-all duration-200 flex items-center justify-center gap-2"
+                                                title="Delete Template"
+                                            >
+                                                <Trash2 className="size-5" />
+                                            </button>
+                                        </div>
+                                    )}
+                                    <button
+                                        onClick={() => handleUseTemplate(selectedTemplate)}
+                                        className="w-full py-4 bg-primary-500 hover:bg-primary-600 text-white font-bold rounded-xl shadow-lg shadow-primary-500/25 transition-all duration-200 active:scale-[0.98] flex items-center justify-center gap-2"
+                                    >
+                                        <LayoutTemplate className="size-5" />
+                                        Use this template
+                                    </button>
+                                    <p className="text-center text-[11px] text-gray-400 dark:text-dark-500 mt-4">
+                                        This will create a new resume based on this layout.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    )
+                }
+            />
         </div>
     );
 };

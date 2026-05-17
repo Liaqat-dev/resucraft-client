@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { Github, Linkedin, Mail, Twitter } from "lucide-react";
+import { BarChart3, Github, Linkedin, Mail, ShieldCheck, Sparkles, Twitter, Zap } from "lucide-react";
 import { useLandingTheme } from "@hooks/useLandingTheme";
 import logo from "@assets/images/main-logo.png";
 import logoWhite from "@assets/images/logo-white.png";
@@ -137,38 +137,31 @@ const Footer: React.FC = () => {
                         </ul>
                     </div>
 
-                    {/* Newsletter */}
+                    {/* Why ResuCraft? */}
                     <div>
                         <h3 style={{ fontSize: "0.7rem", fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase", color: theme.textSub, marginBottom: "1rem", fontFamily: "'DM Sans', sans-serif" }}>
-                            Stay Updated
+                            Why ResuCraft?
                         </h3>
-                        <p style={{ fontSize: "0.8rem", color: theme.textMuted, marginBottom: "0.875rem", lineHeight: 1.65, fontFamily: "'DM Sans', sans-serif" }}>
-                            Tips on resume writing, interview prep, and career growth.
-                        </p>
-                        <div style={{ display: "flex", gap: "0.5rem" }}>
-                            <input
-                                type="email"
-                                placeholder="your@email.com"
-                                style={{
-                                    flex: 1, padding: "0.5rem 0.75rem", borderRadius: 8,
-                                    background: theme.card, border: `1px solid ${theme.border}`,
-                                    color: theme.text, fontSize: "0.8rem", outline: "none",
-                                    fontFamily: "'DM Sans', sans-serif",
-                                }}
-                            />
-                            <button className={'btn-primary'} style={{
-                                padding: "0.5rem 0.875rem", borderRadius: 8, flexShrink: 0,
-                                // background: `linear-gradient(135deg, ${theme.accent}, ${theme.accentDark})`,
-                                border: "none", color: "#fff", fontSize: "0.8rem", fontWeight: 600,
-                                cursor: "pointer", fontFamily: "'DM Sans', sans-serif",
-                                transition: "opacity 0.15s",
-                            }}
-                                onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.85")}
-                                onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
-                            >
-                                Join
-                            </button>
-                        </div>
+                        <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: "0.75rem" }}>
+                            {[
+                                { icon: <Sparkles size={14} />, text: "AI-Powered Tailoring" },
+                                { icon: <BarChart3 size={14} />, text: "ATS-Optimized Layouts" },
+                                { icon: <ShieldCheck size={14} />, text: "Secure & Private Data" },
+                                { icon: <Zap size={14} />, text: "Instant PDF Export" },
+                            ].map((item, i) => (
+                                <li key={i} style={{ 
+                                    display: "flex", 
+                                    alignItems: "center", 
+                                    gap: "0.7rem", 
+                                    fontSize: "0.82rem", 
+                                    color: theme.textMuted, 
+                                    fontFamily: "'DM Sans', sans-serif" 
+                                }}>
+                                    <span style={{ color: theme.accent, display: "flex" }}>{item.icon}</span>
+                                    {item.text}
+                                </li>
+                            ))}
+                        </ul>
                     </div>
                 </div>
 

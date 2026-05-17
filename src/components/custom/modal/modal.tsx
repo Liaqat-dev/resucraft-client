@@ -67,7 +67,6 @@ interface CustomModalProps {
     | "modal-left"
     | "modal-right"
     | "modal-tl"
-    | "modal-tr"
     | "modal-br"
     | "modal-bl";
   size?:

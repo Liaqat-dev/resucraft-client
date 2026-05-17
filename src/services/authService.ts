@@ -174,5 +174,16 @@ export const authService = {
             headers: {'Content-Type': 'multipart/form-data'},
         });
         return response.data;
+    },
+
+    async getUserInfo(userId: string) {
+        const response = await api.get<{
+            success: boolean;
+            user: {
+                user_name: string;
+                userprofile: string | null;
+            }
+        }>(`/auth/user/${userId}`);
+        return response.data;
     }
 };
