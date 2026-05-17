@@ -86,7 +86,7 @@ const featuresData: FeatureDetailProps[] = [
         icon: <BrainCircuit />,
         badge: "Core Feature",
         title: "AI-Powered Resume Generation",
-        description: "Our NLP engine reads the job description you paste, extracts key requirements and keywords, then rewrites your stored profile data into a perfectly tailored resume — all in under 60 seconds.",
+        description: "Our NLP engine reads the job description you paste, extracts key requirements and keywords, then rewrites your stored profile data into a perfectly tailored resume — all in under 30 seconds.",
         bullets: [
             "Job description parsing with NLP to extract key skills and keywords",
             "Automatic content rewriting optimized for each specific role",
@@ -161,13 +161,13 @@ const featuresData: FeatureDetailProps[] = [
 ];
 
 const highlights = [
-    { icon: <GraduationCap size={18} />, label: "Profile Management", desc: "Education, experience, skills, projects, certificates — all in one place" },
+    { icon: <GraduationCap size={18} />, label: "Profile Management", desc: "Education, experience, skills, projects — all in one place" },
     { icon: <FileDown size={18} />, label: "PDF Export", desc: "Pixel-perfect PDF export, print-ready and ATS-safe" },
-    { icon: <Palette size={18} />, label: "Custom Themes", desc: "Multiple color schemes and font pairings to match your style" },
-    { icon: <Bot size={18} />, label: "Speech Input", desc: "Voice-to-text input for accessibility and quick data entry" },
-    { icon: <Users size={18} />, label: "Multi-Role Support", desc: "Designed for job seekers, template creators, and career services" },
-    { icon: <Zap size={18} />, label: "Instant Generation", desc: "From job description to finished resume in under 60 seconds" },
-    { icon: <ShieldCheck size={18} />, label: "Data Security", desc: "JWT auth, encrypted storage, full GDPR compliance" },
+    { icon: <Palette size={18} />, label: "Custom Themes", desc: "Multiple color schemes to match your style" },
+    { icon: <Bot size={18} />, label: "Speech Input", desc: "Voice-to-text input for quick data entry" },
+    { icon: <Users size={18} />, label: "Multi-Role Support", desc: "Designed for job seekers, template creators" },
+    { icon: <Zap size={18} />, label: "Instant Generation", desc: "From job description to resume in 30 seconds" },
+    { icon: <ShieldCheck size={18} />, label: "Data Security", desc: "JWT auth, encrypted storage" },
     { icon: <Sparkles size={18} />, label: "Smart Suggestions", desc: "AI-powered content suggestions as you type" },
 ];
 

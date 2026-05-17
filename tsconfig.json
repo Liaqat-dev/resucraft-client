@@ -42,7 +42,6 @@
   "include": [
     "**/*.ts",
     "**/*.tsx",
-    "src/views/auth/resetPassword",
     "server/server.cjs"
   ], // Include all files in the src directory
   "exclude": ["node_modules"] // Exclude node_modules

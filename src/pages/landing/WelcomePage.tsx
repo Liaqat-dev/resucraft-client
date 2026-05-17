@@ -21,14 +21,15 @@ import LandingNav from "@src/components/landing/LandingNav.tsx";
 import LandingFooter from "@src/components/landing/LandingFooter.tsx";
 import {useLandingTheme} from "@hooks/useLandingTheme";
 import {useAuth} from "@hooks/useAuth.ts";
+import UseNumberCounter from "@src/components/common/numberCounter.tsx";
 
 // ── Stats ─────────────────────────────────────────────────────────────────────
 
 const stats = [
-    {value: "80%", label: "Time Saved", sub: "vs. manual writing", icon: <Zap size={20}/>},
-    {value: "60%", label: "Better ATS Score", sub: "pass-through rate", icon: <Target size={20}/>},
-    {value: "10K+", label: "Resumes Built", sub: "and counting", icon: <FileText size={20}/>},
-    {value: "50+", label: "Templates", sub: "ATS-optimized", icon: <LayoutTemplate size={20}/>},
+    {value: 80,unit:"%", label: "Time Saved", sub: "vs. manual writing", icon: <Zap size={20}/>},
+    {value: 60, unit:"%",label: "Better ATS Score", sub: "pass-through rate", icon: <Target size={20}/>},
+    {value: 100,unit:"+", label: "Resumes Built", sub: "and counting", icon: <FileText size={20}/>},
+    {value: 20,unit:"+", label: "Templates", sub: "ATS-optimized", icon: <LayoutTemplate size={20}/>},
 ];
 
 // ── Features ──────────────────────────────────────────────────────────────────
@@ -79,19 +80,19 @@ const steps = [
         n: "01",
         title: "Build Your Profile",
         desc: "Add your personal info, education, work experience, projects, skills, and certifications once. ResuCraft stores everything securely.",
-        icon: <GraduationCap size={20}/>,
+        icon: <GraduationCap size={35}/>,
     },
     {
         n: "02",
         title: "Generate with AI",
         desc: "Paste a job description. Our AI engine parses keywords, rewrites your bullet points, and produces an ATS-optimized resume instantly.",
-        icon: <Sparkles size={20}/>,
+        icon: <Sparkles size={35}/>,
     },
     {
         n: "03",
         title: "Download & Apply",
         desc: "Export your polished resume as a PDF. Track multiple versions for different roles and prepare with auto-generated interview questions.",
-        icon: <Rocket size={20}/>,
+        icon: <Rocket size={35}/>,
     },
 ];
 
@@ -279,7 +280,7 @@ const WelcomePage: React.FC = () => {
                                     fontWeight: 600,
                                     color: theme.accentLight,
                                     lineHeight: 1
-                                }}>{s.value}</p>
+                                }}><UseNumberCounter start={0} end={ s.value} duration={ 1000}/>{s.unit}</p>
                                 <p style={{
                                     fontSize: '0.85rem',
                                     fontWeight: 600,
@@ -427,6 +428,7 @@ const WelcomePage: React.FC = () => {
                                     }} className="step-connector"/>
                                 )}
                                 <div
+
                                     style={{
                                         position: 'relative',
                                         width: '5rem',

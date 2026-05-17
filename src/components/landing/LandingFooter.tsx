@@ -10,12 +10,10 @@ const productLinks = [
     { label: "How It Works", href: "/welcome#how-it-works" },
     { label: "Templates", href: "/" },
     { label: "Resume Builder", href: "/builder" },
-    { label: "Pricing", href: "/page/pricing" },
 ];
 
 const resourceLinks = [
     { label: "FAQ", href: "/faq" },
-    { label: "Contact Us", href: "/contact" },
     { label: "Help Center", href: "/contact" },
     { label: "About Us", href: "/about" },
     { label: "Privacy Policy", href: "/privacy-policy" },
