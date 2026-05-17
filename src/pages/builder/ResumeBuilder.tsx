@@ -15,6 +15,35 @@ import { useLandingTheme } from '@hooks/useLandingTheme.ts';
 import { templateService } from '@src/services/template.service';
 import { resumeService } from '@src/services/resume.service';
 
+// ── Recomputes every section/subsection height to wrap its children ──────────
+function recalcSectionHeights(sectionsArr, elementsArr) {
+    const BOTTOM_PAD = 4;
+    const MIN_HEIGHT = 40;
+    const result = sectionsArr.map(s => ({ ...s }));
+
+    // Multiple passes so nested subsections are sized before their parents
+    for (let pass = 0; pass < 4; pass++) {
+        for (let i = 0; i < result.length; i++) {
+            const sec = result[i];
+            const childEls  = elementsArr.filter(e => e.parentSection === sec.id);
+            const childSecs = result.filter(s => s.parentSection === sec.id);
+            if (childEls.length === 0 && childSecs.length === 0) continue;
+
+            const bottoms = [
+                ...childEls.map(e  => (e.y  - sec.y) + e.height),
+                ...childSecs.map(s => (s.y  - sec.y) + s.height),
+            ].filter(b => isFinite(b));
+            if (bottoms.length === 0) continue;
+
+            const newHeight = Math.max(MIN_HEIGHT, Math.max(...bottoms) + BOTTOM_PAD);
+            if (Math.abs(newHeight - sec.height) > 0.5) {
+                result[i] = { ...sec, height: newHeight };
+            }
+        }
+    }
+    return result;
+}
+
 
 function ResumeBuilder() {
     const { id } = useParams<{ id: string }>();
@@ -88,42 +117,21 @@ function ResumeBuilder() {
         mode,
     });
 
-    // --- Auto-resize element + cascade to parent section ---
+    // --- Auto-resize element (text growth triggers section recalc via effect) ---
 
     const onAutoResize = (elementId, newHeight) => {
         updateElement(elementId, { height: newHeight });
-
-        const el = elements.find(e => e.id === elementId);
-        if (!el || !el.parentSection) return;
-
-        const cascadeSection = (sectionId) => {
-            const sec = sections.find(s => s.id === sectionId);
-            if (!sec) return;
-
-            const childElements = elements.map(e => {
-                if (e.parentSection !== sectionId) return null;
-                const h = e.id === elementId ? newHeight : e.height;
-                return (e.y - sec.y) + h;
-            }).filter(Boolean);
-
-            const childSubsections = sections
-                .filter(s => s.parentSection === sectionId)
-                .map(s => (s.y - sec.y) + s.height);
-
-            const allBottoms = [...childElements, ...childSubsections];
-            if (allBottoms.length === 0) return;
-
-            const maxBottom = Math.max(...allBottoms);
-            const newSectionHeight = maxBottom + 20;
-
-            if (Math.abs(newSectionHeight - sec.height) > 1) {
-                updateSection(sectionId, { height: newSectionHeight });
-                if (sec.parentSection) cascadeSection(sec.parentSection);
-            }
-        };
-
-        cascadeSection(el.parentSection);
     };
+
+    // --- Auto-resize sections/subsections to wrap their children ---
+    // Runs whenever any element or section position/size changes.
+    // recalcSectionHeights is idempotent so this settles after at most 2 renders.
+    useEffect(() => {
+        if (sections.length === 0) return;
+        const recalced = recalcSectionHeights(sections, elements);
+        const anyChanged = recalced.some((s, i) => Math.abs(s.height - sections[i].height) > 0.5);
+        if (anyChanged) setSections(recalced);
+    }, [elements, sections]); // eslint-disable-line react-hooks/exhaustive-deps
 
     // --- Delete selected items ---
 
@@ -224,6 +232,16 @@ function ResumeBuilder() {
 
     const currentCanvasSize = { width: customWidth, height: customHeight };
     const hasMargins = margins.top > 0 || margins.right > 0 || margins.bottom > 0 || margins.left > 0;
+
+    // ── Multi-page canvas height ──────────────────────────────────────────────
+    // 1 CSS px = 1/96 in; mm → px = mm * 96/25.4
+    const pageHeightPx   = parseFloat(customHeight) * (96 / 25.4);
+    const marginBottomPx = margins.bottom * 96;
+    const contentMaxBottom = sections
+        .filter(s => !s.parentSection)
+        .reduce((max, s) => Math.max(max, s.y + s.height), 0);
+    const canvasHeightPx = Math.max(pageHeightPx, contentMaxBottom + marginBottomPx + 60);
+    const numPageBreaks  = Math.max(0, Math.ceil(canvasHeightPx / pageHeightPx) - 1);
 
     // Theme-derived canvas workspace colors
     const wsBg    = theme.isDark ? '#111827' : '#e4e9f0';
@@ -329,7 +347,7 @@ function ResumeBuilder() {
                     className="canvas-paper relative bg-white rounded-sm"
                     style={{
                         width: currentCanvasSize.width,
-                        height: currentCanvasSize.height,
+                        height: `${canvasHeightPx}px`,
                         cursor: 'crosshair',
                         transform: `scale(${scale})`,
                         transformOrigin: 'top center',
@@ -355,6 +373,38 @@ function ResumeBuilder() {
                         />
                     )}
 
+                    {/* Page Break Dividers */}
+                    {Array.from({ length: numPageBreaks }, (_, i) => (
+                        <div
+                            key={`pb-${i}`}
+                            style={{
+                                position: 'absolute',
+                                left: 0,
+                                right: 0,
+                                top: (i + 1) * pageHeightPx,
+                                height: 0,
+                                borderTop: '1.5px dashed rgba(239,68,68,0.35)',
+                                pointerEvents: 'none',
+                                zIndex: 50,
+                            }}
+                        >
+                            <span style={{
+                                position: 'absolute',
+                                left: 8,
+                                top: 4,
+                                fontSize: 9,
+                                color: 'rgba(239,68,68,0.5)',
+                                fontFamily: 'sans-serif',
+                                fontWeight: 700,
+                                letterSpacing: '0.4px',
+                                userSelect: 'none',
+                                whiteSpace: 'nowrap',
+                            }}>
+                                ─ page {i + 1} ↑ &nbsp; ↓ page {i + 2} ─
+                            </span>
+                        </div>
+                    ))}
+
                     {/* Sections */}
                     {sections.map((section) => {
                         const isSelected = selectedIds.includes(section.id);
@@ -376,7 +426,6 @@ function ResumeBuilder() {
                                 onContentTypeChange={(id, contentType) => updateSection(id, { contentType })}
                                 onAddContent={addContentToSection}
                                 onAddSubsection={addSubsection}
-                                onResizeMouseDown={handleResizeMouseDown}
                                 onHeaderClick={handleHeaderClick}
                             />
                         );

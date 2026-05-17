@@ -1,5 +1,4 @@
 import { useState, useRef, useEffect } from 'react';
-import ResizeHandle from './ResizeHandle';
 
 /* ─── Icons ─── */
 
@@ -67,7 +66,6 @@ const CanvasSection = ({
     onContentTypeChange,
     onAddContent,
     onAddSubsection,
-    onResizeMouseDown,
     onHeaderClick
 }) => {
     const isSubsection = section.type === 'subsection';
@@ -375,18 +373,7 @@ const CanvasSection = ({
                 </div>
             )}
 
-            {/* ── Resize Handles ── */}
-            {isSelected && isSingleSelection && (
-                <>
-                    {['n', 's'].map(pos => (
-                        <ResizeHandle
-                            key={pos}
-                            position={pos}
-                            onMouseDown={(e) => onResizeMouseDown(e, section.id, pos, true)}
-                        />
-                    ))}
-                </>
-            )}
+            {/* Section height is auto-managed — no resize handles */}
         </div>
     );
 };

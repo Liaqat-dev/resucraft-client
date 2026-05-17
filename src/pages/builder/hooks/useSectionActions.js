@@ -48,13 +48,15 @@ export function useSectionActions({
         const parentSection = sections.find(s => s.id === parentSectionId);
         if (!parentSection) return;
 
-        const existingSubsections = sections.filter(s => s.parentSection === parentSectionId);
+        const existingSubsections = sections
+            .filter(s => s.parentSection === parentSectionId)
+            .sort((a, b) => a.y - b.y);
         const subNumber = existingSubsections.length + 1;
 
         let nextY = parentSection.y + 50;
         if (existingSubsections.length > 0) {
             const lastSub = existingSubsections[existingSubsections.length - 1];
-            nextY = lastSub.y + lastSub.height + 15;
+            nextY = lastSub.y + lastSub.height + 8;
         }
 
         const newSubsection = {

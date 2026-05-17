@@ -65,16 +65,135 @@ export function useCanvasInteractions({
         return null;
     };
 
+    // ── Subsection reorder drag: siblings slide past each other, no overlap ───
+
+    const startSubsectionReorderDrag = (e, id, draggingSubsection) => {
+        setIsDragging(true);
+        setDraggingSectionId(id);
+
+        const startClientY   = e.clientY;
+        const startSubsecY   = draggingSubsection.y;
+        const parentId       = draggingSubsection.parentSection;
+        const GAP            = 8;
+
+        // All siblings sorted by Y at drag start
+        const siblings = sections
+            .filter(s => s.parentSection === parentId && s.type === 'subsection')
+            .sort((a, b) => a.y - b.y);
+
+        if (siblings.length <= 1) {
+            setIsDragging(false);
+            setDraggingSectionId(null);
+            startFreeDrag(e, id);
+            return;
+        }
+
+        // Heights are frozen at drag start
+        const heights = new Map(siblings.map(s => [s.id, s.height]));
+        const baseY   = siblings[0].y;
+
+        // Map each child element → its subsection + offsetY (relative to subsection top)
+        const descendantLookup = new Map();
+        siblings.forEach(sub => {
+            elements.forEach(el => {
+                if (el.parentSection === sub.id) {
+                    descendantLookup.set(el.id, { subsecId: sub.id, offsetY: el.y - sub.y });
+                }
+            });
+        });
+
+        const currentOrder = siblings.map(s => s.id);
+
+        const computeSlots = (orderIds) => {
+            const slots = {};
+            let y = baseY;
+            for (const sid of orderIds) {
+                slots[sid] = y;
+                y += (heights.get(sid) ?? 0) + GAP;
+            }
+            return slots;
+        };
+
+        const handleMouseMove = (moveEvent) => {
+            const deltaY    = (moveEvent.clientY - startClientY) / scale;
+            const newSubY   = snapToGrid(startSubsecY + deltaY);
+            const draggedMid = newSubY + (heights.get(id) ?? 0) / 2;
+
+            const slots  = computeSlots(currentOrder);
+            const others = currentOrder.filter(sid => sid !== id);
+
+            let insertIdx = others.length;
+            for (let i = 0; i < others.length; i++) {
+                const slotMid = slots[others[i]] + (heights.get(others[i]) ?? 0) / 2;
+                if (draggedMid < slotMid) { insertIdx = i; break; }
+            }
+
+            const newOrder = [...others.slice(0, insertIdx), id, ...others.slice(insertIdx)];
+            const orderChanged = newOrder.some((sid, i) => sid !== currentOrder[i]);
+            if (orderChanged) {
+                currentOrder.length = 0;
+                newOrder.forEach(sid => currentOrder.push(sid));
+            }
+
+            const activeSlots = computeSlots(currentOrder);
+
+            setSections(prev => prev.map(sec => {
+                if (sec.id === id) return { ...sec, y: newSubY };
+                if (activeSlots[sec.id] !== undefined) return { ...sec, y: activeSlots[sec.id] };
+                return sec;
+            }));
+
+            setElements(prev => prev.map(el => {
+                const info = descendantLookup.get(el.id);
+                if (!info) return el;
+                const parentY = info.subsecId === id ? newSubY : activeSlots[info.subsecId];
+                if (parentY === undefined) return el;
+                return { ...el, y: parentY + info.offsetY };
+            }));
+        };
+
+        const handleMouseUp = () => {
+            const finalSlots = computeSlots(currentOrder);
+
+            setSections(prev => prev.map(sec => {
+                if (finalSlots[sec.id] !== undefined) return { ...sec, y: finalSlots[sec.id] };
+                return sec;
+            }));
+
+            setElements(prev => prev.map(el => {
+                const info = descendantLookup.get(el.id);
+                if (!info) return el;
+                const parentY = finalSlots[info.subsecId];
+                if (parentY === undefined) return el;
+                return { ...el, y: parentY + info.offsetY };
+            }));
+
+            setIsDragging(false);
+            setDraggingSectionId(null);
+            document.removeEventListener('mousemove', handleMouseMove);
+            document.removeEventListener('mouseup', handleMouseUp);
+        };
+
+        document.addEventListener('mousemove', handleMouseMove);
+        document.addEventListener('mouseup', handleMouseUp);
+    };
+
+    // ────────────────────────────────────────────────────────────────────────
+
     const startDragging = (e, id) => {
         const draggingSection = sections.find(s => s.id === id);
         const isTopLevelSection =
             draggingSection &&
             draggingSection.type !== 'subsection' &&
             !draggingSection.parentSection;
+        const isSubsection =
+            draggingSection &&
+            draggingSection.type === 'subsection';
 
-        // Single top-level section drag → reorder mode
         if (isTopLevelSection && selectedIds.length === 1) {
             startSectionReorderDrag(e, id, draggingSection);
+        } else if (isSubsection && selectedIds.length === 1) {
+            startSubsectionReorderDrag(e, id, draggingSection);
         } else {
             startFreeDrag(e, id);
         }
@@ -109,7 +228,7 @@ export function useCanvasInteractions({
         const baseY = topLevelSecs[0].y;
 
         // Vertical gap between sections
-        const GAP = 8;
+        const GAP = 0;
 
         // Build a descendant lookup for ALL top-level sections:
         //   descendantLookup: descendantId → { topLevelId, offsetY }
