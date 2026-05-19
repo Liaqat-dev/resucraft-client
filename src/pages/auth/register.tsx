@@ -2,8 +2,8 @@ import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '@hooks/useAuth';
 import { useForm, GlobalErrorAlert } from '@hooks/useForm';
 import * as Yup from 'yup';
-import { Mail, Lock, User, Eye, EyeOff, AtSign } from 'lucide-react';
-import React, { useEffect, useState } from 'react';
+import { Mail, Lock, Eye, EyeOff, AtSign } from 'lucide-react';
+import  { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import PasswordStrength from '@src/components/common/passwordStrength.tsx';
 import logo from "@assets/images/main-logo.png";
@@ -13,16 +13,14 @@ const GOLD = '#C09A3A';
 const DARK = '#0F172A';
 
 const registerSchema = Yup.object({
-    name: Yup.string()
-        .required('Name is required')
-        .min(3, 'Name must be at least 3 characters'),
     username: Yup.string()
         .required('Username is required')
         .min(3, 'Username must be at least 3 characters')
-        .matches(/^[a-zA-Z0-9_]+$/, 'Username can only contain letters, numbers and underscores'),
+        .matches(/^[a-zA-Z][a-zA-Z0-9_]*$/, 'Username must start with a letter and can only contain letters, numbers and underscores'),
     email: Yup.string()
         .required('Email is required')
-        .email('Invalid email address'),
+        .email('Invalid email address')
+        .matches(/^[a-zA-Z]/, 'Email must start with a letter'),
     password: Yup.string()
         .required('Password is required')
         .min(12, 'Password must be at least 12 characters')
@@ -42,7 +40,7 @@ export default function Register() {
     const [showPassword, setShowPassword] = useState(false);
 
     const formik = useForm({
-        initialValues: { name: '', username: '', email: '', password: '' },
+        initialValues: {  username: '', email: '', password: '' },
         validationSchema: registerSchema,
         onSubmit: async (values) => {
             await register(values).unwrap();
@@ -138,41 +136,7 @@ export default function Register() {
                             />
 
                             {/* Name + Username row */}
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
-                                {/* Full Name */}
-                                <div className="space-y-1.5">
-                                    <label className="block text-xs font-semibold uppercase tracking-wide text-gray-500">
-                                        Full Name <span className="text-red-500">*</span>
-                                    </label>
-                                    <div className="relative">
-                                        <span className="absolute inset-y-0 left-3 flex items-center pointer-events-none text-gray-400">
-                                            <User className="w-4 h-4" />
-                                        </span>
-                                        <input
-                                            type="text"
-                                            name="name"
-                                            value={formik.values.name}
-                                            onChange={formik.handleChange}
-                                            onBlur={formik.handleBlur}
-                                            placeholder="Jane Doe"
-                                            autoComplete="off"
-                                            className={[
-                                                'w-full pl-9 pr-4 py-2.5 text-sm rounded-md border bg-white',
-                                                'transition-colors duration-150 focus:outline-none focus:ring-2',
-                                                formik.touched.name && formik.errors.name
-                                                    ? 'border-red-400 focus:ring-red-400/30 focus:border-red-400'
-                                                    : 'border-gray-200 hover:border-gray-300 focus:ring-primary-500/20 focus:border-primary-500',
-                                            ].join(' ')}
-                                        />
-                                    </div>
-                                    {formik.touched.name && formik.errors.name && (
-                                        <p className="text-xs text-red-500 flex items-center gap-1">
-                                            <span className="inline-block size-1 rounded-full bg-red-500" />
-                                            {formik.errors.name}
-                                        </p>
-                                    )}
-                                </div>
-
+                            {/*<div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>*/}
                                 {/* Username */}
                                 <div className="space-y-1.5">
                                     <label className="block text-xs font-semibold uppercase tracking-wide text-gray-500">
@@ -206,7 +170,7 @@ export default function Register() {
                                         </p>
                                     )}
                                 </div>
-                            </div>
+                            {/*</div>*/}
 
                             {/* Email */}
                             <div className="space-y-1.5">
@@ -460,7 +424,7 @@ export default function Register() {
                     {/* Bottom feature pills */}
                     <div style={{ position: 'relative', zIndex: 10 }}>
                         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
-                            {['16 Languages', 'PDF Export', 'ATS-Friendly', '100% Free'].map((feat) => (
+                            {[ 'PDF Export', 'ATS-Friendly', '100% Free'].map((feat) => (
                                 <span key={feat} style={{
                                     padding: '0.3rem 0.8rem', borderRadius: 20,
                                     background: `${GOLD}10`, color: '#94a3b8',
