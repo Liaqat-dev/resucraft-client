@@ -117,24 +117,29 @@ const Modal: React.FC<CustomModalProps> = ({
       setIsAnimating(false);
       setIsVisible(false);
       onClose();
-      document.body.classList.remove("overflow-hidden");
     }, 300);
   }, [onClose]);
 
   // Handle modal open/close state
   useEffect(() => {
+    let timeout: NodeJS.Timeout;
     if (isOpen) {
       setIsVisible(true);
       setIsAnimating(true);
       document.body.classList.add("overflow-hidden");
 
-      const timeout = setTimeout(() => {
+      timeout = setTimeout(() => {
         setIsAnimating(false);
       }, 300);
-
-      return () => clearTimeout(timeout);
+    } else {
+      document.body.classList.remove("overflow-hidden");
     }
-  }, [isOpen]);
+
+    return () => {
+      document.body.classList.remove("overflow-hidden");
+      if (timeout) clearTimeout(timeout);
+    };
+  }, [isOpen, onClose]);
 
   // Don't render if the modal is not visible
   if (!isVisible) return null;

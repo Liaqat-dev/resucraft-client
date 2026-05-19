@@ -19,6 +19,7 @@ import { initializeAuth } from "@src/slices/auth/thunk.ts";
 
 import Routing from "./routes";
 import {initialState} from "./slices/layout/reducer";
+import ScrollToTop from "@src/components/common/ScrollToTop.tsx";
 
 function App() {
     useEffect(() => {
@@ -75,6 +76,7 @@ function App() {
 
     return (
         <React.Fragment>
+            <ScrollToTop />
             <Routing/>
         </React.Fragment>
     );

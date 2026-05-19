@@ -75,15 +75,21 @@ const Drawer: React.FC<CustomDrawerProps> = ({
   const [isVisible, setIsVisible] = useState(false);
 
   useLayoutEffect(() => {
+    let timeoutId: NodeJS.Timeout;
     if (isOpen) {
       setIsVisible(true);
       requestAnimationFrame(() => setIsAnimating(true));
       document.body.classList.add("overflow-hidden");
     } else {
       setIsAnimating(false);
-      const timeoutId = setTimeout(() => setIsVisible(false), 300);
-      return () => clearTimeout(timeoutId);
+      timeoutId = setTimeout(() => setIsVisible(false), 300);
+      document.body.classList.remove("overflow-hidden");
     }
+
+    return () => {
+      document.body.classList.remove("overflow-hidden");
+      if (timeoutId) clearTimeout(timeoutId);
+    };
   }, [isOpen]);
 
   if (!isVisible) return null;
