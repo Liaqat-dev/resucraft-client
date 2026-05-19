@@ -20,7 +20,6 @@ const NAV_ITEMS: NavItem[] = [
     {label: 'Overview', path: '/dashboard', icon: <LayoutDashboard className="size-4 shrink-0"/>},
     {label: 'Users', path: '/dashboard/users', icon: <Users className="size-4 shrink-0"/>},
     {label: 'Templates', path: '/dashboard/templates', icon: <FileText className="size-4 shrink-0"/>},
-    {label: 'Analytics', path: '/dashboard/analytics', icon: <BarChart3 className="size-4 shrink-0"/>},
     {label: 'Messages', path: '/dashboard/messages', icon: <Mail className="size-4 shrink-0"/>},
 ];
 

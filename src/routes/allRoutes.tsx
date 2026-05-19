@@ -47,8 +47,8 @@ import PosterPage from '@pages/landing/PosterPage.tsx'
 import DashboardOverview from '@pages/dashboard/Overview.tsx'
 import DashboardUsers from '@pages/dashboard/Users.tsx'
 import DashboardTemplates from '@pages/dashboard/Templates.tsx'
-import DashboardAnalytics from '@pages/dashboard/Analytics.tsx'
 import DashboardMessages from '@pages/dashboard/Messages.tsx'
+import ResumePreview from '@pages/builder/ResumePreview.tsx'
 
 interface IRoute {
     path: string;
@@ -139,7 +139,6 @@ const builderRoutes: IRoute[] = [
     {path: "/builder", component: <ResumeBuilder/>},
     {path: "/builder/:id", component: <ResumeBuilder/>},
 ]
-import ResumePreview from '@pages/builder/ResumePreview.tsx'
 
 const resumeEditorRoutes: IRoute[] = [
     // {path: "/edit", component: <ResumeBuilder/>},
@@ -148,11 +147,10 @@ const resumeEditorRoutes: IRoute[] = [
 ]
 
 const adminRoutes: IRoute[] = [
-    { path: '/dashboard',            component: <DashboardOverview /> },
-    { path: '/dashboard/users',      component: <DashboardUsers /> },
-    { path: '/dashboard/templates',  component: <DashboardTemplates /> },
-    { path: '/dashboard/analytics',  component: <DashboardAnalytics /> },
-    { path: '/dashboard/messages',   component: <DashboardMessages /> },
+    {path: '/dashboard', component: <DashboardOverview/>},
+    {path: '/dashboard/users', component: <DashboardUsers/>},
+    {path: '/dashboard/templates', component: <DashboardTemplates/>},
+    {path: '/dashboard/messages', component: <DashboardMessages/>},
 ];
 
-export {routes, nonAuthRoutes, builderRoutes,resumeEditorRoutes, adminRoutes};
+export {routes, nonAuthRoutes, builderRoutes, resumeEditorRoutes, adminRoutes};
