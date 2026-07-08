@@ -44,6 +44,8 @@ export function useInterviewSession() {
     const sourceRef = useRef<MediaStreamAudioSourceNode | null>(null);
     const silentGainRef = useRef<GainNode | null>(null);
     const nextPlayTimeRef = useRef(0);
+    const activeSourcesRef = useRef<AudioBufferSourceNode[]>([]);
+    const stoppingRef = useRef(false);
 
     // Mute / VAD refs — read inside onaudioprocess without causing stale closures
     const isMutedRef = useRef(false);
@@ -54,9 +56,11 @@ export function useInterviewSession() {
 
     // ── Playback ─────────────────────────────────────────────────────────────
     const playAudioChunk = useCallback(async (base64: string, mimeType: string) => {
+        if (stoppingRef.current) return;
         const ctx = audioCtxRef.current;
         if (!ctx) return;
         if (ctx.state === 'suspended') await ctx.resume();
+        if (stoppingRef.current) return; // may have stopped while awaiting resume()
 
         const binary = atob(base64);
         const bytes = new Uint8Array(binary.length);
@@ -74,8 +78,24 @@ export function useInterviewSession() {
         const source = ctx.createBufferSource();
         source.buffer = buffer;
         source.connect(ctx.destination);
+        source.onended = () => {
+            activeSourcesRef.current = activeSourcesRef.current.filter((s) => s !== source);
+        };
+        activeSourcesRef.current.push(source);
         source.start(startTime);
         nextPlayTimeRef.current = startTime + buffer.duration;
+    }, []);
+
+    // Immediately silences any AI speech that's already playing or scheduled —
+    // stopping the WS/mic alone doesn't do this since buffers are pre-scheduled
+    // ahead of time on the AudioContext's own clock.
+    const stopAllAudio = useCallback(() => {
+        stoppingRef.current = true;
+        for (const source of activeSourcesRef.current) {
+            try { source.stop(); } catch { /* already stopped/ended */ }
+        }
+        activeSourcesRef.current = [];
+        nextPlayTimeRef.current = audioCtxRef.current?.currentTime ?? 0;
     }, []);
 
     // ── Microphone ───────────────────────────────────────────────────────────
@@ -193,6 +213,8 @@ export function useInterviewSession() {
         const ctx = new AudioContext();
         audioCtxRef.current = ctx;
         nextPlayTimeRef.current = 0;
+        activeSourcesRef.current = [];
+        stoppingRef.current = false;
 
         const ws = new WebSocket(WS_URL);
         wsRef.current = ws;
@@ -228,11 +250,13 @@ export function useInterviewSession() {
                     setFeedback(msg.data);
                     setStatus('done');
                     stopMicrophone();
+                    stopAllAudio();
                     break;
 
                 case 'ending':
                     setStatus('ending');
                     stopMicrophone();
+                    stopAllAudio();
                     break;
 
                 case 'turn_complete':
@@ -242,11 +266,13 @@ export function useInterviewSession() {
                     setError(msg.message);
                     setStatus('error');
                     stopMicrophone();
+                    stopAllAudio();
                     break;
 
                 case 'session_ended':
                     setStatus('done');
                     stopMicrophone();
+                    stopAllAudio();
                     break;
             }
         };
@@ -257,16 +283,18 @@ export function useInterviewSession() {
         };
 
         ws.onclose = () => {};
-    }, [accessToken, startMicrophone, stopMicrophone, playAudioChunk]);
+    }, [accessToken, startMicrophone, stopMicrophone, playAudioChunk, stopAllAudio]);
 
     const endInterview = useCallback(() => {
         setStatus('ending');
         stopMicrophone();
+        stopAllAudio();
         wsRef.current?.send(JSON.stringify({ type: 'end_interview' }));
-    }, [stopMicrophone]);
+    }, [stopMicrophone, stopAllAudio]);
 
     const closeSession = useCallback(() => {
         stopMicrophone();
+        stopAllAudio();
         wsRef.current?.close();
         wsRef.current = null;
         audioCtxRef.current?.close();
