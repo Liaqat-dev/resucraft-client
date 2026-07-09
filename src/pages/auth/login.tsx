@@ -12,7 +12,19 @@ const GOLD = '#C09A3A';
 const DARK = '#0F172A';
 
 const loginSchema = Yup.object({
-    emailOrUsername: Yup.string().required('Email or username is required'),
+    emailOrUsername: Yup.string()
+        .required('Email or username is required')
+        .test(
+            'valid-email-or-username',
+            'Enter a valid email or username (must start with a letter)',
+            (value) => {
+                if (!value) return false;
+                if (value.includes('@')) {
+                    return Yup.string().email().isValidSync(value) && /^[a-zA-Z]/.test(value);
+                }
+                return /^[a-zA-Z][a-zA-Z0-9_]*$/.test(value) && value.length >= 3;
+            }
+        ),
     password: Yup.string().required('Password is required'),
 });
 
